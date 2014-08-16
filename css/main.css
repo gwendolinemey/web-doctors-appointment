@@ -6,8 +6,7 @@
  * Base structure
  */
 
-html,
-body {
+html, body {
   height: 75%;
   background-color: #0c505a;
 }
@@ -44,8 +43,7 @@ body {
  /* Form */
 
  .form-line{ padding: 10px; color: #000;}
- div#localisation{ display:block;border: 1px solid red; margin-left: 30px; height: 46px;}
- div#localisation i{ margin-bottom:100%; color:red; border: 1px solid green;}
+
 
 /* Links */
 a,
@@ -65,10 +63,10 @@ a:hover {
 }
 .btn-default:hover, .btn-default:focus { background-color: #39c5da; border: 1px solid #39c5da; color: #fff;}
 
+/** affichage PS **/
+.resultat-ps{ border: 1px solid red;}
 
-/*
- * Header
- */
+/* Header */
 .masthead-brand {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -148,11 +146,6 @@ footer a{ display: inline-block; padding:20px;}
 
 .icon { margin-right:4%;}
 
-/**
-  affichage recherche PS
-**/
-.affichage-ps{ background-color: #fff; color:#000;}
-.dispo-ps{}
 /*
  * Affix and center
  */
