@@ -1,74 +1,80 @@
-
 <!DOCTYPE html>
 <html lang="fr" ng-app="rpdApp">
-  <head>
+
+<head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="#">
 
-    <title>RapiDocteur</title>
+    <title>Bare - Start Bootstrap Template</title>
 
-    <!-- Bootstrap core CSS -->
-   <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
+    <!-- Bootstrap Core CSS -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <link href="css/main.css" rel="stylesheet">
 
-    <!-- Font awesomes for beautifuls icons ! -->
-    <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
-    <link href="css/font-awesome.css" rel="stylesheet">
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <!--<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
 
-  <body>
+</head>
 
-    <div class="site-wrapper">
+<body>
 
-      <div class="site-wrapper-inner">
-
-        <div class="cover-container">
-
-          <div class="masthead clearfix">
-            <div class="inner">
-              <h3 class="masthead-brand"><a href="http://localhost/Lab/rapidocteur-view/">RapiDocteur !</a></h3>
-              <ul class="nav masthead-nav">
-                <li class="active"><a href="index.html">Accueil</a></li>
-                <li><a href="#about">En savoir +</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="#">Blog</a></li>
-              </ul>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://localhost/rapidocteur_web/">RapiDocteur</a>
             </div>
-          </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">En savoir +</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div> <!-- /.navbar-collapse -->
+        </div> <!-- /.container -->
+    </nav>
 
-          <div class="inner cover">
-            <h1 class="cover-heading">RapiDocteur</h1>
-            <p class="lead">Prenez rendez-vous avec un professionnel de santé aujourd'hui !</p> 
-          </div>
+    <!-- Page Content -->
+    <div class="container">
 
-          <!-- content here -->
-          <div ng-view></div>
-          
-        </div> <!-- cover-container -->
-      </div> <!-- site-wrapper-inner -->
-    </div> <!-- class site-wrapper -->
+        <div class="row">
+            <h1 class="heading">RapiDocteur</h1>
+            <p class="lead">Prenez rendez-vous avec un professionnel de santé aujourd'hui !</p>
+            
+            <div class="col-lg-12 text-center v-center" id="main">
+                <div ng-view></div>
+                
+            </div>
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
 
     <section id="landing-chiffres" class="col-lg-12 text-center v-center" ng-controller="chiffres">
         <span> Déjà <strong>{{ps}} professionnels de santé référencés sur RapiDocteur</strong></span><br />
         <span>& <strong>{{rv}}</strong> rendez-vous réservés !</span>
     </section>
 
-    <footer>
+    <footer class="text-center">
       <p>
         <a href="https://twitter.com/rapidocteur"><i class="fa fa-twitter fa-5x icon"></i></a>
         <a href="https://www.facebook.com/RapiDocteur"><i class="fa fa-facebook fa-5x icon"></i></a>
@@ -76,13 +82,15 @@
       </p>
     </footer>
 
-    <!-- Bootstrap core JavaScript
+     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/angular.min.js" type="text/javascript"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.js"></script>
-    <script src="js/app.js" type="text/javascript"></script>
+    <script src="js/app.js" type="text/javascript"></script> <!-- personnalisé-->
     <script src="js/jquery-2.1.1.js"></script>
     <script src="bootstrap/js/bootstrap.js"></script>
-  </body>
+
+</body>
+
 </html>
