@@ -6,15 +6,20 @@ body {
   /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
-.navbar{ margin:auto; border:1px solid red; background-color: #0c505a; }
-
-#main{
-  border:1px solid red;
-}
+.navbar{ margin:auto; background-color: #0c505a; border: none; }
+#bs-example-navbar-collapse-1 a { color: #fff; }
+.navbar-inverse .navbar-brand{ color:#fff; font-weight: 300; font-size: large;}
 
 h1.heading{ text-align: center; font-size: 36px;}
 p.lead{ text-align: center; font-size: 21px;  margin-bottom: 20px; font-weight: 300; line-height: 1.4; }
-/* Footer */
+
+/** CONTENT **/
+
+.form-line{ padding: 10px; color: #000;}
+
+/*************/
+/* Footer   */
+/***********/
 
 section#landing-chiffres{
   font-size:xx-large;
@@ -28,4 +33,5 @@ section#landing-chiffres{
 footer {  color: #fff; /* IE8 proofing */  height: 10%; }
 footer a{ display: inline-block; padding:20px; color:#fff;}
 .icon { margin-right:4%;}
-   
+.footer-nav{ list-style: none; width: 100%; }
+.footer-nav li { display: inline; }   
