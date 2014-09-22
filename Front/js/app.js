@@ -13,6 +13,12 @@
 		function($routeProvider) {
 		$routeProvider
 
+			// route for the home page
+			.when('/', {
+				templateUrl : 'views/form-accueil.html',
+				controller  : 'LandingController'
+			})
+
 			.when('/recherche-ps.html', {
 				templateUrl : 'views/recherche-ps.html',
 				controller 	: 'RecherchePS'
@@ -21,12 +27,6 @@
 			.when('/confirmation-rendezvous.html', {
 				templateUrl : 'views/confirmation-rendezvous.html',
 				controller 	: 'ConfirmationRendezVous'
-			})
-
-			// route for the home page
-			.when('/', {
-				templateUrl : 'views/form-accueil.html',
-				controller  : 'LandingController'
 			})
 
 			// route for the about page
