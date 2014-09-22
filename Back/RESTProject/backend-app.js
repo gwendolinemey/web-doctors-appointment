@@ -46,4 +46,11 @@ app.get('/medecins', function(req, res) {
   }
 );
 
+app.get('/specialites', function(req, res) {
+    var sql = 'select * '
++ 'from \"Specialite\"';
+    processReqResSql(req, res, sql);
+  }
+);
+
 app.listen(8080);
