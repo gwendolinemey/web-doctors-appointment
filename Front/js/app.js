@@ -1,7 +1,5 @@
 
-
-// create the module and name it scotchApp
-	var app = angular.module('app', ['ngRoute', 'appServices', 'appControllers']);
+	var app = angular.module('app', ['ngRoute',  'appControllers', 'appServices']);
 
 	var appServices = angular.module('appServices', []);
 	var appControllers = angular.module('appControllers', []);
@@ -11,40 +9,40 @@
 	options.api.base_url = "http://localhost:8080";
 
 	// configure our routes
-	app.config(function($routeProvider) {
+	app.config(['$routeProvider',
+		function($routeProvider) {
 		$routeProvider
 
 			.when('/recherche-ps.html', {
 				templateUrl : 'views/recherche-ps.html',
-				controller 	: 'rechercheps'
+				controller 	: 'RecherchePS'
 			})
 
 			.when('/confirmation-rendezvous.html', {
 				templateUrl : 'views/confirmation-rendezvous.html',
-				controller 	: 'confirmationRendezVous'
+				controller 	: 'ConfirmationRendezVous'
 			})
 
 			// route for the home page
 			.when('/', {
 				templateUrl : 'views/form-accueil.html',
-				controller  : 'LandingCtrl'
+				controller  : 'LandingController'
 			})
 
 			// route for the about page
 			.when('/about', {
 				templateUrl : 'views/about.html',
-				controller  : 'aboutController'
+				controller  : 'AboutController'
 			})
 
 			// route for the contact page
 			.when('/contact', {
 				templateUrl : 'views/contact.html',
-				controller  : 'contactController'
-			});
+				controller  : 'ContactController'
+			})
 
 			.otherwise({
             	redirectTo: '/'
         	});
-	});
-
+	}]);
 	

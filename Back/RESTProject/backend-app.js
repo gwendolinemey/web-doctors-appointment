@@ -20,6 +20,7 @@ function processReqResSql(req, res, sql){
 		            //for (i = 0; i < result.rows.length; i++) {
 		            //    sr.output[i] = JSON.parse(result.rows[i].data);
 		            //}
+		            console.log(new Date() + '  ' + sql);
 		            res.send(sr);
 		    client.end();
 		  });
