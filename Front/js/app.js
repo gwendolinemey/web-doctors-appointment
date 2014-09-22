@@ -1,10 +1,17 @@
 
 
 // create the module and name it scotchApp
-	var rpdApp = angular.module('rpdApp', ['ngRoute']);
+	var app = angular.module('app', ['ngRoute', 'appServices', 'appControllers']);
+
+	var appServices = angular.module('appServices', []);
+	var appControllers = angular.module('appControllers', []);
+
+	var options = {};
+	options.api = {};
+	options.api.base_url = "http://localhost:8080";
 
 	// configure our routes
-	rpdApp.config(function($routeProvider) {
+	app.config(function($routeProvider) {
 		$routeProvider
 
 			.when('/recherche-ps.html', {
@@ -34,33 +41,10 @@
 				templateUrl : 'views/contact.html',
 				controller  : 'contactController'
 			});
+
+			.otherwise({
+            	redirectTo: '/'
+        	});
 	});
 
-	// create the controller and inject Angular's $scope
-	rpdApp.controller('LandingCtrl', function($scope) {
 	
-		$scope.checkPS = function(){ $scope.rv +=1;	}
-	});
-
-	rpdApp.controller('aboutController', function($scope) {
-		$scope.message = 'Look! I am an about page.';
-
-	});
-
-	rpdApp.controller('contactController', function($scope) {
-		$scope.message = 'Contact us : hello@rapidocteur.fr';
-
-	});
-
-	rpdApp.controller('rechercheps', function($scope) {
-		//
-	});
-
-	rpdApp.controller('chiffres', function($scope) {
-		$scope.ps = 42;
-		$scope.rv = 125;
-	});
-
-	rpdApp.controller('confirmationRendezVous', function($scope) {
-		$scope.message = 'Voulez-vous confirmer votre rendez-vous avec le Docteur DURANT ?';
-	});
