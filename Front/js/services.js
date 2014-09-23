@@ -10,3 +10,20 @@
             },
         }
     });
+
+    // Variables Objects
+
+    appServices.factory('SpecialityManager', function() {
+
+        var selectedSpeciality;
+
+        return {
+            getSelectedSpeciality: function() {
+                return selectedSpeciality;
+            },
+
+            setSelectedSpeciality: function(value) {
+                selectedSpeciality = value;
+            },
+        }
+    });
