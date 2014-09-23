@@ -6,7 +6,6 @@
             },
 
             getDoctorsBySpecialities: function(speciality) {
-                //return $http.get(options.api.base_url + '/doctors/specialities', params : {'speciality' : speciality});
                 return $http({
                     url: options.api.base_url + '/doctors/specialities',
                     method: "GET", 
@@ -20,7 +19,8 @@
         }
     });
 
-    // Variables Objects
+    ///////////////////////////////////////// Variables Objects
+    
 
     appServices.factory('SpecialityManager', function() {
 

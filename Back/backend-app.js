@@ -62,14 +62,14 @@ app.get('/doctors', function(req, res) {
 );
 
 app.get('/doctors/specialities', function(req, res) {
-	console.log('req.query : ' + JSON.stringify(req.query));
+	console.log('/doctors/specialities req.query : ' + JSON.stringify(req.query));
 	var speciality = req.query;
 
 	var sql = 'select * '
 	+ 'from \"Praticien\", \"Possede\" '
 	+ 'where \"Praticien\".\"IdPraticien\" = \"Possede\".\"IdPraticien_Praticien\" '
 	+ 'and \"Possede\".\"idSpecialite_Specialite\" = ' + speciality.idSpecialite;
-	
+
 	processReqResSql(req, res, sql);
 }
 );

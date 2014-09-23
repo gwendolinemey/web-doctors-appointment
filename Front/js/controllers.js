@@ -25,15 +25,21 @@ appControllers.controller('LandingController', ['$scope', 'GetService', 'Special
 
 appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityManager',
 	function($scope, GetService, SpecialityManager) {
+
+		$scope.doctors = [];
+
 		speciality = SpecialityManager.getSelectedSpeciality();
 		console.log('RecherchePS ' + JSON.stringify(speciality));
 
 		GetService.getDoctorsBySpecialities(speciality).success(function(data) {
+			$scope.doctors = data;
 			console.log('response docBySpe : ' + JSON.stringify(data));
 		}).error(function(data, status) {
 			console.log('response docBySpe : ' + status);
 			console.log('response docBySpe : ' + data);
 		});
+
+		$scope.quantity = 2;
 	}
 	]);
 
