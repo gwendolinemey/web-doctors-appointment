@@ -5,10 +5,12 @@
 			$scope.specialities = [];
 
 	        GetService.getAllSpecialities().success(function(data) {
-	            $scope.specialities = data;            
+	            $scope.specialities = data; 
+	            $scope.selectedSpecialities = data.output[0];           
+	            console.log(data);
 	        }).error(function(data, status) {
 	            console.log(status);
-	            console.log(data);
+	        	console.log(data);
 	        });
 
 			$scope.checkPS = function(){ $scope.rv +=1;	}

@@ -1,10 +1,7 @@
 <form action="#recherche-ps.html" class="form-horizontal" ng-submit="checkPS()">          
-  <div class="form-line"><select autofocus class="input-lg">
-    <option>Médecin généraliste</option>
-    <option>Ophtalmologiste</option>
-    <option>Dermatologue</option>
-    <option>Gynécologue</option>
-  </select></div>
+  <div class="form-line">
+    <select autofocus class="input-lg" ng-model="selectedSpecialities" ng-options="item.labelSpecialite for item in specialities.output"/></select>
+  </div>
   <div class="row">
     <div class=""><input type="text" placeholder="Votre localisation"  autocomplete="off" class="input-lg" /></div>
     <!-- <div id="localisation" class="btn btn-lg btn-default col-lg-2"><i class="fa fa-crosshairs fa-2x"></i></div> -->
