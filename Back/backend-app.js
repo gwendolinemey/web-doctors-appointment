@@ -52,16 +52,29 @@ app.get('/', function(req, res) {
 	res.end('Accueil');
 });
 
-app.get('/medecins', function(req, res) {
+app.get('/doctors', function(req, res) {
 	var sql = 'select * '
-	+ 'from \"Praticien\", \"Possede\", \"Specialite\"'
-	+ 'where \"Praticien\".\"IdPraticien\" = \"Possede\".\"IdPraticien_Praticien\"'
+	+ 'from \"Praticien\", \"Possede\", \"Specialite\" '
+	+ 'where \"Praticien\".\"IdPraticien\" = \"Possede\".\"IdPraticien_Praticien\" '
 	+ 'and \"Possede\".\"idSpecialite_Specialite\" = \"Specialite\".\"idSpecialite\"';
 	processReqResSql(req, res, sql);
 }
 );
 
-app.get('/specialites', function(req, res) {
+app.get('/doctors/specialities', function(req, res) {
+	console.log('req.query : ' + JSON.stringify(req.query));
+	var speciality = req.query;
+
+	var sql = 'select * '
+	+ 'from \"Praticien\", \"Possede\" '
+	+ 'where \"Praticien\".\"IdPraticien\" = \"Possede\".\"IdPraticien_Praticien\" '
+	+ 'and \"Possede\".\"idSpecialite_Specialite\" = ' + speciality.idSpecialite;
+	
+	processReqResSql(req, res, sql);
+}
+);
+
+app.get('/specialities', function(req, res) {
 	var sql = 'select * '
 	+ 'from \"Specialite\"';
 	processReqResSql(req, res, sql);

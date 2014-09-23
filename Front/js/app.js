@@ -19,12 +19,12 @@
 				controller  : 'LandingController'
 			})
 
-			.when('/recherche-ps.html', {
+			.when('/recherche-ps', {
 				templateUrl : 'views/recherche-ps.html',
 				controller 	: 'RecherchePS'
 			})
 
-			.when('/confirmation-rendezvous.html', {
+			.when('/confirmation-rendezvous', {
 				templateUrl : 'views/confirmation-rendezvous.html',
 				controller 	: 'ConfirmationRendezVous'
 			})

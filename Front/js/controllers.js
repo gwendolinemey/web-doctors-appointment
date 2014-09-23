@@ -18,14 +18,22 @@ appControllers.controller('LandingController', ['$scope', 'GetService', 'Special
 		$scope.checkPS = function(){
 			SpecialityManager.setSelectedSpeciality($scope.selectedSpecialities);
 			// console.log(SpecialityManager.getSelectedSpeciality()); 
-			window.location.href = '#/recherche-ps.html';
+			window.location.href = '#/recherche-ps';
 		}
 	}
 	]);
 
-appControllers.controller('RecherchePS', ['$scope', 'SpecialityManager',
-	function($scope, SpecialityManager) {
-		console.log(SpecialityManager.getSelectedSpeciality());
+appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityManager',
+	function($scope, GetService, SpecialityManager) {
+		speciality = SpecialityManager.getSelectedSpeciality();
+		console.log('RecherchePS ' + JSON.stringify(speciality));
+
+		GetService.getDoctorsBySpecialities(speciality).success(function(data) {
+			console.log('response docBySpe : ' + JSON.stringify(data));
+		}).error(function(data, status) {
+			console.log('response docBySpe : ' + status);
+			console.log('response docBySpe : ' + data);
+		});
 	}
 	]);
 
