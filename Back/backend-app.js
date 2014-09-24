@@ -66,9 +66,10 @@ app.get('/doctors/specialities', function(req, res) {
 	var speciality = req.query;
 
 	var sql = 'select * '
-	+ 'from \"Praticien\", \"Possede\" '
+	+ 'from \"Praticien\", \"Possede\", \"Specialite\" '
 	+ 'where \"Praticien\".\"IdPraticien\" = \"Possede\".\"IdPraticien_Praticien\" '
-	+ 'and \"Possede\".\"idSpecialite_Specialite\" = ' + speciality.idSpecialite;
+	+ 'and \"Possede\".\"idSpecialite_Specialite\" = \"Specialite\".\"idSpecialite\" '
+	+ 'and \"Specialite\".\"idSpecialite\" = ' + speciality.idSpecialite;
 
 	processReqResSql(req, res, sql);
 }

@@ -20,7 +20,7 @@
     });
 
     ///////////////////////////////////////// Variables Objects
-    
+
 
     appServices.factory('SpecialityManager', function() {
 
@@ -33,6 +33,30 @@
 
             setSelectedSpeciality: function(value) {
                 selectedSpeciality = value;
+            },
+        }
+    });
+
+    appServices.factory('AppointmentManager', function() {
+
+        var appointment;
+        var doctor;
+
+        return {
+            getSelectedAppointment: function() {
+                return appointment;
+            },
+
+            setSelectedAppointment: function(value) {
+                appointment = value;
+            },
+
+            getSelectedDoctor: function() {
+                return doctor;
+            },
+
+            setSelectedDoctor: function(value) {
+                doctor = value;
             },
         }
     });

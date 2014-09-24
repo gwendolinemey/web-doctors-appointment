@@ -23,8 +23,8 @@ appControllers.controller('LandingController', ['$scope', 'GetService', 'Special
 	}
 	]);
 
-appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityManager',
-	function($scope, GetService, SpecialityManager) {
+appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityManager', 'AppointmentManager',
+	function($scope, GetService, SpecialityManager, AppointmentManager) {
 
 		$scope.doctors = [];
 
@@ -40,6 +40,16 @@ appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityMan
 		});
 
 		$scope.quantity = 2;
+
+		$scope.submitRDV = function(doctor){
+			// console.log('submitRDV ' + JSON.stringify(doctor));
+			// console.log('$scope.selectedAppointment ' + $scope.selectedAppointment);
+
+			AppointmentManager.setSelectedAppointment($scope.selectedAppointment);
+			AppointmentManager.setSelectedDoctor(doctor);
+
+			window.location.href = '#/confirmation-rendezvous';
+		}
 	}
 	]);
 
