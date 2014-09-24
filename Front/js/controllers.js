@@ -29,11 +29,11 @@ appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityMan
 		$scope.doctors = [];
 
 		speciality = SpecialityManager.getSelectedSpeciality();
-		console.log('RecherchePS ' + JSON.stringify(speciality));
+		// console.log('RecherchePS ' + JSON.stringify(speciality));
 
 		GetService.getDoctorsBySpecialities(speciality).success(function(data) {
 			$scope.doctors = data;
-			console.log('response docBySpe : ' + JSON.stringify(data));
+			// console.log('response docBySpe : ' + JSON.stringify(data));
 		}).error(function(data, status) {
 			console.log('response docBySpe : ' + status);
 			console.log('response docBySpe : ' + data);
@@ -50,6 +50,15 @@ appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityMan
 
 			window.location.href = '#/confirmation-rendezvous';
 		}
+	}
+	]);
+
+appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManager',
+	function($scope, AppointmentManager) {
+		var doctor = AppointmentManager.getSelectedDoctor();
+		var appointment = AppointmentManager.getSelectedAppointment();
+
+		$scope.message = 'Voulez-vous confirmer votre rendez-vous avec le Docteur ' + doctor.nom + ' ?';
 	}
 	]);
 
@@ -72,9 +81,4 @@ appControllers.controller('Chiffres',
 	}
 	);
 
-appControllers.controller('ConfirmationRendezVous', 
-	function($scope) {
-		$scope.message = 'Voulez-vous confirmer votre rendez-vous avec le Docteur DURANT ?';
-	}
-	);
 

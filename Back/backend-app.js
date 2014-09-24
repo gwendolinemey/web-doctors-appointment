@@ -20,7 +20,9 @@ function processReqResSql(req, res, sql){
             //}
             console.log(new Date() + '  ' + sql);
 
-            // // Website you wish to allow to connect
+            // TODO encapsulate this as a middleware
+            // http://stackoverflow.com/questions/18310394/no-access-control-allow-origin-node-apache-port-issue
+            // Website you wish to allow to connect
             res.setHeader('Access-Control-Allow-Origin', 'http://localhost');
 
             // Request methods you wish to allow
