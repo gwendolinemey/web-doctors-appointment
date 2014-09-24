@@ -16,18 +16,18 @@
             <ul class="list-unstyled">
               <li>Aujourd'hui</li>                        
               <label class="radio-inline">
-                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio1" value="1208-0915">09:15
+                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio1" value="{{doctor.IdPraticien}}-1208-0915">09:15
               </label>
               <label class="radio-inline">
-                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio2" value="1208-1530">15:30
+                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio2" value="{{doctor.IdPraticien}}-1208-1530">15:30
               </label>
 
               <li>Demain</li>
               <label class="radio-inline">
-                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio3" value="1508-0845">08:45
+                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio3" value="{{doctor.IdPraticien}}-1508-0845">08:45
               </label>
               <label class="radio-inline">
-                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio4" value="1508-1200">12:00
+                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio4" value="{{doctor.IdPraticien}}-1508-1200">12:00
               </label>
             </ul>
             <div class="autres-dispo"><a href="">Autres disponibilités</a></div>

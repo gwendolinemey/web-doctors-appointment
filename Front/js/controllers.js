@@ -59,6 +59,10 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManag
 		var appointment = AppointmentManager.getSelectedAppointment();
 
 		$scope.message = 'Voulez-vous confirmer votre rendez-vous avec le Docteur ' + doctor.nom + ' ?';
+
+		$scope.doBack = function() {
+			window.history.back();
+		};
 	}
 	]);
 

@@ -20,6 +20,8 @@
     });
 
     ///////////////////////////////////////// Variables Objects
+    // TODO Refactor this in another js file as this is not web services
+    // but services to share data across controllers.
 
 
     appServices.factory('SpecialityManager', function() {
