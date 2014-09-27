@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.7.2" last-position="13,70" last-zoom="1">
+<database name="rapidocteur">
+</database>
+
+<schema name="public" protected="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="Praticien">
+	<schema name="public"/>
+	<position x="380" y="307"/>
+	<column name="IdPraticien">
+		<type name="serial"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="num_tel">
+		<type name="text" length="18"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="prenom" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="adresse" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="code_postal" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="ville" not-null="true">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_praticien" type="pk-constr" factor="100" table="public.&quot;Praticien&quot;">
+		<columns names="IdPraticien" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="User">
+	<schema name="public"/>
+	<position x="29" y="123"/>
+	<column name="idUser" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="num_tel">
+		<type name="text"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="prenom" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="password" not-null="true">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_user" type="pk-constr" factor="100" table="public.&quot;User&quot;">
+		<columns names="idUser" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="unique_mail_user" type="uq-constr" factor="100" table="public.&quot;User&quot;">
+		<columns names="email" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Jours">
+	<schema name="public"/>
+	<position x="672" y="132"/>
+	<column name="idJour" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="labelJour" not-null="true">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_jours" type="pk-constr" factor="100" table="public.&quot;Jours&quot;">
+		<columns names="idJour" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="unique_jour_label_jours" type="uq-constr" factor="100" table="public.&quot;Jours&quot;">
+		<columns names="labelJour" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Specialite">
+	<schema name="public"/>
+	<position x="676" y="526"/>
+	<column name="idSpecialite" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="labelSpecialite" not-null="true">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_specialite" type="pk-constr" factor="100" table="public.&quot;Specialite&quot;">
+		<columns names="idSpecialite" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="assure">
+	<schema name="public"/>
+	<position x="358" y="115"/>
+	<column name="heure_deb" not-null="true">
+		<type name="time"/>
+	</column>
+	<column name="heure_fin" not-null="true">
+		<type name="time"/>
+	</column>
+</table>
+
+<relationship name="Praticien_has_many_assure" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Praticien&quot;"
+	 dst-table="public.assure"
+	 src-required="true" dst-required="false"	 identifier="true"
+/>
+
+<relationship name="Jours_has_many_assure" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Jours&quot;"
+	 dst-table="public.assure"
+	 src-required="true" dst-required="false"	 identifier="true"
+/>
+
+<table name="Possede">
+	<schema name="public"/>
+	<position x="654" y="342"/>
+</table>
+
+<relationship name="Praticien_has_many_Possede" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Praticien&quot;"
+	 dst-table="public.&quot;Possede&quot;"
+	 src-required="true" dst-required="false"	 identifier="true"
+/>
+
+<relationship name="Specialite_has_many_Possede" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Specialite&quot;"
+	 dst-table="public.&quot;Possede&quot;"
+	 src-required="true" dst-required="false"	 identifier="true"
+/>
+
+<table name="Consulte">
+	<schema name="public"/>
+	<position x="17" y="324"/>
+	<column name="date" not-null="true">
+		<type name="date"/>
+	</column>
+	<column name="heure_deb" not-null="true">
+		<type name="time"/>
+	</column>
+</table>
+
+<relationship name="User_has_many_Consulte" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;User&quot;"
+	 dst-table="public.&quot;Consulte&quot;"
+	 src-required="true" dst-required="false"	 identifier="true"
+/>
+
+<relationship name="Praticien_has_many_Consulte" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Praticien&quot;"
+	 dst-table="public.&quot;Consulte&quot;"
+	 src-required="true" dst-required="false"	 identifier="true"
+/>
+
+</dbmodel>
