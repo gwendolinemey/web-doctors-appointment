@@ -35,7 +35,7 @@ app.use(function (req, res, next) {
 ////////////////////// JS FUNCTIONS //////////////////////////////////////
 
 
-function processReqResSql(req, res, sql){
+function processSelectQuery(req, res, sql){
 	pg.connect(connectionString, function(err, client, done) {
 		if(err) {
 			return console.error('could not connect to postgres', err);
@@ -59,7 +59,7 @@ function processReqResSql(req, res, sql){
 });
 }
 
-function processAppointmentsReqResSql(req, res, sql){
+function processAppointmentsSelectQuery(req, res, sql){
 	pg.connect(connectionString, function(err, client, done) {
 		if(err) {
 			return console.error('could not connect to postgres', err);
@@ -82,6 +82,22 @@ function processAppointmentsReqResSql(req, res, sql){
             res.setHeader('Content-Type', 'application/json');
 
             res.send(sr);
+            done();
+        });
+});
+}
+
+function processModificationQuery(req, res, sql){
+	pg.connect(connectionString, function(err, client, done) {
+		if(err) {
+			return console.error('could not connect to postgres', err);
+		}
+		client.query(sql, function(err, result) {
+			if(err) {
+				return console.error('error running query', err);
+			}
+            console.log(new Date() + '  ' + sql);
+
             done();
         });
 });
@@ -120,7 +136,7 @@ app.get('/doctors', function(req, res) {
 	+ 'from \"Praticien\", \"Possede\", \"Specialite\" '
 	+ 'where \"Praticien\".\"idPraticien\" = \"Possede\".\"idPraticien_Praticien\" '
 	+ 'and \"Possede\".\"idSpecialite_Specialite\" = \"Specialite\".\"idSpecialite\"';
-	processReqResSql(req, res, sql);
+	processSelectQuery(req, res, sql);
 }
 );
 
@@ -134,14 +150,14 @@ app.get('/doctors/specialities', function(req, res) {
 	+ 'and \"Possede\".\"idSpecialite_Specialite\" = \"Specialite\".\"idSpecialite\" '
 	+ 'and \"Specialite\".\"idSpecialite\" = ' + speciality.idSpecialite;
 
-	processReqResSql(req, res, sql);
+	processSelectQuery(req, res, sql);
 }
 );
 
 app.get('/specialities', function(req, res) {
 	var sql = 'select * '
 	+ 'from \"Specialite\"';
-	processReqResSql(req, res, sql);
+	processSelectQuery(req, res, sql);
 }
 );
 
@@ -150,7 +166,45 @@ app.get('/appointments/booked', function(req, res) {
 	+ 'from \"Rdv\", \"User\", \"Praticien\" '
 	+ 'where \"Rdv\".\"idUser_User\" = \"User\".\"idUser\" '
 	+ 'and \"Rdv\".\"idPraticien_Praticien\" = \"Praticien\".\"idPraticien\"';
-	processAppointmentsReqResSql(req, res, sql);
+	processAppointmentsSelectQuery(req, res, sql);
+}
+);
+
+app.post('/settings/save', function(req, res) {
+	console.log('/settings/save req.query : ' + JSON.stringify(req.query));
+	var settings = req.query;
+
+	if (settings) {
+		res.status(201).end();
+	} else {
+		res.status(500).end();
+	}
+
+	var mockedDoctorId = 1;
+
+	// TODO change method processModificationQuery to execute a batch of query and not one by one
+	var deleteRowsSql = 'delete from \"Creneau\" where \"idPraticien_Praticien\" = ' + mockedDoctorId;
+	processModificationQuery(req, res, deleteRowsSql);
+
+	var saveSettingsSql = 'update "Praticien" '
+	+ 'set "dureeRdvMinutes" = ' + settings.appointmentLength + ', "semainesProposees" = ' + settings.openWeeks + ' '
+	+ 'where "idPraticien" = ' + mockedDoctorId;
+	processModificationQuery(req, res, saveSettingsSql);
+
+	for (var i = 0; i < settings.days.length; i++) {
+		var currentDay = JSON.parse(settings.days[i]);
+		var firstAvailability = currentDay.availabilities[0];
+		var sql = 'insert into \"Creneau\" '
+		+ '(\"debutHeures\", \"debutMinutes\", \"finHeures\", \"finMinutes\", \"idJour_Jour\", \"idPraticien_Praticien\") '
+		+ 'values (' + firstAvailability.startHours + ', ' 
+			+ firstAvailability.startMinutes + ', ' 
+			+ firstAvailability.endHours + ', ' 
+			+ firstAvailability.endMinutes + ', ' 
+			+ currentDay.dayId + ', ' 
+			+ mockedDoctorId + ')';
+
+		processModificationQuery(req, res, sql);
+	};
 }
 );
 

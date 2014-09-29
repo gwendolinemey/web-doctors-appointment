@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.7.2" last-position="3,0" last-zoom="1">
+<database name="rapidocteur">
+</database>
+
+<schema name="public" protected="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="Praticien">
+	<schema name="public"/>
+	<position x="314" y="313"/>
+	<column name="idPraticien">
+		<type name="serial"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="num_tel">
+		<type name="text" length="18"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="prenom" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="adresse" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="code_postal" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="ville" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="tarif">
+		<type name="text"/>
+	</column>
+	<column name="carte_vitale">
+		<type name="boolean"/>
+	</column>
+	<column name="ascenseur" not-null="true">
+		<type name="boolean"/>
+	</column>
+	<column name="acces_handicap" not-null="true">
+		<type name="boolean"/>
+	</column>
+	<column name="num_tab_ordre" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="image">
+		<type name="text"/>
+	</column>
+	<column name="dureeRdvMinutes">
+		<type name="numeric"/>
+	</column>
+	<column name="semainesProposees">
+		<type name="numeric"/>
+	</column>
+	<column name="coord">
+		<type name="geometry" spatial-type="POINT" variation="0" srid="3857"/>
+	</column>
+	<constraint name="pk_praticien" type="pk-constr" factor="100" table="public.&quot;Praticien&quot;">
+		<columns names="idPraticien" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="User">
+	<schema name="public"/>
+	<position x="23" y="64"/>
+	<column name="idUser" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="num_tel">
+		<type name="text"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="prenom" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="password" not-null="true">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_user" type="pk-constr" factor="100" table="public.&quot;User&quot;">
+		<columns names="idUser" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="unique_mail_user" type="uq-constr" factor="100" table="public.&quot;User&quot;">
+		<columns names="email" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Specialite">
+	<schema name="public"/>
+	<position x="676" y="544"/>
+	<column name="idSpecialite" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="labelSpecialite" not-null="true">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_specialite" type="pk-constr" factor="100" table="public.&quot;Specialite&quot;">
+		<columns names="idSpecialite" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Possede">
+	<schema name="public"/>
+	<position x="659" y="381"/>
+</table>
+
+<relationship name="Praticien_has_many_Possede" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Praticien&quot;"
+	 dst-table="public.&quot;Possede&quot;"
+	 src-required="true" dst-required="false"	 identifier="true"
+/>
+
+<relationship name="Specialite_has_many_Possede" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Specialite&quot;"
+	 dst-table="public.&quot;Possede&quot;"
+	 src-required="true" dst-required="false"	 identifier="true"
+/>
+
+<table name="Rdv">
+	<schema name="public"/>
+	<position x="325" y="3"/>
+	<column name="idRdv" not-null="true">
+		<type name="bigserial"/>
+	</column>
+	<column name="motif">
+		<type name="text"/>
+	</column>
+	<column name="title" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="allDay">
+		<type name="boolean"/>
+	</column>
+	<column name="startEvent" not-null="true">
+		<type name="timestamptz"/>
+	</column>
+	<column name="endEvent">
+		<type name="timestamptz"/>
+	</column>
+	<column name="url">
+		<type name="text"/>
+	</column>
+	<column name="classeName">
+		<type name="text"/>
+	</column>
+	<column name="editable">
+		<type name="boolean"/>
+	</column>
+	<column name="startEditable">
+		<type name="boolean"/>
+	</column>
+	<column name="durationEditable">
+		<type name="boolean"/>
+	</column>
+	<column name="color">
+		<type name="text"/>
+	</column>
+	<column name="backgroundColor">
+		<type name="text"/>
+	</column>
+	<column name="borderColor">
+		<type name="text"/>
+	</column>
+	<column name="textColor">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_rdv" type="pk-constr" factor="100" table="public.&quot;Rdv&quot;">
+		<columns names="idRdv" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="idPraticien_Praticien" index="15"/>
+		<object name="idUser_User" index="16"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="Praticien_fk" index="1"/>
+		<object name="User_fk" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="Praticien_has_many_Rdv" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Praticien&quot;"
+	 dst-table="public.&quot;Rdv&quot;"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<label ref-type="dst-label">
+		<position x="11.8966" y="21.6"/>
+	</label>
+</relationship>
+
+<relationship name="User_has_many_Rdv" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;User&quot;"
+	 dst-table="public.&quot;Rdv&quot;"
+	 src-required="false" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE"/>
+
+<table name="Paiements">
+	<schema name="public"/>
+	<position x="348" y="543"/>
+	<column name="idPaiement" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="labelPaiement" not-null="true">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_paiement" type="pk-constr" factor="100" table="public.&quot;Paiements&quot;">
+		<columns names="idPaiement" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="many_Praticien_has_many_Paiements" type="relnn"
+	 src-col-pattern="{sc}_{st}" dst-col-pattern="{sc}_{dt}"
+	 pk-pattern="{gt}_pk" uq-pattern="{gt}_uq"
+	 src-fk-pattern="{st}_fk" dst-fk-pattern="{dt}_fk"
+	 src-table="public.&quot;Praticien&quot;"
+	 dst-table="public.&quot;Paiements&quot;"
+	 src-required="false" dst-required="false"	 table-name="Propose"
+	upd-action="CASCADE"
+	del-action="CASCADE">
+	<label ref-type="name-label">
+		<position x="83.0656" y="3.70145"/>
+	</label>
+</relationship>
+
+<table name="Jour">
+	<schema name="public"/>
+	<position x="666" y="33"/>
+	<column name="idJour">
+		<type name="serial"/>
+	</column>
+	<column name="labelJour" not-null="true">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_jour" type="pk-constr" factor="100" table="public.&quot;Jour&quot;">
+		<columns names="idJour" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Creneau">
+	<schema name="public"/>
+	<position x="631" y="194"/>
+	<column name="idCreneau">
+		<type name="serial"/>
+	</column>
+	<column name="debutHeures" not-null="true">
+		<type name="numeric"/>
+	</column>
+	<column name="debutMinutes" not-null="true">
+		<type name="numeric"/>
+	</column>
+	<column name="finHeures" not-null="true">
+		<type name="numeric"/>
+	</column>
+	<column name="finMinutes" not-null="true">
+		<type name="numeric"/>
+	</column>
+	<constraint name="pk_creneau" type="pk-constr" factor="100" table="public.&quot;Creneau&quot;">
+		<columns names="idCreneau" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="Jour_has_many_Creneau" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Jour&quot;"
+	 dst-table="public.&quot;Creneau&quot;"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE"/>
+
+<relationship name="Praticien_has_many_Creneau" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 src-table="public.&quot;Praticien&quot;"
+	 dst-table="public.&quot;Creneau&quot;"
+	 src-required="true" dst-required="false"
+	upd-action="CASCADE"
+	del-action="CASCADE"/>
+
+</dbmodel>
