@@ -56,7 +56,7 @@ function processSelectQuery(req, res, sql){
             res.send(sr);
             done();
         });
-});
+	});
 }
 
 function processAppointmentsSelectQuery(req, res, sql){
@@ -73,18 +73,46 @@ function processAppointmentsSelectQuery(req, res, sql){
 			//add 'events' key
 			var events = new Array();
 			sr.output = new Array();
-            for (i = 0; i < result.rows.length; i++) {
-                events.push(formatAppointment(result.rows[i]));
-            }
-            sr.output = events;
-            console.log(new Date() + '  ' + sql);
+			for (i = 0; i < result.rows.length; i++) {
+				events.push(formatAppointment(result.rows[i]));
+			}
+			sr.output = events;
+			console.log(new Date() + '  ' + sql);
 
-            res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Content-Type', 'application/json');
 
-            res.send(sr);
-            done();
-        });
-});
+			res.send(sr);
+			done();
+		});
+	});
+}
+
+function processAvailabilitiesSelectQuery(req, res, sql){
+	pg.connect(connectionString, function(err, client, done) {
+		if(err) {
+			return console.error('could not connect to postgres', err);
+		}
+		client.query(sql, function(err, result) {
+			if(err) {
+				return console.error('error running query', err);
+			}
+			var sr = new ServiceResult ('success');
+
+			var availabilities = new Array();
+			sr.output = new Array();
+
+			for (i = 0; i < result.rows.length; i++) {
+				availabilities.push(formatAvailabilities(result.rows[i]));
+			}
+			sr.output = availabilities;
+			console.log(new Date() + '  ' + sql);
+
+			res.setHeader('Content-Type', 'application/json');
+
+			res.send(sr);
+			done();
+		});
+	});
 }
 
 function processModificationQuery(req, res, sql){
@@ -96,11 +124,11 @@ function processModificationQuery(req, res, sql){
 			if(err) {
 				return console.error('error running query', err);
 			}
-            console.log(new Date() + '  ' + sql);
+			console.log(new Date() + '  ' + sql);
 
-            done();
-        });
-});
+			done();
+		});
+	});
 }
 
 function formatAppointment(appointmentFromDatabase){
@@ -112,6 +140,17 @@ function formatAppointment(appointmentFromDatabase){
 	formattedAppointment["end"] = appointmentFromDatabase.endevent;
 
 	return formattedAppointment;
+}
+
+function formatAvailabilities(availabilityFromDatabase){
+	var jsonString = JSON.stringify(availabilityFromDatabase);
+	jsonString = jsonString.replace("idJour_Jour", "idJour");
+	jsonString = jsonString.replace("idPraticien_Praticien", "idPraticien");
+	var jsonObject = JSON.parse(jsonString);
+	// needed to adjust values between database (monday=1) and front-end (monday=0)
+	jsonObject["idJour"] = jsonObject["idJour"] - 1;
+
+	return jsonObject;
 }
 
 function ServiceResult (status){
@@ -203,8 +242,30 @@ app.post('/settings/save', function(req, res) {
 			+ currentDay.dayId + ', ' 
 			+ mockedDoctorId + ')';
 
-		processModificationQuery(req, res, sql);
-	};
+processModificationQuery(req, res, sql);
+};
+}
+);
+
+app.get('/settings', function(req, res) {
+	console.log('/settings req.query : ' + JSON.stringify(req.query));
+	var doctorId = req.query.idDoctor;
+
+	var doctorSettingsSql = 'select \"dureeRdvMinutes\", \"semainesProposees\" '
+	+ 'from \"Praticien\" where \"idPraticien\" = ' + doctorId;
+
+	console.log(doctorSettingsSql);
+	processSelectQuery(req, res, doctorSettingsSql);
+}
+);
+
+app.get('/settings/availabilities', function(req, res) {
+	console.log('/settings req.query : ' + JSON.stringify(req.query));
+	var doctorId = req.query.idDoctor;
+
+	var doctorSettingsCreneauSql = 'select * from \"Creneau\" where \"idPraticien_Praticien\" = ' + doctorId;
+
+	processAvailabilitiesSelectQuery(req, res, doctorSettingsCreneauSql);
 }
 );
 
