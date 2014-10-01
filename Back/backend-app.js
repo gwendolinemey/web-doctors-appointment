@@ -115,7 +115,7 @@ function processAvailabilitiesSelectQuery(req, res, sql){
 	});
 }
 
-function processModificationQuery(req, res, sql){
+function processModificationQuery(sql){
 	pg.connect(connectionString, function(err, client, done) {
 		if(err) {
 			return console.error('could not connect to postgres', err);
@@ -136,8 +136,8 @@ function formatAppointment(appointmentFromDatabase){
 	formattedAppointment["id"] = appointmentFromDatabase.idRdv;
 	formattedAppointment["title"] = appointmentFromDatabase.title;
 	formattedAppointment["allDay"] = appointmentFromDatabase.allDay;
-	formattedAppointment["start"] = appointmentFromDatabase.startevent;
-	formattedAppointment["end"] = appointmentFromDatabase.endevent;
+	formattedAppointment["start"] = appointmentFromDatabase.startEvent;
+	formattedAppointment["end"] = appointmentFromDatabase.endEvent;
 
 	return formattedAppointment;
 }
@@ -201,17 +201,25 @@ app.get('/specialities', function(req, res) {
 );
 
 app.get('/appointments/booked', function(req, res) {
-	var sql = 'select \"Rdv\".*, \"User\".nom, \"User\".prenom '
-	+ 'from \"Rdv\", \"User\", \"Praticien\" '
-	+ 'where \"Rdv\".\"idUser_User\" = \"User\".\"idUser\" '
-	+ 'and \"Rdv\".\"idPraticien_Praticien\" = \"Praticien\".\"idPraticien\"';
+	var mockedDoctorId = 1;
+
+	// get all the booked appointments with info about the user who booked (name, surname)
+	// var sql = 'select \"Rdv\".*, \"User\".nom, \"User\".prenom '
+	// + 'from \"Rdv\", \"User\", \"Praticien\" '
+	// + 'where \"Rdv\".\"idUser_User\" = \"User\".\"idUser\" '
+	// + 'and \"Rdv\".\"idPraticien_Praticien\" = \"Praticien\".\"idPraticien\"';
+
+	var sql = 'select \"Rdv\".* from \"Rdv\" where \"Rdv\".\"idPraticien_Praticien\" = ' + mockedDoctorId;
+
 	processAppointmentsSelectQuery(req, res, sql);
 }
 );
 
 app.post('/settings/save', function(req, res) {
-	console.log('/settings/save req.query : ' + JSON.stringify(req.query));
-	var settings = req.query;
+	console.log('/settings/save req.query.settings : '); 
+	console.log(req.query.settings);
+
+	var settings = JSON.parse(req.query.settings);
 
 	if (settings) {
 		res.status(201).end();
@@ -222,16 +230,19 @@ app.post('/settings/save', function(req, res) {
 	var mockedDoctorId = 1;
 
 	// TODO change method processModificationQuery to execute a batch of query and not one by one
-	var deleteRowsSql = 'delete from \"Creneau\" where \"idPraticien_Praticien\" = ' + mockedDoctorId;
-	processModificationQuery(req, res, deleteRowsSql);
+	var deleteAvailabilitiesRowsSql = 'delete from \"Creneau\" where \"idPraticien_Praticien\" = ' + mockedDoctorId;
+	processModificationQuery(deleteAvailabilitiesRowsSql);
+
+	var deleteAppointmentsRowsSql = 'delete from \"Rdv\" where \"idPraticien_Praticien\" = ' + mockedDoctorId;
+	processModificationQuery(deleteAppointmentsRowsSql);
 
 	var saveSettingsSql = 'update "Praticien" '
 	+ 'set "dureeRdvMinutes" = ' + settings.appointmentLength + ', "semainesProposees" = ' + settings.openWeeks + ' '
 	+ 'where "idPraticien" = ' + mockedDoctorId;
-	processModificationQuery(req, res, saveSettingsSql);
+	processModificationQuery(saveSettingsSql);
 
 	for (var i = 0; i < settings.days.length; i++) {
-		var currentDay = JSON.parse(settings.days[i]);
+		var currentDay = settings.days[i];
 		var firstAvailability = currentDay.availabilities[0];
 		var sql = 'insert into \"Creneau\" '
 		+ '(\"debutHeures\", \"debutMinutes\", \"finHeures\", \"finMinutes\", \"idJour_Jour\", \"idPraticien_Praticien\") '
@@ -242,10 +253,63 @@ app.post('/settings/save', function(req, res) {
 			+ currentDay.dayId + ', ' 
 			+ mockedDoctorId + ')';
 
-processModificationQuery(req, res, sql);
+processModificationQuery(sql);
+
+addAppointments(currentDay, firstAvailability, settings, mockedDoctorId);
 };
 }
 );
+
+function addAppointments(currentDay, firstAvailability, settings, mockedDoctorId) {
+	// create available appointment in db
+	console.log('DAY ' + currentDay.dayId);
+
+	var appointmentBeginning = new Date();
+
+	if(appointmentBeginning.getDay() != currentDay.dayId) {
+		if(appointmentBeginning.getDay() < currentDay.dayId) {
+			appointmentBeginning.setDate(appointmentBeginning.getDate() + (currentDay.dayId - appointmentBeginning.getDay()));
+		} else {
+			var gap = 7 - (appointmentBeginning.getDay() - currentDay.dayId);
+			appointmentBeginning.setDate(appointmentBeginning.getDate() + gap);
+		}
+	}
+
+	var openWeeks = parseInt(settings.openWeeks);
+	console.log(openWeeks);
+	for (var i = 0; i < openWeeks; i++) {
+		console.log('+++++++++++++++ DATE +++++++++++++++');
+		appointmentBeginning.setHours(firstAvailability.startHours, -appointmentBeginning.getTimezoneOffset(), 0, 0);
+		appointmentBeginning.setMinutes(firstAvailability.startMinutes);
+		appointmentBeginning.setDate(appointmentBeginning.getDate() + (7 * i));
+		console.log(appointmentBeginning);
+		var appointmentEnding = new Date(appointmentBeginning.getTime());
+		appointmentEnding.setMinutes(appointmentEnding.getMinutes() + settings.appointmentLength);
+
+		var finalAppointment = new Date(appointmentBeginning.getTime());
+		finalAppointment.setHours(firstAvailability.endHours, -finalAppointment.getTimezoneOffset(), 0, 0);
+		finalAppointment.setMinutes(firstAvailability.endMinutes);
+		
+		console.log('+++++++++++++++ WHILE +++++++++++++++');
+
+		var appointmentDuration = parseInt(settings.appointmentLength);
+		while(appointmentEnding.getTime() <= finalAppointment.getTime()) {
+			console.log(appointmentBeginning);
+
+			var insertAppointmentSql = 'insert into \"Rdv\" (\"title\", \"allDay\", \"startEvent\", '
+			+ '\"endEvent\", \"editable\", \"idPraticien_Praticien\") '
+			+ 'values(\'\',' + false + ' , \'' + appointmentBeginning.toISOString() + '\','
+			+ ' \'' + appointmentEnding.toISOString() + '\',' + true + ',' + mockedDoctorId + ')';
+
+			console.log(insertAppointmentSql);
+
+			processModificationQuery(insertAppointmentSql);
+
+			appointmentBeginning = new Date(appointmentEnding.getTime());
+			appointmentEnding.setMinutes(appointmentEnding.getMinutes() + appointmentDuration);
+		}
+	}
+}
 
 app.get('/settings', function(req, res) {
 	console.log('/settings req.query : ' + JSON.stringify(req.query));
