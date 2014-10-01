@@ -278,36 +278,30 @@ function addAppointments(currentDay, firstAvailability, settings, mockedDoctorId
 	var openWeeks = parseInt(settings.openWeeks);
 	console.log(openWeeks);
 	for (var i = 0; i < openWeeks; i++) {
-		console.log('+++++++++++++++ DATE +++++++++++++++');
 		appointmentBeginning.setHours(firstAvailability.startHours, -appointmentBeginning.getTimezoneOffset(), 0, 0);
 		appointmentBeginning.setMinutes(firstAvailability.startMinutes);
-		appointmentBeginning.setDate(appointmentBeginning.getDate() + (7 * i));
-		console.log(appointmentBeginning);
+
 		var appointmentEnding = new Date(appointmentBeginning.getTime());
 		appointmentEnding.setMinutes(appointmentEnding.getMinutes() + settings.appointmentLength);
 
 		var finalAppointment = new Date(appointmentBeginning.getTime());
 		finalAppointment.setHours(firstAvailability.endHours, -finalAppointment.getTimezoneOffset(), 0, 0);
 		finalAppointment.setMinutes(firstAvailability.endMinutes);
-		
-		console.log('+++++++++++++++ WHILE +++++++++++++++');
 
 		var appointmentDuration = parseInt(settings.appointmentLength);
 		while(appointmentEnding.getTime() <= finalAppointment.getTime()) {
-			console.log(appointmentBeginning);
-
 			var insertAppointmentSql = 'insert into \"Rdv\" (\"title\", \"allDay\", \"startEvent\", '
 			+ '\"endEvent\", \"editable\", \"idPraticien_Praticien\") '
 			+ 'values(\'\',' + false + ' , \'' + appointmentBeginning.toISOString() + '\','
 			+ ' \'' + appointmentEnding.toISOString() + '\',' + true + ',' + mockedDoctorId + ')';
-
-			console.log(insertAppointmentSql);
 
 			processModificationQuery(insertAppointmentSql);
 
 			appointmentBeginning = new Date(appointmentEnding.getTime());
 			appointmentEnding.setMinutes(appointmentEnding.getMinutes() + appointmentDuration);
 		}
+
+		appointmentBeginning.setDate(appointmentBeginning.getDate() + 7);
 	}
 }
 
