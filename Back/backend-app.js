@@ -153,6 +153,50 @@ function formatAvailabilities(availabilityFromDatabase){
 	return jsonObject;
 }
 
+function addAppointments(currentDay, availability, settings, mockedDoctorId) {
+	console.log('DAY ' + currentDay.dayId);
+
+	var appointmentBeginning = new Date();
+
+	if(appointmentBeginning.getDay() != currentDay.dayId) {
+		if(appointmentBeginning.getDay() < currentDay.dayId) {
+			appointmentBeginning.setDate(appointmentBeginning.getDate() + (currentDay.dayId - appointmentBeginning.getDay()));
+		} else {
+			var gap = 7 - (appointmentBeginning.getDay() - currentDay.dayId);
+			appointmentBeginning.setDate(appointmentBeginning.getDate() + gap);
+		}
+	}
+
+	var openWeeks = parseInt(settings.openWeeks);
+	console.log(openWeeks);
+	for (var i = 0; i < openWeeks; i++) {
+		appointmentBeginning.setHours(availability.startHours, -appointmentBeginning.getTimezoneOffset(), 0, 0);
+		appointmentBeginning.setMinutes(availability.startMinutes);
+
+		var appointmentEnding = new Date(appointmentBeginning.getTime());
+		appointmentEnding.setMinutes(appointmentEnding.getMinutes() + settings.appointmentLength);
+
+		var finalAppointment = new Date(appointmentBeginning.getTime());
+		finalAppointment.setHours(availability.endHours, -finalAppointment.getTimezoneOffset(), 0, 0);
+		finalAppointment.setMinutes(availability.endMinutes);
+
+		var appointmentDuration = parseInt(settings.appointmentLength);
+		while(appointmentEnding.getTime() <= finalAppointment.getTime()) {
+			var insertAppointmentSql = 'insert into \"Rdv\" (\"title\", \"allDay\", \"startEvent\", '
+				+ '\"endEvent\", \"editable\", \"idPraticien_Praticien\") '
+				+ 'values(\'\',' + false + ' , \'' + appointmentBeginning.toISOString() + '\','
+				+ ' \'' + appointmentEnding.toISOString() + '\',' + true + ',' + mockedDoctorId + ')';
+
+			processModificationQuery(insertAppointmentSql);
+
+			appointmentBeginning = new Date(appointmentEnding.getTime());
+			appointmentEnding.setMinutes(appointmentEnding.getMinutes() + appointmentDuration);
+		}
+
+		appointmentBeginning.setDate(appointmentBeginning.getDate() + 7);
+	}
+}
+
 function ServiceResult (status){
 	this.ts = new Date();
 	this.status = status;
@@ -200,7 +244,7 @@ app.get('/specialities', function(req, res) {
 }
 );
 
-app.get('/appointments/booked', function(req, res) {
+app.get('/appointments/all', function(req, res) {
 	var mockedDoctorId = 1;
 
 	// get all the booked appointments with info about the user who booked (name, surname)
@@ -209,7 +253,7 @@ app.get('/appointments/booked', function(req, res) {
 	// + 'where \"Rdv\".\"idUser_User\" = \"User\".\"idUser\" '
 	// + 'and \"Rdv\".\"idPraticien_Praticien\" = \"Praticien\".\"idPraticien\"';
 
-	var sql = 'select \"Rdv\".* from \"Rdv\" where \"Rdv\".\"idPraticien_Praticien\" = ' + mockedDoctorId;
+	var sql = 'select \"Rdv\".* from \"Rdv\" where \"Rdv\".\"idPraticien_Praticien\" = ' + mockedDoctorId + ' order by "startEvent"';
 
 	processAppointmentsSelectQuery(req, res, sql);
 }
@@ -243,67 +287,29 @@ app.post('/settings/save', function(req, res) {
 
 	for (var i = 0; i < settings.days.length; i++) {
 		var currentDay = settings.days[i];
-		var firstAvailability = currentDay.availabilities[0];
-		var sql = 'insert into \"Creneau\" '
-		+ '(\"debutHeures\", \"debutMinutes\", \"finHeures\", \"finMinutes\", \"idJour_Jour\", \"idPraticien_Praticien\") '
-		+ 'values (' + firstAvailability.startHours + ', ' 
-			+ firstAvailability.startMinutes + ', ' 
-			+ firstAvailability.endHours + ', ' 
-			+ firstAvailability.endMinutes + ', ' 
-			+ currentDay.dayId + ', ' 
-			+ mockedDoctorId + ')';
+		for (var j = 0; j < currentDay.availabilities.length; j++) {
+			var availability = currentDay.availabilities[j];
+			
+			var insertAvailabilitySql = 'insert into \"Creneau\" '
+			+ '(\"moment\", \"show\", \"debutHeures\", \"debutMinutes\", \"finHeures\", \"finMinutes\", \"idJour_Jour\", \"idPraticien_Praticien\") '
+			+ 'values (\'' + availability.moment + '\', ' 
+				+ availability.show + ', ' 
+				+ availability.startHours + ', ' 
+				+ availability.startMinutes + ', ' 
+				+ availability.endHours + ', ' 
+				+ availability.endMinutes + ', ' 
+				+ currentDay.dayId + ', ' 
+				+ mockedDoctorId + ')';
 
-processModificationQuery(sql);
+			processModificationQuery(insertAvailabilitySql);
 
-addAppointments(currentDay, firstAvailability, settings, mockedDoctorId);
-};
+			if(availability.show) {
+				addAppointments(currentDay, availability, settings, mockedDoctorId);
+			}
+		}
+	}
 }
 );
-
-function addAppointments(currentDay, firstAvailability, settings, mockedDoctorId) {
-	// create available appointment in db
-	console.log('DAY ' + currentDay.dayId);
-
-	var appointmentBeginning = new Date();
-
-	if(appointmentBeginning.getDay() != currentDay.dayId) {
-		if(appointmentBeginning.getDay() < currentDay.dayId) {
-			appointmentBeginning.setDate(appointmentBeginning.getDate() + (currentDay.dayId - appointmentBeginning.getDay()));
-		} else {
-			var gap = 7 - (appointmentBeginning.getDay() - currentDay.dayId);
-			appointmentBeginning.setDate(appointmentBeginning.getDate() + gap);
-		}
-	}
-
-	var openWeeks = parseInt(settings.openWeeks);
-	console.log(openWeeks);
-	for (var i = 0; i < openWeeks; i++) {
-		appointmentBeginning.setHours(firstAvailability.startHours, -appointmentBeginning.getTimezoneOffset(), 0, 0);
-		appointmentBeginning.setMinutes(firstAvailability.startMinutes);
-
-		var appointmentEnding = new Date(appointmentBeginning.getTime());
-		appointmentEnding.setMinutes(appointmentEnding.getMinutes() + settings.appointmentLength);
-
-		var finalAppointment = new Date(appointmentBeginning.getTime());
-		finalAppointment.setHours(firstAvailability.endHours, -finalAppointment.getTimezoneOffset(), 0, 0);
-		finalAppointment.setMinutes(firstAvailability.endMinutes);
-
-		var appointmentDuration = parseInt(settings.appointmentLength);
-		while(appointmentEnding.getTime() <= finalAppointment.getTime()) {
-			var insertAppointmentSql = 'insert into \"Rdv\" (\"title\", \"allDay\", \"startEvent\", '
-			+ '\"endEvent\", \"editable\", \"idPraticien_Praticien\") '
-			+ 'values(\'\',' + false + ' , \'' + appointmentBeginning.toISOString() + '\','
-			+ ' \'' + appointmentEnding.toISOString() + '\',' + true + ',' + mockedDoctorId + ')';
-
-			processModificationQuery(insertAppointmentSql);
-
-			appointmentBeginning = new Date(appointmentEnding.getTime());
-			appointmentEnding.setMinutes(appointmentEnding.getMinutes() + appointmentDuration);
-		}
-
-		appointmentBeginning.setDate(appointmentBeginning.getDate() + 7);
-	}
-}
 
 app.get('/settings', function(req, res) {
 	console.log('/settings req.query : ' + JSON.stringify(req.query));
