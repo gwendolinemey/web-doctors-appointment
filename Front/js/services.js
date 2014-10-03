@@ -13,6 +13,14 @@
                 });
             },
 
+            getAppointementsByDoctors: function(idDoctor) {
+                return $http({
+                    url: options.api.base_url + '/appointments/available',
+                    method: "GET", 
+                    params : idDoctor
+                });
+            },
+
             getAllSpecialities: function() {
                 return $http.get(options.api.base_url + '/specialities');
             },

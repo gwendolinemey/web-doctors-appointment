@@ -3,8 +3,8 @@
 <div class="container">
   <div class="row">
 
-    <div ng-repeat="doctor in doctors.output | limitTo:quantity">
-      <div ng-class="doctors.output.length > 1 ? ($index > 0 ? 'resultat-ps col-lg-offset-2 col-lg-4' : 'resultat-ps col-lg-offset-1 col-lg-4') : 'resultat-ps col-lg-offset-4 col-lg-4'">
+    <div ng-repeat="doctor in doctors | limitTo:quantity">
+      <div ng-class="doctors.length > 1 ? ($index > 0 ? 'resultat-ps col-lg-offset-2 col-lg-4' : 'resultat-ps col-lg-offset-1 col-lg-4') : 'resultat-ps col-lg-offset-4 col-lg-4'">
         <div><img src="img/dr-durant.jpg" alt="Photo docteur {{doctor.nom}}" style="height:150px;"></div>
         <br>
         <div><p>Dr {{doctor.nom}}, {{doctor.labelSpecialite}}</p></div>

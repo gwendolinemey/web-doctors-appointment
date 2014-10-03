@@ -32,8 +32,19 @@ appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityMan
 		// console.log('RecherchePS ' + JSON.stringify(speciality));
 
 		GetService.getDoctorsBySpecialities(speciality).success(function(data) {
-			$scope.doctors = data;
-			// console.log('response docBySpe : ' + JSON.stringify(data));
+			// TODO remove this
+			$scope.doctors = data.output;
+			// For each doctors, retrieve its available appointments
+			angular.forEach(data.output, function(doctor){
+				GetService.get.success(function(data) {
+					// TODO update doctor object (add list of available appointments)
+					// and populate scope.doctors with it
+				}).error(function(data, status) {
+					console.log('response appointmentsByDoc : ' + status);
+					console.log('response appointmentsByDoc : ' + data);
+				});
+			});
+
 		}).error(function(data, status) {
 			console.log('response docBySpe : ' + status);
 			console.log('response docBySpe : ' + data);

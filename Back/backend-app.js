@@ -253,7 +253,17 @@ app.get('/appointments/all', function(req, res) {
 	// + 'where \"Rdv\".\"idUser_User\" = \"User\".\"idUser\" '
 	// + 'and \"Rdv\".\"idPraticien_Praticien\" = \"Praticien\".\"idPraticien\"';
 
-	var sql = 'select \"Rdv\".* from \"Rdv\" where \"Rdv\".\"idPraticien_Praticien\" = ' + mockedDoctorId + ' order by "startEvent"';
+	var sql = 'select * from \"Rdv\" where \"idPraticien_Praticien\" = ' + mockedDoctorId + ' order by "startEvent"';
+
+	processAppointmentsSelectQuery(req, res, sql);
+}
+);
+
+app.get('/appointments/available', function(req, res) {
+	console.log('/doctors/specialities req.query : ' + JSON.stringify(req.query));
+	var idDoctor = req.query;
+
+	var sql = 'select * from \"Rdv\" where \"idPraticien_Praticien\" = ' + idDoctor + ' and "idUser_User" is null order by "startEvent"';
 
 	processAppointmentsSelectQuery(req, res, sql);
 }
