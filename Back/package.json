@@ -1,0 +1,17 @@
+{
+  "name": "Back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "backend-app.js",
+  "dependencies": {
+    "bluebird": "^2.3.4",
+    "express": "^4.8.7",
+    "pg": "^3.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
