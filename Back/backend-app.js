@@ -7,9 +7,9 @@ var express = require('express');
 
 var app = express();
 
-var middlewares = require("./middlewares");
+var middlewares = require("./local_modules/middlewares");
 app.use(middlewares.addHeaders);
 
-require("./routes")(app)
+require("./local_modules/routes")(app)
 
 app.listen(8080);
