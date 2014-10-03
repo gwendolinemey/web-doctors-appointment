@@ -1,3 +1,0 @@
-Add on top of the script
-
-CREATE EXTENSION postgis;
