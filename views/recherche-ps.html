@@ -1,11 +1,12 @@
 <!-- résultat de recherche de professionnels de santé -->
 
 <div class="container">
+  <p class="lead">2ème clic sur 3 : choisissez le médecin et le rendez-vous</p>  
   <div class="row">
 
     <div ng-repeat="doctor in doctors | limitTo:quantity">
       <div ng-class="doctors.length > 1 ? ($index > 0 ? 'resultat-ps col-lg-offset-2 col-lg-4' : 'resultat-ps col-lg-offset-1 col-lg-4') : 'resultat-ps col-lg-offset-4 col-lg-4'">
-        <div><img src="img/dr-durant.jpg" alt="Photo docteur {{doctor.nom}}" style="height:150px;"></div>
+        <div><img src="img/dr-durant_o.jpg" alt="Photo docteur {{doctor.nom}}" style="height:150px;"></div>
         <br>
         <div><p>Dr {{doctor.nom}}, {{doctor.labelSpecialite}}</p></div>
         <div class="adresse-ps">{{doctor.adresse}}, {{doctor.code_postal}} {{doctor.ville}}</div>
@@ -16,18 +17,18 @@
             <ul class="list-unstyled">
               <li>Aujourd'hui</li>                        
               <label class="radio-inline">
-                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio1" value="{{doctor.IdPraticien}}-1208-0915">09:15
+                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio1" value="{{doctor.idPraticien}}-1208-0915">09:15
               </label>
               <label class="radio-inline">
-                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio2" value="{{doctor.IdPraticien}}-1208-1530">15:30
+                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio2" value="{{doctor.idPraticien}}-1208-1530">15:30
               </label>
 
               <li>Demain</li>
               <label class="radio-inline">
-                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio3" value="{{doctor.IdPraticien}}-1508-0845">08:45
+                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio3" value="{{doctor.idPraticien}}-1508-0845">08:45
               </label>
               <label class="radio-inline">
-                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio4" value="{{doctor.IdPraticien}}-1508-1200">12:00
+                <input type="radio" ng-model="$parent.selectedAppointment" name="inlineRadioOptions" id="inlineRadio4" value="{{doctor.idPraticien}}-1508-1200">12:00
               </label>
             </ul>
             <div class="autres-dispo"><a href="">Autres disponibilités</a></div>
