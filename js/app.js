@@ -15,7 +15,7 @@
 
 			// route for the home page
 			.when('/', {
-				templateUrl : 'views/form-accueil.html',
+				templateUrl : 'views/index-mvp.html',
 				controller  : 'LandingController'
 			})
 
