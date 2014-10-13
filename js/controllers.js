@@ -92,8 +92,8 @@ appControllers.controller('ContactController',
 
 appControllers.controller('Chiffres', 
 	function($scope) {
-		$scope.ps = 41;
-		$scope.rv = 157;
+		$scope.ps = 7;
+		$scope.rv = 151;
 	}
 	);
 

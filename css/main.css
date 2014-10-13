@@ -18,6 +18,9 @@ p.lead{ text-align: center; font-size: 21px;  margin-bottom: 20px; font-weight: 
 .form-line{ padding: 10px; color: #000;}
 input{ color:#000;}
 
+/** Index provisoire **/
+.presentation-doctor{ margin-top: 2%; }
+
 /*************/
 /* Footer   */
 /***********/
