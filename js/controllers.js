@@ -29,7 +29,7 @@ appControllers.controller('RecherchePS', ['$scope', 'GetService', 'SpecialityMan
 		$scope.doctors = [];
 
 		speciality = SpecialityManager.getSelectedSpeciality();
-		// console.log('RecherchePS ' + JSON.stringify(speciality));
+		console.log('RecherchePS ' + JSON.stringify(speciality));
 
 		GetService.getDoctorsBySpecialities(speciality).success(function(data) {
 			// TODO remove this
