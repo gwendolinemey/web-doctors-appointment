@@ -19,10 +19,10 @@
 				controller  : 'LandingController'
 			})
 
-			/*.when('/cabinet-medical-seysses', {
+			.when('/cabinet-medical-seysses', {
 				templateUrl : 'views/cabinet-medical-seysses.html',
-				controller  : 'PresentationDoc'
-			})*/
+				controller  : 'PresentationDocSeysses'
+			})
 
 			.when('/recherche-ps', {
 				templateUrl : 'views/recherche-ps.html',

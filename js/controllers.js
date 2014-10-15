@@ -97,4 +97,28 @@ appControllers.controller('Chiffres',
 	}
 	);
 
+appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService',
+	function($scope, GetService){
+		console.log("log");
+		
+		var idCabinet = 2;
+		GetService.getDoctorByOffice(idCabinet).success(function(data) {
+			$scope.doctors = data.output;
+			console.log(data.output);
+
+			angular.forEach(data.output, function(doctor) {
+				console.log('doctor : ' + doctor);
+                /*GetService.getDoctorByOffice(idOffice).success(function(data) {
+                	$scope.appointmentStarts = data.output;
+                	console.log(data.output);
+
+                });*/
+            });	
+
+		}).error(function(data, status) {
+			console.log('response getDoctorByOffice : ' + status);
+			console.log('response getDoctorByOffice : ' + data);
+		});	
+	}
+]);
 

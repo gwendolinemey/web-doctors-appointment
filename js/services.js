@@ -24,6 +24,14 @@
             getAllSpecialities: function() {
                 return $http.get(options.api.base_url + '/specialities');
             },
+
+            getDoctorByOffice: function(idOffice) {
+                return $http({
+                    url: options.api.base_url + '/office/doctors',
+                    method: "GET", 
+                    params : {"idOffice" : idOffice}
+            });
+        }
         }
     });
 

@@ -53,25 +53,11 @@
     </nav>
 
     <!-- Page Content -->
-    <div class="container">
-
-        <div class="row">
-            <h1 class="heading">RapiDocteur</h1>
-            <p class="lead">Prenez un rendez-vous avec votre médecin en trois clics !</p>
-            
-            <div class="col-lg-12 text-center v-center" id="main">
-                <div ng-view autoscroll="true"></div>
-                
-            </div>
+    <div class="container">            
+        <div class="col-lg-12 text-center v-center" id="main">
+            <div ng-view autoscroll="true"></div>            
         </div>
-        <!-- /.row -->
-
-    </div>
-    <!-- /.container -->
-    <section id="landing-chiffres" class="col-lg-12 text-center v-center" ng-controller="Chiffres">
-        <span> Déjà <strong>{{ps}} professionnels de santé référencés sur RapiDocteur</strong></span><br />
-        <span>& <strong>{{rv}}</strong> rendez-vous réservés !</span>
-    </section>
+    </div>    
     
     <footer class="text-center">
         <p>
