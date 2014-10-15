@@ -38,4 +38,11 @@ footer {  color: #fff; /* IE8 proofing */  height: 10%; }
 footer a{ display: inline-block; padding:20px; color:#fff;}
 .icon { margin-right:4%;}
 .footer-nav{ list-style: none; width: 100%; }
-.footer-nav li { display: inline; }   
+.footer-nav li { display: inline; }  
+
+
+/** Personnalisation page médecin **/
+.trucdeouf{ border:1px solid green;}
+#disponibilites{ background-color: rgba(255,255,255,.5); padding: 2%; margin-top:3%;}
+#agenda-med td { border:1px solid #fff; padding:15px; }
+#agenda-med th { border:1px solid #fff; padding:5px; text-align: center; background-color: #0c505a;}
