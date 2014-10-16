@@ -24,10 +24,10 @@
 				controller  : 'PresentationDocSeysses'
 			})
 
-			.when('/recherche-ps', {
+			/*.when('/recherche-ps', {
 				templateUrl : 'views/recherche-ps.html',
 				controller 	: 'RecherchePS'
-			})
+			})*/
 
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'views/confirmation-rendezvous.html',

@@ -76,5 +76,11 @@
             setSelectedDoctor: function(value) {
                 doctor = value;
             },
+            getSelectedDay: function(){
+                return day;
+            },
+            setSelectedDay: function(value){
+                day = value;
+            },
         }
     });
