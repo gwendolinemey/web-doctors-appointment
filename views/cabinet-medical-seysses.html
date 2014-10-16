@@ -30,7 +30,7 @@
             </tr>
             <tr>
                 <td ng-repeat="day in doctor.availabilities">
-                    <div ng-repeat="c in day.appointments">{{c.start}}</div>                    
+                    <div ng-repeat="c in day.appointments"><a href="#">{{c.start}}</a></div>                    
                 </td>                
             </tr>
         </table>
