@@ -15,10 +15,10 @@
 
             getAppointementsByDoctors: function(idDoctor) {
                 return $http({
-                    url: options.api.base_url + '/appointments/available',
+                    url: options.api.base_url + '/appointments/doctor/available',
                     method: "GET", 
-                    params : idDoctor
-                });
+                    params : {"idDoctor" : idDoctor}
+                })
             },
 
             getAllSpecialities: function() {

@@ -99,20 +99,18 @@ appControllers.controller('Chiffres',
 
 appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService',
 	function($scope, GetService){
-		console.log("log");
-		
-		var idCabinet = 2;
+		var idCabinet = 2; //cabinet de Seysses : id 2 //à modifier
+
 		GetService.getDoctorByOffice(idCabinet).success(function(data) {
 			$scope.doctors = data.output;
-			console.log(data.output);
 
 			angular.forEach(data.output, function(doctor) {
-				console.log('doctor : ' + doctor);
-                /*GetService.getDoctorByOffice(idOffice).success(function(data) {
-                	$scope.appointmentStarts = data.output;
-                	console.log(data.output);
-
-                });*/
+				console.log('doctor : ' + JSON.stringify(doctor));
+				
+                GetService.getAppointementsByDoctors(doctor.idPraticien).success(function(data) {
+                	console.log('idPraticien : ' + doctor.idPraticien + doctor.nom);
+                	$scope.days = data.output;                	
+                });
             });	
 
 		}).error(function(data, status) {

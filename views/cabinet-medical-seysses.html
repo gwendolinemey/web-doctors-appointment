@@ -14,7 +14,7 @@
     </div>
     <div id="disponibilites" class="row" ng-repeat="d in doctors">
         <div id="act-choice" class="col-md-3">
-            <p><strong> nom : {{d[3].name}}</strong></p>
+            <p><strong> Dr {{ d.nom }} {{ d.prenom}} </strong></p>
             <p>Quel motif ?</p>
             <select class="motif-consult">
                 <option value="Consultation" selected>Consultation</option>
@@ -26,34 +26,13 @@
         
         <table id="agenda-med">
             <tr>
-                <th>mercredi<br />15/10</th>
-                <th>jeudi<br />16/10</th>
-                <th>vendredi<br />17/10</th>
-                <th>samedi<br />18/10</th>
+                <th ng-repeat="d in days">{{ d.date }}</th>
             </tr>
             <tr>
-                <td>
-                    <div>09:00</div>
-                    <div>09:20</div>
-                    <div>09:40</div>
-                </td>
-                <td>
-                    <div>09:00</div>
-                    <div>09:20</div>
-                    <div>09:40</div>
-                </td>
-                <td>
-                    <div>09:00</div>
-                    <div>09:20</div>
-                    <div>09:40</div>
-                </td>
-                <td>
-                    <div>09:00</div>
-                    <div>09:20</div>
-                    <div>09:40</div>
-                </td>
+                <td ng-repeat="d in days">
+                    <div ng-repeat="a in d.appointments">{{a.start}}</div>                    
+                </td>                
             </tr>
-
         </table>
     </div>
 </div>
