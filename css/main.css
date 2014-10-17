@@ -42,11 +42,11 @@ footer a{ display: inline-block; padding:20px; color:#fff;}
 
 
 /** Personnalisation page médecin **/
-.trucdeouf{ border:1px solid green;}
 #disponibilites{ background-color: rgba(255,255,255,.5); padding: 2%; margin-top:3%;}
 #agenda-med td { border:1px solid #fff; padding:15px; }
 #agenda-med th { border:1px solid #fff; padding:5px; text-align: center; background-color: #0c505a;}
 .motif-consult{ color:#000; }
+.description-pro{ text-align: left; margin-top: 2%; margin-bottom: 2%;}
 
 /*** Confirmation ***/
 #confirmrv{ max-width: 500px; margin:auto; margin-top: 2%;}

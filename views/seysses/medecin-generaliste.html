@@ -15,6 +15,7 @@
     <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
             <div id="act-choice" class="col-md-3">
                 <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>
+                <strong>Date du jour : {{ today }}
                 <p>Quel motif ?</p>
                 <select class="motif-consult">
                     <option value="Consultation" selected>Consultation</option>

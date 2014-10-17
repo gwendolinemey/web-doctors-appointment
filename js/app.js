@@ -19,15 +19,15 @@
 				controller  : 'LandingController'
 			})
 
-			.when('/cabinet-medical-seysses', {
-				templateUrl : 'views/cabinet-medical-seysses.html',
+			.when('/seysses/cabinet-medical-seysses', {
+				templateUrl : 'views/seysses/medecin-generaliste.html',
 				controller  : 'PresentationDocSeysses'
 			})
 
-			/*.when('/recherche-ps', {
-				templateUrl : 'views/recherche-ps.html',
-				controller 	: 'RecherchePS'
-			})*/
+			.when('/fontenilles/dieteticien-tachier', {
+				templateUrl : 'views/fontenilles/dieteticien-tachier.html',
+				controller  : 'PresentationMelanieTachier'
+			})			
 
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'views/confirmation-rendezvous.html',

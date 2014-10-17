@@ -73,26 +73,12 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManag
 
 		console.log($scope.day);
 
-		//$scope.message = 'Voulez-vous confirmer votre rendez-vous avec le Docteur ' + doctor.nom + ' à ' +appointment.start;
-
 		$scope.doBack = function() {
 			window.history.back();
 		};
 	}
 	]);
-/*
-appControllers.controller('AboutController', 
-	function($scope) {
-		$scope.message = 'Look! I am an about page.';
-	}
-	);
 
-appControllers.controller('ContactController', 
-	function($scope) {
-		$scope.message = 'Contact us : hello@rapidocteur.fr';
-	}
-	);
-*/
 appControllers.controller('Chiffres', 
 	function($scope) {
 		$scope.ps = 7;
@@ -103,6 +89,7 @@ appControllers.controller('Chiffres',
 appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'AppointmentManager',
 	function($scope, GetService, AppointmentManager){
 		var idCabinet = 2; //cabinet de Seysses : id 2 //à modifier
+		//$scope.today = new Date();
 
 		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
 			$scope.doctors = data.output;
@@ -123,3 +110,25 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 	}	
 ]);
 
+appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService', 'AppointmentManager',
+	function($scope, GetService, AppointmentManager){
+		var idCabinet = 4; //cabinet de mélanie : id 4 //à modifier
+
+		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
+			$scope.doctors = data.output;
+
+		}).error(function(data, status) {
+			console.log('response getDoctorByOffice : ' + status);
+			console.log('response getDoctorByOffice : ' + data);
+		});	
+
+		$scope.submitRV = function(doctor, day, id){			
+
+			AppointmentManager.setSelectedAppointment(id);
+			AppointmentManager.setSelectedDay(day);
+			AppointmentManager.setSelectedDoctor(doctor);			
+
+			window.location.href = '#/confirmation-rendezvous';
+		}
+	}	
+]);
