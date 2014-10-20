@@ -9,8 +9,10 @@
 	options.api.base_url = "http://localhost:8080";
 
 	// configure our routes
-	app.config(['$routeProvider', '$locationProvider',
-		function($routeProvider, $locationProvider) {
+	/*app.config(['$routeProvider', '$locationProvider',
+		function($routeProvider, $locationProvider) {*/
+	app.config(['$routeProvider',
+		function($routeProvider) {
 		$routeProvider
 
 			// route for the home page
@@ -49,6 +51,6 @@
 			.otherwise({
             	redirectTo: '/'
         	});
-        	$locationProvider.html5Mode(true);
+        	/*$locationProvider.html5Mode(true);*/
 	}]);
 	

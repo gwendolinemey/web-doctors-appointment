@@ -30,7 +30,7 @@
                 <tr>
                     <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
                         <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
-                            <input type="submit" value="{{ c.prettyTime }}" ng-click="submitRV(doctor, day, c)" />
+                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day, c)">{{ c.prettyTime }}</a>
                         </div>                        
                     </td>                
                 </tr>

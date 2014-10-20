@@ -71,7 +71,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManag
 		$scope.appointment = AppointmentManager.getSelectedAppointment();
 		$scope.day = AppointmentManager.getSelectedDay();
 
-		console.log($scope.day);
+		console.log("recu : "+ $scope.doctor, $scope.appointment, $scope.day );
 
 		$scope.doBack = function() {
 			window.history.back();
@@ -100,11 +100,14 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 			console.log('response getDoctorByOffice : ' + data);
 		});	
 
-		$scope.submitRV = function(doctor, day, id){			
+		$scope.submitRV = function(doctor, day, id){
+
+			console.log("qqc ", doctor, day, id);
 
 			AppointmentManager.setSelectedAppointment(id);
 			AppointmentManager.setSelectedDay(day);
-			AppointmentManager.setSelectedDoctor(doctor);			
+			AppointmentManager.setSelectedDoctor(doctor);
+
 
 			window.location.href = '#/confirmation-rendezvous';
 		}

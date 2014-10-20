@@ -14,8 +14,7 @@
     </div>
     <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
             <div id="act-choice" class="col-md-3">
-                <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>
-                <strong>Date du jour : {{ today }}
+                <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
                 <p>Quel motif ?</p>
                 <select class="motif-consult">
                     <option value="Consultation" selected>Consultation</option>
@@ -31,11 +30,10 @@
                 <tr>
                     <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
                         <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
-                            <input type="submit" value="{{ c.prettyTime }}" ng-click="submitRV(doctor, day, c)" />
+                            <button ng-click="submitRV(doctor, day, c)">{{ c.prettyTime }}</button>
                         </div>                        
                     </td>                
                 </tr>
-            </table>
-        
+            </table>        
     </div>
 </div>

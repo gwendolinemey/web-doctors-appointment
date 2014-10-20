@@ -48,7 +48,8 @@ footer a{ display: inline-block; padding:20px; color:#fff;}
 .motif-consult{ color:#000; }
 .description-pro{ text-align: left; margin-top: 2%; margin-bottom: 2%;}
 #agenda-med th.disabled{ background-color: grey; border:1px solid #fff;}
-#agenda-med td.disabled{ background-color: grey; border:1px solid #fff;} 
+#agenda-med td.disabled{ background-color: grey; border:1px solid #fff;}
+.availableAppoint{ color: #000;}
 
 /*** Confirmation ***/
 #confirmrv{ max-width: 500px; margin:auto; margin-top: 2%;}

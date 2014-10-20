@@ -59,6 +59,7 @@
 
         var appointment;
         var doctor;
+        var day;
 
         return {
             getSelectedAppointment: function() {
