@@ -89,7 +89,8 @@ appControllers.controller('Chiffres',
 appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'AppointmentManager',
 	function($scope, GetService, AppointmentManager){
 		var idCabinet = 2; //cabinet de Seysses : id 2 //à modifier
-		//$scope.today = new Date();
+		$scope.quantityWeek=7;
+		$scope.quantityApp=5;
 
 		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
 			$scope.doctors = data.output;
@@ -113,9 +114,12 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService', 'AppointmentManager',
 	function($scope, GetService, AppointmentManager){
 		var idCabinet = 4; //cabinet de mélanie : id 4 //à modifier
+		$scope.quantityWeek=7;
+		$scope.quantityApp=5;
 
 		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
 			$scope.doctors = data.output;
+			console.log($scope.doctors);
 
 		}).error(function(data, status) {
 			console.log('response getDoctorByOffice : ' + status);

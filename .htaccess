@@ -1,0 +1,9 @@
+RewriteEngine on
+
+# Ne pas réécrire des fichiers ou des répertoires
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Réécrire tout le reste vers index.html pour permettre des liens html5
+RewriteRule ^ index.html [L]

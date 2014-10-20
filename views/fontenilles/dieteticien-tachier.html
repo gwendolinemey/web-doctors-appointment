@@ -25,11 +25,13 @@
             </div>
             <table id="agenda-med">
                 <tr>
-                    <th ng-repeat="day in doctor.availabilities">{{ day.date }}</th>
+                    <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
                 </tr>                
                 <tr>
-                    <td ng-repeat="day in doctor.availabilities">                        
-                            <div ng-repeat="c in day.appointments"><input type="submit" value="{{c.start}}" ng-click="submitRV(doctor, day, c)" /></div>                        
+                    <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                        <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
+                            <input type="submit" value="{{ c.prettyTime }}" ng-click="submitRV(doctor, day, c)" />
+                        </div>                        
                     </td>                
                 </tr>
             </table>
