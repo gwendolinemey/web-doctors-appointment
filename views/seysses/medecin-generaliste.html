@@ -16,8 +16,8 @@
             <div id="act-choice" class="col-md-3">
                 <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
                 <p>Quel motif ?</p>
-                <select class="motif-consult">
-                    <option value="Consultation" selected>Consultation</option>
+                <select class="motif-consult" ng-model="acte">
+                    <option value="Consultation" selected="selected">Consultation</option>
                     <option value="bambin">Jeune enfant ( -12 mois)</option>
                     <option value="gyneco">Consultation gynécologie</option>
                 </select>
@@ -30,7 +30,7 @@
                 <tr>
                     <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
                         <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
-                            <button ng-click="submitRV(doctor, day, c)">{{ c.prettyTime }}</button>
+                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day, c, acte)">{{ c.prettyTime }}</a>
                         </div>                        
                     </td>                
                 </tr>

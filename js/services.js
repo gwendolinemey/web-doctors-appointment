@@ -35,6 +35,21 @@
         }
     });
 
+
+    appServices.factory('PostService', function($http) {
+        return {
+            saveRV: function(appointment) {                
+                var stringifyAppointment = JSON.stringify(appointment);
+                console.log('PostService saveRV', stringifyAppointment);
+                return $http({
+                    url: options.api.base_url + '/patient/appointment/save',
+                    method: "POST", 
+                    params : { appointment : stringifyAppointment }
+                });
+            }            
+        }
+    });
+
     ///////////////////////////////////////// Variables Objects
     // TODO Refactor this in another js file as this is not web services
     // but services to share data across controllers.
@@ -60,6 +75,8 @@
         var appointment;
         var doctor;
         var day;
+        var idOffice;
+        var acte;
 
         return {
             getSelectedAppointment: function() {
@@ -83,5 +100,17 @@
             setSelectedDay: function(value){
                 day = value;
             },
+            getSelectedOffice: function(){
+                return idOffice;
+            },
+            setSelectedOffice: function(value){
+                idOffice = value;
+            },
+            getSelectedActe: function(){
+                return acte;
+            },
+            setSelectedActe: function(value){
+                acte = value;
+            }
         }
     });

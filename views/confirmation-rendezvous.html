@@ -4,15 +4,16 @@ Pour confirmer votre rendez-vous avec le Docteur {{doctor.nom}} le {{ day.date}}
 
 
 <form name="confirmation-rv" id="confirmrv" class="input-group">
-	<input type="text" name="lastname" placeholder="votre nom" class="form-control input-md" />
-	<input type="text" name="firstname" placeholder="votre prénom" class="form-control input-md" />
-	<input type="email" name="email" placeholder="votre email" class="form-control input-md" />
-	<input type="tel" name="phone" placeholder="votre numéro de téléphone" class="form-control input-md" />
+	<input type="text" name="lastname" placeholder="votre nom" class="form-control input-md" ng-model="lastname" />
+	<input type="text" name="firstname" placeholder="votre prénom" class="form-control input-md" ng-model="firstname" />
+	<input type="email" name="email" placeholder="votre email" class="form-control input-md" ng-model="email" />
+	<input type="tel" name="phone" placeholder="votre numéro de téléphone" class="form-control input-md" ng-model="phone" />
 
 	   
 	
-	<button class="btn btn-lg btn-default" ng-click="doBack()" value="annuler"></button>
+	<button class="btn btn-lg btn-default" ng-click="doBack()" value="annuler">Annuler</button>
+	<button class="btn btn-lg btn-default" ng-click="saveRV()">Confirmer le rendez-vous</button>
 </form>
 
-<button class="btn btn-lg btn-default">Confirmer le rendez-vous</button>
+
 
