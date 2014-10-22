@@ -1,7 +1,6 @@
 <div class="container">
     <div class="row">
         <h1 class="heading">Cabinet médical de Seysses</h1>
-        <p class="lead">Dr BOUDOU-BATTISTI, Dr BOYES et DR CALAS</p>
         
         <div class="col-md-6 presentation-doc">
             <img class="img-responsive" src="img/cabinet1_o.jpg" width="300px" alt="médecin généraliste seysses" />
@@ -25,7 +24,7 @@
                 <tr>
                     <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
                         <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
-                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day, c, acte)">{{ c.prettyTime }}</a>
+                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
                         </div>                        
                     </td>                
                 </tr>

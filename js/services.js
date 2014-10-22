@@ -14,6 +14,7 @@
             },
 
             getAvailableAppointements: function(idOffice, idDoctor, actDuration) {
+                console.log(idOffice, idDoctor, actDuration);
                 return $http({
                     url: options.api.base_url + '/office/doctors/appointments',
                     method: "GET", 
