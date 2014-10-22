@@ -47,13 +47,38 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 		$scope.quantityWeek=7;
 		$scope.quantityApp=5;
 
-		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
+		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
+			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
+			// initialise select elements
+			angular.forEach($scope.doctors, function(doctor){
+				doctor["selectedAct"] = doctor.acts[0];
 
+				console.log("doctor.selectedAct", doctor.selectedAct);
+
+				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+					console.log('getAvailableAppointements : ', data);
+					doctor["availabilities"] = data.output;
+				}).error(function(data, status) {
+					console.log(status);
+					console.log(data);
+				});
+
+			});
 		}).error(function(data, status) {
-			console.log('response getDoctorByOffice : ' + status);
-			console.log('response getDoctorByOffice : ' + data);
+			console.log(status);
+			console.log(data);
 		});	
+
+		$scope.updateAvailableAppointments = function(doctor){
+			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+				console.log('getAvailableAppointements : ', data);
+				doctor["availabilities"] = data.output;
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
+		}
 
 		$scope.submitRV = function(doctor, day, id, acte){
 
@@ -80,14 +105,38 @@ appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService',
 		$scope.quantityWeek=7;
 		$scope.quantityApp=5;
 
-		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
+		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
+			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
-			console.log($scope.doctors);
+			// initialise select elements
+			angular.forEach($scope.doctors, function(doctor){
+				doctor["selectedAct"] = doctor.acts[0];
 
+				console.log("doctor.selectedAct", doctor.selectedAct);
+
+				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+					console.log('getAvailableAppointements : ', data);
+					doctor["availabilities"] = data.output;
+				}).error(function(data, status) {
+					console.log(status);
+					console.log(data);
+				});
+
+			});
 		}).error(function(data, status) {
-			console.log('response getDoctorByOffice : ' + status);
-			console.log('response getDoctorByOffice : ' + data);
+			console.log(status);
+			console.log(data);
 		});	
+
+		$scope.updateAvailableAppointments = function(doctor){
+			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+				console.log('getAvailableAppointements : ', data);
+				doctor["availabilities"] = data.output;
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
+		}
 
 		$scope.submitRV = function(doctor, day, id, acte){
 
