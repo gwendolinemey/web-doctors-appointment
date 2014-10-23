@@ -9,14 +9,14 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManag
 	function($scope, AppointmentManager, PostService) {
 		$scope.doctor = AppointmentManager.getSelectedDoctor();
 		$scope.appointment = AppointmentManager.getSelectedAppointment();
-		$scope.day = AppointmentManager.getSelectedDay();
+		$scope.dayDate = AppointmentManager.getSelectedDay();
 		$scope.office = AppointmentManager.getSelectedOffice();
 		$scope.acte = AppointmentManager.getSelectedActe();
 
 
 		console.log("reçu doc : "+ $scope.doctor.idPraticien);
 		console.log("recu appointment: "+ $scope.appointment);
-		console.log("recu day : "+ $scope.day);
+		console.log("recu day : "+ $scope.dayDate);
 		console.log("recu office : "+ $scope.office);
 		console.log("recu acte : "+ $scope.acte);
 
@@ -47,39 +47,55 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 		$scope.quantityWeek=7;
 		$scope.quantityApp=5;
 
-		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
+		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
+			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
-			console.log("scope doctors", $scope.doctors);
 
+			// initialise select elements
+			angular.forEach($scope.doctors, function(doctor){
+				doctor["selectedAct"] = doctor.acts[0];
+
+				console.log("doctor", doctor.idPraticien);
+
+				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+					console.log('getAvailableAppointements : ', data);
+					doctor["availabilities"] = data.output;
+				}).error(function(data, status) {
+					console.log(status);
+					console.log(data);
+				});
+
+			});
 		}).error(function(data, status) {
-			console.log('response getDoctorByOffice : ' + status);
-			console.log('response getDoctorByOffice : ' + data);
-		});
 
-		//TO DO comment avoir l'id du praticien ?
-		/*GetService.getActs(idCabinet, $scope.doctors.idPraticien).success(function(data) {
-            console.log("getActs", data);
-            angular.forEach(data.output, function(){
-                $scope.actes = data.output;
-            });
-        }).error(function(data, status) {
-            console.log(status);
-            console.log(data);
-        });	*/
+			console.log(status);
+			console.log(data);
+		});	
 
-		$scope.submitRV = function(doctor, day, id, acte){
+		$scope.updateAvailableAppointments = function(doctor){
+			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+				console.log('getAvailableAppointements : ', data);
+				doctor["availabilities"] = data.output;
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
+		}
 
+		$scope.submitRV = function(doctor, day, id){
+
+			var labelActe = doctor.acts[0].labelActe;
 			console.log("submitRV doc: ", doctor);
 			console.log("submitRV day: ", day);
 			console.log("submitRV app: ", id);
-			console.log("submitRV acte: ", acte);
+			console.log("submitRV acte: ", labelActe);
 			console.log("submitRV idoff: ", idCabinet);
 
 			AppointmentManager.setSelectedAppointment(id);
 			AppointmentManager.setSelectedDay(day);
 			AppointmentManager.setSelectedDoctor(doctor);
 			AppointmentManager.setSelectedOffice(idCabinet);
-			AppointmentManager.setSelectedActe(acte);
+			AppointmentManager.setSelectedActe(labelActe);
 
 			window.location.href = '#/confirmation-rendezvous';
 		}
@@ -92,14 +108,38 @@ appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService',
 		$scope.quantityWeek=7;
 		$scope.quantityApp=5;
 
-		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
+		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
+			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
-			console.log($scope.doctors);
+			// initialise select elements
+			angular.forEach($scope.doctors, function(doctor){
+				doctor["selectedAct"] = doctor.acts[0];
 
+				console.log("doctor.selectedAct", doctor.selectedAct);
+
+				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+					console.log('getAvailableAppointements : ', data);
+					doctor["availabilities"] = data.output;
+				}).error(function(data, status) {
+					console.log(status);
+					console.log(data);
+				});
+
+			});
 		}).error(function(data, status) {
-			console.log('response getDoctorByOffice : ' + status);
-			console.log('response getDoctorByOffice : ' + data);
+			console.log(status);
+			console.log(data);
 		});	
+
+		$scope.updateAvailableAppointments = function(doctor){
+			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+				console.log('getAvailableAppointements : ', data);
+				doctor["availabilities"] = data.output;
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
+		}
 
 		$scope.submitRV = function(doctor, day, id, acte){
 

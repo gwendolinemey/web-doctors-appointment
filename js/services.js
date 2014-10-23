@@ -13,11 +13,12 @@
                 });
             },
 
-            getAppointementsByDoctorsInOffice: function(idOffice) {
+            getAvailableAppointements: function(idOffice, idDoctor, actDuration) {
+                console.log(idOffice, idDoctor, actDuration);
                 return $http({
                     url: options.api.base_url + '/office/doctors/appointments',
                     method: "GET", 
-                    params : {"idOffice" : idOffice}
+                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor, "actDuration" : actDuration}
                 })
             },
 
@@ -25,7 +26,7 @@
                 return $http.get(options.api.base_url + '/specialities');
             },
 
-            getDoctorByOffice: function(idOffice) {
+            getDoctorsByOffice: function(idOffice) {
                 return $http({
                     url: options.api.base_url + '/office/doctors',
                     method: "GET", 
