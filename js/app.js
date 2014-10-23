@@ -23,17 +23,17 @@
 
 			.when('/seysses/cabinet-medical-seysses', {
 				templateUrl : 'views/seysses/medecin-generaliste.html',
-				controller  : 'PresentationDocSeysses'
+				controller  : 'CabinetCtrl'
 			})
 
 			.when('/fontenilles/dieteticien-tachier', {
 				templateUrl : 'views/fontenilles/dieteticien-tachier.html',
-				controller  : 'PresentationMelanieTachier'
+				controller  : 'CabinetCtrl'
 			})
 
 			.when('/toulouse/osteopathe-bertucchi', {
 				templateUrl : 'views/toulouse/osteopathe-bertucchi.html',
-				controller  : 'PresentationYouriBertucchi'
+				controller  : 'CabinetCtrl'
 			})			
 
 			.when('/confirmation-rendezvous', {

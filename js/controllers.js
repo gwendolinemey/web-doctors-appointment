@@ -1,7 +1,19 @@
 
-appControllers.controller('LandingController', ['$scope',
-	function($scope) {
-		//TODO : generate praticians in database		
+appControllers.controller('LandingController', ['$scope', 'idOfficeManager',
+	function($scope, idOfficeManager) {
+		$scope.officeSelected = function(idOffice) {
+			console.log("idOffice", idOffice);
+			idOfficeManager.setIdOffice(idOffice);
+			switch (idOffice) {
+				case 2 : window.location.href = '#/seysses/cabinet-medical-seysses';
+				break;
+				case 4 : window.location.href = '#/fontenilles/dieteticien-tachier';
+				break;
+				case 5 : window.location.href = '#/toulouse/osteopathe-bertucchi';
+				break;
+				default: window.location.href = '#/';
+			}
+		};
 	}
 ]);
 
@@ -75,129 +87,9 @@ appControllers.controller('Chiffres',
 	}
 );
 
-appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'AppointmentManager',
-	function($scope, GetService, AppointmentManager){
-		var idCabinet = 2; //cabinet de Seysses : id 2 //à modifier
-		$scope.quantityWeek=7;
-		$scope.quantityApp=5;
-
-		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
-			console.log('getDoctorsByOffice : ', data);
-			$scope.doctors = data.output;
-
-			// initialise select elements
-			angular.forEach($scope.doctors, function(doctor){
-				doctor["selectedAct"] = doctor.acts[0];
-
-				console.log("doctor", doctor.idPraticien);
-
-				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
-					console.log('getAvailableAppointements : ', data);
-					doctor["availabilities"] = data.output;
-				}).error(function(data, status) {
-					console.log(status);
-					console.log(data);
-				});
-
-			});
-		}).error(function(data, status) {
-
-			console.log(status);
-			console.log(data);
-		});	
-
-		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
-				console.log('getAvailableAppointements : ', data);
-				doctor["availabilities"] = data.output;
-			}).error(function(data, status) {
-				console.log(status);
-				console.log(data);
-			});
-		}
-
-		$scope.submitRV = function(doctor, day, id){
-
-			var labelActe = doctor.acts[0].labelActe;
-			console.log("submitRV doc: ", doctor);
-			console.log("submitRV day: ", day);
-			console.log("submitRV app: ", id);
-			console.log("submitRV acte: ", labelActe);
-			console.log("submitRV idoff: ", idCabinet);
-
-			AppointmentManager.setSelectedAppointment(id);
-			AppointmentManager.setSelectedDay(day);
-			AppointmentManager.setSelectedDoctor(doctor);
-			AppointmentManager.setSelectedOffice(idCabinet);
-			AppointmentManager.setSelectedActe(labelActe);
-
-			window.location.href = '#/confirmation-rendezvous';
-		}
-	}	
-]);
-
-appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService', 'AppointmentManager',
-	function($scope, GetService, AppointmentManager){
-		var idCabinet = 4; //cabinet de mélanie : id 4 //à modifier
-		$scope.quantityWeek=7;
-		$scope.quantityApp=5;
-
-		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
-			console.log('getDoctorsByOffice : ', data);
-			$scope.doctors = data.output;
-			// initialise select elements
-			angular.forEach($scope.doctors, function(doctor){
-				doctor["selectedAct"] = doctor.acts[0];
-
-				console.log("doctor.selectedAct", doctor.selectedAct);
-
-				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
-					console.log('getAvailableAppointements : ', data);
-					doctor["availabilities"] = data.output;
-				}).error(function(data, status) {
-					console.log(status);
-					console.log(data);
-				});
-
-			});
-		}).error(function(data, status) {
-			console.log(status);
-			console.log(data);
-		});	
-
-		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
-				console.log('getAvailableAppointements : ', data);
-				doctor["availabilities"] = data.output;
-			}).error(function(data, status) {
-				console.log(status);
-				console.log(data);
-			});
-		}
-
-		$scope.submitRV = function(doctor, day, id, acte){
-
-			console.log("submitRV doc: ", doctor);
-			console.log("submitRV day: ", day);
-			console.log("submitRV app: ", id);
-			console.log("submitRV acte: ", acte);
-			console.log("submitRV idoff: ", idCabinet);
-
-			AppointmentManager.setSelectedAppointment(id);
-			AppointmentManager.setSelectedDay(day);
-			AppointmentManager.setSelectedDoctor(doctor);
-			AppointmentManager.setSelectedOffice(idCabinet);
-			AppointmentManager.setSelectedActe(acte);
-
-			window.location.href = '#/confirmation-rendezvous';
-		}
-	}	
-]);
-
-
-appControllers.controller('PresentationYouriBertucchi', ['$scope', 'GetService', 'AppointmentManager',
-	function($scope, GetService, AppointmentManager){
-		var idCabinet = 5; //cabinet de Seysses : id 2 //à modifier
+appControllers.controller('CabinetCtrl', ['$scope', 'GetService', 'AppointmentManager', 'idOfficeManager',
+	function($scope, GetService, AppointmentManager, idOfficeManager){
+		var idCabinet = idOfficeManager.getIdOffice();
 		$scope.quantityWeek=7;
 		$scope.quantityApp=5;
 
@@ -257,7 +149,6 @@ appControllers.controller('PresentationYouriBertucchi', ['$scope', 'GetService',
 ]);
 
 /*** functions ***/
-
 function createRVForServer(nom, prenom, mail, tel, start, end, label, idDoc, idOff) {
     var appointmentToSave = new Object();
     var user = new Object();
