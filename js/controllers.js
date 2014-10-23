@@ -1,97 +1,28 @@
-
-appControllers.controller('LandingController', ['$scope', 'idOfficeManager',
-	function($scope, idOfficeManager) {
-		$scope.officeSelected = function(idOffice) {
-			console.log("idOffice", idOffice);
-			idOfficeManager.setIdOffice(idOffice);
-			switch (idOffice) {
-				case 2 : window.location.href = '#/seysses/cabinet-medical-seysses';
-				break;
-				case 4 : window.location.href = '#/fontenilles/dieteticien-tachier';
-				break;
-				case 5 : window.location.href = '#/toulouse/osteopathe-bertucchi';
-				break;
-				default: window.location.href = '#/';
-			}
-		};
-	}
-]);
-
-appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManager', 'PostService',
-	function($scope, AppointmentManager, PostService) {
-		$scope.doctor = AppointmentManager.getSelectedDoctor();
-		$scope.appointment = AppointmentManager.getSelectedAppointment();
-		$scope.dayDate = AppointmentManager.getSelectedDay();
-		$scope.office = AppointmentManager.getSelectedOffice();
-		$scope.acte = AppointmentManager.getSelectedActe();
-
-		$scope.errorEmpty = false;
-		$scope.errorEmail = false;
-		$scope.errorPhone = false;
-
-		console.log("reçu doc : ", $scope.doctor.idPraticien);
-		console.log("recu appointment: ", $scope.appointment);
-		console.log("recu day : ", $scope.dayDate);
-		console.log("recu office : ", $scope.office);
-		console.log("recu acte : ", $scope.acte);
-
-		$scope.doBack = function() {
-			window.history.back();
-		};
-
-		$scope.saveRV = function() {
-			if ($scope.lastname && $scope.firstname && $scope.email && $scope.phone) {
-				console.log("validateEmail", validateEmail($scope.email));
-				console.log("validatePhoneNumber", validatePhoneNumber($scope.phone));
-				if ($scope.errorEmpty) {
-					$scope.errorEmpty = false;
-				}
-			} else {
-        		console.log("EMPTY");
-        		$scope.errorEmpty = true;
-        	}
-
-			
-			if (! validateEmail($scope.email)) {
-				$scope.errorEmail = true;
-			} else {
-				if ($scope.errorEmail) {
-					$scope.errorEmail = false;
-				}
-			}
-
-			if (! validatePhoneNumber($scope.phone)) {
-				$scope.errorPhone = true;
-			} else {
-				if ($scope.errorPhone) {
-					$scope.errorPhone = false;
-				}
-			}
-			
-			if ((!$scope.errorPhone) && (!$scope.errorPhone) && (!$scope.errorPhone)) {
-				//nom, prenom, mail, tel, start, end, label, idDoc, idOff
-	            var appointment = createRVForServer($scope.lastname, $scope.firstname, $scope.email, $scope.phone, $scope.appointment.start, $scope.appointment.end, $scope.acte, $scope.doctor.idPraticien, $scope.office);
-	            console.log("saveRV appointment", appointment);
-	            sendAppointment(PostService, appointment);
-	            window.location.href = '#/';
-        	}
-        	
-        }
-	}
-	]);
-
-appControllers.controller('Chiffres', 
+appControllers.controller('LandingController', 
 	function($scope) {
 		$scope.ps = 8;
 		$scope.rv = 21;
 	}
 );
 
-appControllers.controller('CabinetCtrl', ['$scope', 'GetService', 'AppointmentManager', 'idOfficeManager',
-	function($scope, GetService, AppointmentManager, idOfficeManager){
-		var idCabinet = idOfficeManager.getIdOffice();
+appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', 'AppointmentManager', 
+	function($scope, $location, GetService, AppointmentManager){
+
+		var idCabinet;
+		switch ($location.path()) {
+			case '/seysses/cabinet-medical-seysses' : idCabinet = 2;
+			break;
+			case '/fontenilles/dieteticien-tachier' : idCabinet = 4;
+			break;
+			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5;
+			break;
+			default : window.location.href = '#/';
+		}
+		
 		$scope.quantityWeek=7;
 		$scope.quantityApp=5;
+
+		console.log('Current route name: ' + $location.path());
 
 		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
 			console.log('getDoctorsByOffice : ', data);
@@ -146,6 +77,69 @@ appControllers.controller('CabinetCtrl', ['$scope', 'GetService', 'AppointmentMa
 			window.location.href = '#/confirmation-rendezvous';
 		}
 	}	
+]);
+
+appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManager', 'PostService',
+	function($scope, AppointmentManager, PostService) {
+	$scope.doctor = AppointmentManager.getSelectedDoctor();
+	$scope.appointment = AppointmentManager.getSelectedAppointment();
+	$scope.dayDate = AppointmentManager.getSelectedDay();
+	$scope.office = AppointmentManager.getSelectedOffice();
+	$scope.acte = AppointmentManager.getSelectedActe();
+
+	$scope.errorEmpty = false;
+	$scope.errorEmail = false;
+	$scope.errorPhone = false;
+
+	console.log("reçu doc : ", $scope.doctor.idPraticien);
+	console.log("recu appointment: ", $scope.appointment);
+	console.log("recu day : ", $scope.dayDate);
+	console.log("recu office : ", $scope.office);
+	console.log("recu acte : ", $scope.acte);
+
+	$scope.doBack = function() {
+		window.history.back();
+	};
+
+	$scope.saveRV = function() {
+		if ($scope.lastname && $scope.firstname && $scope.email && $scope.phone) {
+			console.log("validateEmail", validateEmail($scope.email));
+			console.log("validatePhoneNumber", validatePhoneNumber($scope.phone));
+			if ($scope.errorEmpty) {
+				$scope.errorEmpty = false;
+			}
+		} else {
+    		console.log("EMPTY");
+    		$scope.errorEmpty = true;
+    	}
+
+		
+		if (! validateEmail($scope.email)) {
+			$scope.errorEmail = true;
+		} else {
+			if ($scope.errorEmail) {
+				$scope.errorEmail = false;
+			}
+		}
+
+		if (! validatePhoneNumber($scope.phone)) {
+			$scope.errorPhone = true;
+		} else {
+			if ($scope.errorPhone) {
+				$scope.errorPhone = false;
+			}
+		}
+		
+		if ((!$scope.errorPhone) && (!$scope.errorPhone) && (!$scope.errorPhone)) {
+			//nom, prenom, mail, tel, start, end, label, idDoc, idOff
+            var appointment = createRVForServer($scope.lastname, $scope.firstname, $scope.email, $scope.phone, $scope.appointment.start, $scope.appointment.end, $scope.acte, $scope.doctor.idPraticien, $scope.office);
+            console.log("saveRV appointment", appointment);
+            sendAppointment(PostService, appointment);
+            window.location.href = '#/';
+    	}
+    	
+    }
+}
 ]);
 
 /*** functions ***/
