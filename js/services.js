@@ -31,8 +31,15 @@
                     url: options.api.base_url + '/office/doctors',
                     method: "GET", 
                     params : {"idOffice" : idOffice}
+                });
+            },
+            getActs: function(idOffice, idDoctor) {
+            return $http({
+                url: options.api.base_url + '/doctor/acts',
+                method: "GET", 
+                params : {"idOffice" : idOffice, "idDoctor" : idDoctor}
             });
-        }
+        },
         }
     });
 

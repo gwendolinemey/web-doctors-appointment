@@ -29,6 +29,11 @@
 			.when('/fontenilles/dieteticien-tachier', {
 				templateUrl : 'views/fontenilles/dieteticien-tachier.html',
 				controller  : 'PresentationMelanieTachier'
+			})
+
+			.when('/toulouse/osteopathe-bertucchi', {
+				templateUrl : 'views/toulouse/osteopathe-bertucchi.html',
+				controller  : 'PresentationYouriBertucchi'
 			})			
 
 			.when('/confirmation-rendezvous', {

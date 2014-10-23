@@ -1,6 +1,7 @@
 <div class="container">
     <div class="row">
-        <h1 class="heading">Cabinet médical de Seysses</h1>
+        <h1 class="heading">Ostéopathe</h1>
+        <p class="lead">M. Youri BERTUCCHI</p>
         
         <div class="col-md-6 presentation-doc">
             <img class="img-responsive" src="img/cabinet1_o.jpg" width="300px" alt="médecin généraliste seysses" />
@@ -15,8 +16,13 @@
             <div id="act-choice" class="col-md-3">
                 <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
                 <p>Quel motif ?</p>
+                <select class="motif-consult" ng-init="acte='consultation'" ng-model="acte">
+                    <option ng-repeat="acte in actes">{{ actes.nom }}</option>
+                    <!-- <option value="consultation" autofocus>Consultation</option>
+                    <option value="bambin">Jeune enfant ( -12 mois)</option>
+                    <option value="gyneco">Consultation gynécologie</option> -->
+                </select>
 
-                <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
             </div>
             <table id="agenda-med">
                 <tr>
@@ -25,7 +31,7 @@
                 <tr>
                     <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
                         <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
-                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
+                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day, c, acte)">{{ c.prettyTime }}</a>
                         </div>                        
                     </td>                
                 </tr>

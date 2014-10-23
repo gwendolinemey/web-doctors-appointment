@@ -84,6 +84,7 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
 			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
+
 			// initialise select elements
 			angular.forEach($scope.doctors, function(doctor){
 				doctor["selectedAct"] = doctor.acts[0];
@@ -100,6 +101,7 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 
 			});
 		}).error(function(data, status) {
+
 			console.log(status);
 			console.log(data);
 		});	
@@ -172,6 +174,41 @@ appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService',
 				console.log(data);
 			});
 		}
+
+		$scope.submitRV = function(doctor, day, id, acte){
+
+			console.log("submitRV doc: ", doctor);
+			console.log("submitRV day: ", day);
+			console.log("submitRV app: ", id);
+			console.log("submitRV acte: ", acte);
+			console.log("submitRV idoff: ", idCabinet);
+
+			AppointmentManager.setSelectedAppointment(id);
+			AppointmentManager.setSelectedDay(day);
+			AppointmentManager.setSelectedDoctor(doctor);
+			AppointmentManager.setSelectedOffice(idCabinet);
+			AppointmentManager.setSelectedActe(acte);
+
+			window.location.href = '#/confirmation-rendezvous';
+		}
+	}	
+]);
+
+
+appControllers.controller('PresentationYouriBertucchi', ['$scope', 'GetService', 'AppointmentManager',
+	function($scope, GetService, AppointmentManager){
+		var idCabinet = 5; 
+		$scope.quantityWeek=7;
+		$scope.quantityApp=5;
+
+		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
+			$scope.doctors = data.output;
+			console.log($scope.doctors);
+
+		}).error(function(data, status) {
+			console.log('response getDoctorByOffice : ' + status);
+			console.log('response getDoctorByOffice : ' + data);
+		});	
 
 		$scope.submitRV = function(doctor, day, id, acte){
 
