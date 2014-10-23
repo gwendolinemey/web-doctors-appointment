@@ -46,13 +46,13 @@
 
     appServices.factory('PostService', function($http) {
         return {
-            saveRV: function(appointment) {                
+            saveAppointment: function(appointment) {       
                 var stringifyAppointment = JSON.stringify(appointment);
-                console.log('PostService saveRV', stringifyAppointment);
+                console.log('PostService saveAppointment', stringifyAppointment);
                 return $http({
                     url: options.api.base_url + '/patient/appointment/save',
                     method: "POST", 
-                    params : { appointment : stringifyAppointment }
+                    params : {appointment : stringifyAppointment }
                 });
             }            
         }

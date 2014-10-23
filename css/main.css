@@ -2,7 +2,6 @@ body {
   background-color: #0c505a;
   color: #fff;
   padding-top: 70px;
-  text-shadow: 0 1px 3px rgba(0,0,0,.5);
   /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
@@ -55,3 +54,4 @@ footer a{ display: inline-block; padding:20px; color:#fff;}
 /*** Confirmation ***/
 #confirmrv{ max-width: 500px; margin:auto; margin-top: 2%;}
 #confirmrv input{ margin-top:1%; margin-bottom: 1%; }
+.modal{ color: #000;} 

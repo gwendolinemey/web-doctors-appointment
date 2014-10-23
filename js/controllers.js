@@ -79,88 +79,122 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 	}	
 ]);
 
-appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManager', 'PostService',
-	function($scope, AppointmentManager, PostService) {
-	$scope.doctor = AppointmentManager.getSelectedDoctor();
-	$scope.appointment = AppointmentManager.getSelectedAppointment();
-	$scope.dayDate = AppointmentManager.getSelectedDay();
-	$scope.office = AppointmentManager.getSelectedOffice();
-	$scope.acte = AppointmentManager.getSelectedActe();
+appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService',
+	function($scope, $modal, AppointmentManager, PostService) {
+	$scope.appointment = {
+		doctor: AppointmentManager.getSelectedDoctor(),
+		time: AppointmentManager.getSelectedAppointment(),
+		dayDate: AppointmentManager.getSelectedDay(),
+		office: AppointmentManager.getSelectedOffice(),
+		acte: AppointmentManager.getSelectedActe()
+	};
+
+	$scope.user = {
+		firstName: '',
+		lastName: '',
+		email: '',
+		phone: ''
+	}
 
 	$scope.errorEmpty = false;
 	$scope.errorEmail = false;
 	$scope.errorPhone = false;
 
-	console.log("reçu doc : ", $scope.doctor.idPraticien);
 	console.log("recu appointment: ", $scope.appointment);
-	console.log("recu day : ", $scope.dayDate);
-	console.log("recu office : ", $scope.office);
-	console.log("recu acte : ", $scope.acte);
+
+	$scope.open = function (size) {
+	    var modalInstance = $modal.open({
+	      templateUrl: 'confirmationModal.html',
+	      controller: 'ModalInstanceCtrl',
+	      size: size,
+	      resolve: {
+	        appointment: function () {
+	          return $scope.appointment;
+	        }
+	      }
+	    });
+
+	    modalInstance.result.then(function () {
+	    	window.location.href = '#/';
+	    });
+	}
 
 	$scope.doBack = function() {
 		window.history.back();
 	};
 
-	$scope.saveRV = function() {
-		if ($scope.lastname && $scope.firstname && $scope.email && $scope.phone) {
-			console.log("validateEmail", validateEmail($scope.email));
-			console.log("validatePhoneNumber", validatePhoneNumber($scope.phone));
+	$scope.hideErrors = function(index) {
+		switch (index) {
+			case 1 : $scope.errorEmpty = false;
+			break;
+			case 2 : $scope.errorEmail = false;
+			break;
+			case 3 : $scope.errorPhone = false;
+			break;
+		}
+	};
+
+	$scope.saveAppointment = function() {
+		if ($scope.user.lastName && $scope.user.firstName && $scope.user.email && $scope.user.phone) {
 			if ($scope.errorEmpty) {
 				$scope.errorEmpty = false;
 			}
 		} else {
-    		console.log("EMPTY");
     		$scope.errorEmpty = true;
     	}
 
-		
-		if (! validateEmail($scope.email)) {
-			$scope.errorEmail = true;
-		} else {
-			if ($scope.errorEmail) {
-				$scope.errorEmail = false;
+		if (!$scope.errorEmpty) {
+			if (! validateEmail($scope.user.email)) {
+				$scope.errorEmail = true;
+			} else {
+				if ($scope.errorEmail) {
+					$scope.errorEmail = false;
+				}
+			}
+
+			if (! validatePhoneNumber($scope.user.phone)) {
+				$scope.errorPhone = true;
+			} else {
+				if ($scope.errorPhone) {
+					$scope.errorPhone = false;
+				}
 			}
 		}
 
-		if (! validatePhoneNumber($scope.phone)) {
-			$scope.errorPhone = true;
-		} else {
-			if ($scope.errorPhone) {
-				$scope.errorPhone = false;
-			}
-		}
-		
-		if ((!$scope.errorPhone) && (!$scope.errorPhone) && (!$scope.errorPhone)) {
-			//nom, prenom, mail, tel, start, end, label, idDoc, idOff
-            var appointment = createRVForServer($scope.lastname, $scope.firstname, $scope.email, $scope.phone, $scope.appointment.start, $scope.appointment.end, $scope.acte, $scope.doctor.idPraticien, $scope.office);
-            console.log("saveRV appointment", appointment);
-            sendAppointment(PostService, appointment);
-            window.location.href = '#/';
+		if ((!$scope.errorEmpty) && (!$scope.errorEmail) && (!$scope.errorPhone)) {
+            console.log("saveRV appointment", $scope.appointment);
+
+            var appointment = new Object();
+            appointment["user"] = $scope.user;
+            appointment["start"] = $scope.appointment.time.start;
+            appointment["end"] = $scope.appointment.time.end;
+            appointment["actLabel"] = $scope.appointment.acte;
+            appointment["idDoctor"] = $scope.appointment.doctor.idPraticien;
+            appointment["idOffice"] = $scope.appointment.office;
+
+            PostService.saveAppointment(appointment).success(function(data) {
+		        console.log(data);
+		        if (data.status == "success") {
+		        	$scope.open();
+		        }
+		    }).error(function(data, status) {
+		        console.log(status);
+		        console.log(data);
+		    });
     	}
     	
     }
 }
 ]);
 
-/*** functions ***/
-function createRVForServer(nom, prenom, mail, tel, start, end, label, idDoc, idOff) {
-    var appointmentToSave = new Object();
-    var user = new Object();
+appControllers.controller('ModalInstanceCtrl', function ($scope, $modalInstance, appointment) {
+	console.log('appointment', appointment);
+	$scope.appointment = appointment;
 
-    user["nom"] = nom;
-    user["prenom"] = prenom;
-    user["mail"] = mail;
-    user["telephone"] = tel;
-
-    appointmentToSave["user"] = user;
-    appointmentToSave["start"] = start;
-    appointmentToSave["end"] = end;
-    appointmentToSave["actLabel"] = label;
-    appointmentToSave["idDoctor"] = idDoc;
-    appointmentToSave["idOffice"] = idOff;    
-
-    return appointmentToSave;
-}
+	$scope.ok = function () {
+		$modalInstance.close();
+	};
+});
 
 function sendAppointment(PostService, appointment) {
     PostService.saveRV(appointment).success(function(data) {
