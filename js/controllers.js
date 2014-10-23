@@ -17,11 +17,11 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManag
 		$scope.errorEmail = false;
 		$scope.errorPhone = false;
 
-		console.log("reçu doc : "+ $scope.doctor.idPraticien);
-		console.log("recu appointment: "+ $scope.appointment);
-		console.log("recu day : "+ $scope.dayDate);
-		console.log("recu office : "+ $scope.office);
-		console.log("recu acte : "+ $scope.acte);
+		console.log("reçu doc : ", $scope.doctor.idPraticien);
+		console.log("recu appointment: ", $scope.appointment);
+		console.log("recu day : ", $scope.dayDate);
+		console.log("recu office : ", $scope.office);
+		console.log("recu acte : ", $scope.acte);
 
 		$scope.doBack = function() {
 			window.history.back();
@@ -197,18 +197,19 @@ appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService',
 
 appControllers.controller('PresentationYouriBertucchi', ['$scope', 'GetService', 'AppointmentManager',
 	function($scope, GetService, AppointmentManager){
-		var idCabinet = 5; //cabinet de mélanie : id 4 //à modifier
+		var idCabinet = 5; //cabinet de Seysses : id 2 //à modifier
 		$scope.quantityWeek=7;
 		$scope.quantityApp=5;
 
 		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
 			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
+
 			// initialise select elements
 			angular.forEach($scope.doctors, function(doctor){
 				doctor["selectedAct"] = doctor.acts[0];
 
-				console.log("doctor.selectedAct", doctor.selectedAct);
+				console.log("doctor", doctor.idPraticien);
 
 				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
 					console.log('getAvailableAppointements : ', data);
@@ -220,6 +221,7 @@ appControllers.controller('PresentationYouriBertucchi', ['$scope', 'GetService',
 
 			});
 		}).error(function(data, status) {
+
 			console.log(status);
 			console.log(data);
 		});	
@@ -234,19 +236,20 @@ appControllers.controller('PresentationYouriBertucchi', ['$scope', 'GetService',
 			});
 		}
 
-		$scope.submitRV = function(doctor, day, id, acte){
+		$scope.submitRV = function(doctor, day, id){
 
+			var labelActe = doctor.acts[0].labelActe;
 			console.log("submitRV doc: ", doctor);
 			console.log("submitRV day: ", day);
 			console.log("submitRV app: ", id);
-			console.log("submitRV acte: ", acte);
+			console.log("submitRV acte: ", labelActe);
 			console.log("submitRV idoff: ", idCabinet);
 
 			AppointmentManager.setSelectedAppointment(id);
 			AppointmentManager.setSelectedDay(day);
 			AppointmentManager.setSelectedDoctor(doctor);
 			AppointmentManager.setSelectedOffice(idCabinet);
-			AppointmentManager.setSelectedActe(acte);
+			AppointmentManager.setSelectedActe(labelActe);
 
 			window.location.href = '#/confirmation-rendezvous';
 		}
