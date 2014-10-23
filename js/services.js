@@ -62,22 +62,6 @@
     // TODO Refactor this in another js file as this is not web services
     // but services to share data across controllers.
 
-
-    appServices.factory('idOfficeManager', function() {
-
-        var idOffice;
-
-        return {
-            getIdOffice: function() {
-                return idOffice;
-            },
-
-            setIdOffice: function(value) {
-                idOffice = value;
-            },
-        }
-    });
-
     appServices.factory('SpecialityManager', function() {
 
         var selectedSpeciality;
