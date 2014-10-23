@@ -49,6 +49,52 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 
 		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
 			$scope.doctors = data.output;
+			console.log("scope doctors", $scope.doctors);
+
+		}).error(function(data, status) {
+			console.log('response getDoctorByOffice : ' + status);
+			console.log('response getDoctorByOffice : ' + data);
+		});
+
+		//TO DO comment avoir l'id du praticien ?
+		/*GetService.getActs(idCabinet, $scope.doctors.idPraticien).success(function(data) {
+            console.log("getActs", data);
+            angular.forEach(data.output, function(){
+                $scope.actes = data.output;
+            });
+        }).error(function(data, status) {
+            console.log(status);
+            console.log(data);
+        });	*/
+
+		$scope.submitRV = function(doctor, day, id, acte){
+
+			console.log("submitRV doc: ", doctor);
+			console.log("submitRV day: ", day);
+			console.log("submitRV app: ", id);
+			console.log("submitRV acte: ", acte);
+			console.log("submitRV idoff: ", idCabinet);
+
+			AppointmentManager.setSelectedAppointment(id);
+			AppointmentManager.setSelectedDay(day);
+			AppointmentManager.setSelectedDoctor(doctor);
+			AppointmentManager.setSelectedOffice(idCabinet);
+			AppointmentManager.setSelectedActe(acte);
+
+			window.location.href = '#/confirmation-rendezvous';
+		}
+	}	
+]);
+
+appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService', 'AppointmentManager',
+	function($scope, GetService, AppointmentManager){
+		var idCabinet = 4; //cabinet de mélanie : id 4 //à modifier
+		$scope.quantityWeek=7;
+		$scope.quantityApp=5;
+
+		GetService.getAppointementsByDoctorsInOffice(idCabinet).success(function(data) {
+			$scope.doctors = data.output;
+			console.log($scope.doctors);
 
 		}).error(function(data, status) {
 			console.log('response getDoctorByOffice : ' + status);
@@ -74,9 +120,10 @@ appControllers.controller('PresentationDocSeysses', ['$scope', 'GetService', 'Ap
 	}	
 ]);
 
-appControllers.controller('PresentationMelanieTachier', ['$scope', 'GetService', 'AppointmentManager',
+
+appControllers.controller('PresentationYouriBertucchi', ['$scope', 'GetService', 'AppointmentManager',
 	function($scope, GetService, AppointmentManager){
-		var idCabinet = 4; //cabinet de mélanie : id 4 //à modifier
+		var idCabinet = 5; 
 		$scope.quantityWeek=7;
 		$scope.quantityApp=5;
 
