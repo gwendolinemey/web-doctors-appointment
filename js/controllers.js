@@ -13,6 +13,9 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManag
 		$scope.office = AppointmentManager.getSelectedOffice();
 		$scope.acte = AppointmentManager.getSelectedActe();
 
+		$scope.errorEmpty = false;
+		$scope.errorEmail = false;
+		$scope.errorPhone = false;
 
 		console.log("reçu doc : "+ $scope.doctor.idPraticien);
 		console.log("recu appointment: "+ $scope.appointment);
@@ -25,11 +28,42 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', 'AppointmentManag
 		};
 
 		$scope.saveRV = function() {
-			//nom, prenom, mail, tel, start, end, label, idDoc, idOff
-            var appointment = createRVForServer($scope.lastname, $scope.firstname, $scope.email, $scope.phone, $scope.appointment.start, $scope.appointment.end, $scope.acte, $scope.doctor.idPraticien, $scope.office);
-            console.log("saveRV appointment", appointment);
-            sendAppointment(PostService, appointment);
-            window.location.href = '#/';
+			if ($scope.lastname && $scope.firstname && $scope.email && $scope.phone) {
+				console.log("validateEmail", validateEmail($scope.email));
+				console.log("validatePhoneNumber", validatePhoneNumber($scope.phone));
+				if ($scope.errorEmpty) {
+					$scope.errorEmpty = false;
+				}
+			} else {
+        		console.log("EMPTY");
+        		$scope.errorEmpty = true;
+        	}
+
+			
+			if (! validateEmail($scope.email)) {
+				$scope.errorEmail = true;
+			} else {
+				if ($scope.errorEmail) {
+					$scope.errorEmail = false;
+				}
+			}
+
+			if (! validatePhoneNumber($scope.phone)) {
+				$scope.errorPhone = true;
+			} else {
+				if ($scope.errorPhone) {
+					$scope.errorPhone = false;
+				}
+			}
+			
+			if ((!$scope.errorPhone) && (!$scope.errorPhone) && (!$scope.errorPhone)) {
+				//nom, prenom, mail, tel, start, end, label, idDoc, idOff
+	            var appointment = createRVForServer($scope.lastname, $scope.firstname, $scope.email, $scope.phone, $scope.appointment.start, $scope.appointment.end, $scope.acte, $scope.doctor.idPraticien, $scope.office);
+	            console.log("saveRV appointment", appointment);
+	            sendAppointment(PostService, appointment);
+	            window.location.href = '#/';
+        	}
+        	
         }
 	}
 	]);
@@ -247,4 +281,14 @@ function sendAppointment(PostService, appointment) {
         console.log(status);
         console.log(data);
     });
+}
+
+function validateEmail(email) { 
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
+function validatePhoneNumber(phoneNumber) { 
+	var re = /^\d{10,12}$/;
+	return re.test(phoneNumber);
 }

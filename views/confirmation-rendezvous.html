@@ -14,6 +14,9 @@ Pour confirmer votre rendez-vous avec le Docteur {{doctor.nom}} le {{dayDate}} �
 	<button class="btn btn-lg btn-default" ng-click="doBack()" value="annuler">Annuler</button>
 	<button class="btn btn-lg btn-default" ng-click="saveRV()">Confirmer le rendez-vous</button>
 </form>
+<alert ng-show="errorEmpty" type="danger" close="hideErrors()">Veuillez renseigner tous les champs pour confirmer votre rendez-vous</alert>
+<alert ng-show="errorEmail" type="danger" close="hideErrors()">Veuillez renseigner un e-mail valide pour confirmer votre rendez-vous</alert>
+<alert ng-show="errorPhone" type="danger" close="hideErrors()">Veuillez renseigner un numéro de téléphone valide pour confirmer votre rendez-vous</alert>
 
 
 

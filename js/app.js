@@ -1,5 +1,5 @@
 
-	var app = angular.module('app', ['ngRoute',  'appControllers', 'appServices']);
+	var app = angular.module('app', ['ngRoute',  'appControllers', 'appServices', 'ui.bootstrap']);
 
 	var appServices = angular.module('appServices', []);
 	var appControllers = angular.module('appControllers', []);
