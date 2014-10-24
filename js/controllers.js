@@ -10,11 +10,11 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 		var idCabinet;
 		switch ($location.path()) {
-			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("cabinet Seysses");
+			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("View Seysses");
 			break;
-			case '/fontenilles/dieteticien-tachier' : idCabinet = 4; mixpanel.track("mélanie");
+			case '/fontenilles/dieteticien-tachier' : idCabinet = 4;
 			break;
-			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("bertucchi");
+			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
 			break;
 			default : window.location.href = '#/';
 		}
@@ -107,6 +107,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			AppointmentManager.setSelectedOffice(idCabinet);
 			AppointmentManager.setSelectedActe(labelActe);
 
+			mixpanel.track("Selection RV");
 			window.location.href = '#/confirmation-rendezvous';
 		}
 	}	
@@ -208,6 +209,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
             PostService.saveAppointment(appointment).success(function(data) {
 		        console.log(data);
 		        if (data.status == "success") {
+		        	mixpanel.track("Enregistre RV");
 		        	$scope.open();
 		        }
 		    }).error(function(data, status) {
