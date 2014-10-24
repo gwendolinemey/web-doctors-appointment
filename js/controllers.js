@@ -68,6 +68,9 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				doctor.previousDisabled = false;
 			}
 			doctor.currentWeek++;
+			if (doctor.currentWeek == (doctor.semaines_ouvertes - 1)) {
+				doctor.nextDisabled = true;
+			}
 			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor["availabilities"] = data.output;
@@ -83,6 +86,9 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.currentWeek == 0) {
 				doctor.previousDisabled = true;
 			} 
+			if (doctor.nextDisabled) {
+				doctor.nextDisabled = false;
+			}
 			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor["availabilities"] = data.output;
