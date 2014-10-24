@@ -20,13 +20,14 @@
         </div>
     </div>
     <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
-            <div id="act-choice" class="col-md-3">
+            <div id="act-choice" class="col-lg-3">
                 <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
                 <p>Quel motif ?</p>
 
                 <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
             </div>
-            <table id="agenda-med">
+            <button class="col-lg-1 navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
+            <table class="col-lg-6" id="agenda-med">
                 <tr>
                     <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
                 </tr>                
@@ -37,6 +38,7 @@
                         </div>                        
                     </td>                
                 </tr>
-            </table>        
+            </table>       
+            <button class="col-lg-1 navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button> 
     </div>
 </div>

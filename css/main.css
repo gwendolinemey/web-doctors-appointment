@@ -52,9 +52,9 @@ footer a{ display: inline-block; padding:20px; color:#fff;}
 #agenda-med th.disabled{ background-color: grey; border:1px solid #fff;}
 #agenda-med td.disabled{ background-color: grey; border:1px solid #fff;}
 .availableAppoint{ color: #000;}
+.navigationArrow{ color: #000;}
 .paymentway li { list-style: none; margin-top: 10px; }
 .listpaiyment{ font-weight: bold;}
-
 
 /*** Confirmation ***/
 #confirmrv{ max-width: 500px; margin:auto; margin-top: 2%;}

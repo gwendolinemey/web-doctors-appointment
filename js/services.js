@@ -13,12 +13,12 @@
                 });
             },
 
-            getAvailableAppointements: function(idOffice, idDoctor, actDuration) {
+            getAvailableAppointements: function(idOffice, idDoctor, actDuration, currentWeek) {
                 console.log(idOffice, idDoctor, actDuration);
                 return $http({
                     url: options.api.base_url + '/office/doctors/appointments',
                     method: "GET", 
-                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor, "actDuration" : actDuration}
+                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor, "actDuration" : actDuration, "currentWeek" : currentWeek}
                 })
             },
 
