@@ -10,11 +10,11 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 		var idCabinet;
 		switch ($location.path()) {
-			case '/seysses/cabinet-medical-seysses' : idCabinet = 2;
+			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("cabinet Seysses");
 			break;
-			case '/fontenilles/dieteticien-tachier' : idCabinet = 4;
+			case '/fontenilles/dieteticien-tachier' : idCabinet = 4; mixpanel.track("mélanie");
 			break;
-			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5;
+			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("bertucchi");
 			break;
 			default : window.location.href = '#/';
 		}
