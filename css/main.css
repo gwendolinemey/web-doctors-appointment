@@ -5,7 +5,7 @@ body {
   /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
-.navbar{ margin:auto; background-color: #0c505a; border: none; }
+.navbar{ margin:auto; background-color: #347881; border: none; }
 #bs-example-navbar-collapse-1 a { color: #fff; }
 .navbar-inverse .navbar-brand{ color:#fff; font-weight: 300; font-size: large;}
 
@@ -41,7 +41,9 @@ footer a{ display: inline-block; padding:20px; color:#fff;}
 
 
 /** Personnalisation page médecin **/
-#plus-medecin{ font-size: large; }
+.presentation-doc{ margin-top:25px; text-align: left; }
+.info-doc{ text-align: left; margin-top: 25px; }
+#plus-medecin{ font-size: large; line-height: 50px; }
 #disponibilites{ background-color: rgba(255,255,255,.5); padding: 2%; margin-top:3%;}
 #agenda-med td { border:1px solid #fff; padding:15px; }
 #agenda-med th { border:1px solid #fff; padding:5px; text-align: center; background-color: #0c505a;}
@@ -51,6 +53,8 @@ footer a{ display: inline-block; padding:20px; color:#fff;}
 #agenda-med td.disabled{ background-color: grey; border:1px solid #fff;}
 .availableAppoint{ color: #000;}
 .navigationArrow{ color: #000;}
+.paymentway li { list-style: none; margin-top: 10px; }
+.listpaiyment{ font-weight: bold;}
 
 /*** Confirmation ***/
 #confirmrv{ max-width: 500px; margin:auto; margin-top: 2%;}
