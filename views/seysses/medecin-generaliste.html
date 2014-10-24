@@ -12,13 +12,14 @@
         <div class="col-md-6"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2895.1763632183256!2d1.3042004000000038!3d43.47778970000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb61e6def9d9d%3A0xbc18a5c1581f4e3b!2s60+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1413365325879" width="350" height="200" frameborder="0" style="border:0"></iframe></div>
     </div>
     <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
-            <div id="act-choice" class="col-md-3">
+            <div id="act-choice" class="col-lg-3">
                 <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
                 <p>Quel motif ?</p>
 
                 <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
             </div>
-            <table id="agenda-med">
+            <button class="col-lg-1 navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
+            <table class="col-lg-6" id="agenda-med">
                 <tr>
                     <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
                 </tr>                
@@ -29,6 +30,7 @@
                         </div>                        
                     </td>                
                 </tr>
-            </table>        
+            </table>       
+            <button class="col-lg-1 navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button> 
     </div>
 </div>

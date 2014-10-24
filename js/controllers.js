@@ -31,10 +31,13 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			// initialise select elements
 			angular.forEach($scope.doctors, function(doctor){
 				doctor["selectedAct"] = doctor.acts[0];
+				doctor["currentWeek"] = 0;
+				doctor["previousDisabled"] = true;
+				doctor["nextDisabled"] = false;
 
 				console.log("doctor", doctor.idPraticien);
 
-				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 					console.log('getAvailableAppointements : ', data);
 					doctor["availabilities"] = data.output;
 				}).error(function(data, status) {
@@ -50,7 +53,37 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		});	
 
 		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree).success(function(data) {
+			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+				console.log('getAvailableAppointements : ', data);
+				doctor["availabilities"] = data.output;
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
+		}
+
+		$scope.seeNext = function(doctor){
+			console.log("NEXT", doctor.currentWeek);
+			if (doctor.currentWeek == 0) {
+				doctor.previousDisabled = false;
+			}
+			doctor.currentWeek++;
+			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+				console.log('getAvailableAppointements : ', data);
+				doctor["availabilities"] = data.output;
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
+		}
+
+		$scope.seePrevious = function(doctor){
+			console.log("PREVIOUS", doctor.currentWeek);
+			doctor.currentWeek--;
+			if (doctor.currentWeek == 0) {
+				doctor.previousDisabled = true;
+			} 
+			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor["availabilities"] = data.output;
 			}).error(function(data, status) {
