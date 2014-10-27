@@ -210,6 +210,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
             appointment["end"] = $scope.appointment.time.end;
             appointment["actLabel"] = $scope.appointment.acte;
             appointment["idDoctor"] = $scope.appointment.doctor.idPraticien;
+            appointment["doctorName"] = $scope.appointment.doctor.nom;
             appointment["idOffice"] = $scope.appointment.office;
 
             PostService.saveAppointment(appointment).success(function(data) {
