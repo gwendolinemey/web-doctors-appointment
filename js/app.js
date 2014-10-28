@@ -1,12 +1,8 @@
-
-	var app = angular.module('app', ['ngRoute',  'appControllers', 'appServices', 'ui.bootstrap']);
+	var app = angular.module('app', ['ngRoute',  'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
 
 	var appServices = angular.module('appServices', []);
 	var appControllers = angular.module('appControllers', []);
-
-	var options = {};
-	options.api = {};
-	options.api.base_url = "http://localhost:8080";
+	var appConfig = angular.module('appConfig', []);
 
 	// configure our routes
 	/*app.config(['$routeProvider', '$locationProvider',
