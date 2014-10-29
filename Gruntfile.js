@@ -4,14 +4,16 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 
 		bower_concat: {
-		  all: {
-		    dest: 'app/dist/bower.js',
+		  dev: {
+		    dest: 'app/tmp/lib/libs.js',
 		    mainFiles: {
-			  'angular.js': 'angular.min.js',
-			  'angular-route.js': 'angular-route.min.js',
-			  'ui-bootstrap.js': 'ui-bootstrap.min.js',
-			  'dist/jquery.js': 'dist/jquery.min.js',
 			  'mixpanel': 'mixpanel-dev.js'
+			}
+		  },
+		  prod: {
+		    dest: 'app/tmp/lib/libs.js',
+		    mainFiles: {
+			  'mixpanel': 'mixpanel-prod.js'
 			}
 		  }
 		},
@@ -23,30 +25,32 @@ module.exports = function(grunt) {
 		html2js: {
 		  dist: {
 		    src: [ 'app/views/*.html', 'app/views/**/*.html'],
-		    dest: 'app/tmp/templates.js'
+		    dest: 'app/tmp/app/templates.js'
 		  }
 		},
 
 		concat: {
-		  options: {
-		    separator: ';'
-		  },
-
-	  	dev: {
-		    src: [ 'app/js/*.js', 'app/config/dev.js', 'app/tmp/*.js' ],
-		    dest: 'app/dist/app.js'
-		},
-		prod: {
-		    src: [ 'app/js/*.js', 'app/config/prod.js', 'app/tmp/*.js' ],
-		    dest: 'app/dist/app.js'
-		}
-		  
+			options: {
+				separator: ';'
+			},
+			dev: {
+			    src: [ 'app/tmp/app/*.js', 'app/js/*.js', 'app/config/dev.js' ],
+			    dest: 'app/tmp/app.js'
+			},
+			prod: {
+			    src: [ 'app/tmp/*.js', 'app/js/*.js', 'app/config/prod.js' ],
+			    dest: 'app/tmp/app.js'
+			},
+			final: {
+			    src: [ 'app/tmp/lib/*.js', 'app/tmp/*.js' ],
+			    dest: 'app/dist/app.js'
+			}
 		},
 
 		uglify: {
-		  dist: {
+		  temp: {
 		    files: {
-		      'app/dist/app.js': [ 'app/dist/app.js' ]
+		      'app/tmp/app.js': [ 'app/tmp/app.js' ]
 		    },
 		    options: {
 		      mangle: false
@@ -80,7 +84,7 @@ module.exports = function(grunt) {
 
 	require('load-grunt-tasks')(grunt);
 
-	grunt.registerTask('dev', [ 'bower_concat', 'jshint', 'html2js:dist', 'concat:dev', 'clean:temp' ]);
-	grunt.registerTask('prod', [ 'jshint', 'html2js:dist', 'concat:prod', 'uglify:dist', 'clean:temp' ]);
+	grunt.registerTask('dev', [ 'bower_concat:dev', 'jshint', 'html2js:dist', 'concat:dev', 'concat:final', 'clean:temp' ]);
+	grunt.registerTask('prod', [ 'bower_concat:prod', 'jshint', 'html2js:dist', 'concat:prod', 'uglify:temp', 'concat:final', 'clean:temp' ]);
 	//grunt.loadNpmTasks('grunt-contrib-watch');
 };
