@@ -12,9 +12,11 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		switch ($location.path()) {
 			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("View Seysses");
 			break;
-			case '/fontenilles/dieteticien-tachier' : idCabinet = 4;
+			case '/fontenilles/dieteticien-guerri' : idCabinet = 4; mixpanel.track("View Guerri");
 			break;
 			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
+			break;
+			case '/galaxie/galilee' : idCabinet = 10; 
 			break;
 			default : window.location.href = '#/';
 		}

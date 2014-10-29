@@ -26,15 +26,20 @@
 				controller  : 'CabinetCtrl'
 			})
 
-			.when('/fontenilles/dieteticien-tachier', {
-				templateUrl : 'views/fontenilles/dieteticien-tachier.html',
+			.when('/fontenilles/dieteticien-guerri', {
+				templateUrl : 'views/fontenilles/dieteticien-guerri.html',
 				controller  : 'CabinetCtrl'
 			})
 
 			.when('/toulouse/osteopathe-bertucchi', {
 				templateUrl : 'views/toulouse/osteopathe-bertucchi.html',
 				controller  : 'CabinetCtrl'
-			})			
+			})
+
+			.when('/galaxie/galilee', {
+				templateUrl : 'views/dev/galilee.html',
+				controller  : 'CabinetCtrl'
+			})	
 
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'views/confirmation-rendezvous.html',
