@@ -1,0 +1,16 @@
+{
+  "name": "mixpanel",
+  "version": "2.2.0",
+  "main": "mixpanel.js",
+  "homepage": "https://github.com/drubin/mixpanel-bower",
+  "_release": "2.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.2.0",
+    "commit": "df954118930c4f472ed787d9a592296ba8c252e9"
+  },
+  "_source": "git://github.com/drubin/mixpanel-bower.git",
+  "_target": "~2.2.0",
+  "_originalSource": "mixpanel",
+  "_direct": true
+}
