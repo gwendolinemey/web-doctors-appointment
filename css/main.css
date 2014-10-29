@@ -1,44 +1,16 @@
-body {
-  background-color: #0c505a;
-  color: #fff;
-  padding-top: 70px;
-  /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-}
+/**/
+#disponibilites{ border: 1px solid red; }
 
-.navbar{ margin:auto; background-color: #347881; border: none; }
-#bs-example-navbar-collapse-1 a { color: #fff; }
-.navbar-inverse .navbar-brand{ color:#fff; font-weight: 300; font-size: large;}
-
-h1.heading{ text-align: center; font-size: 36px;}
-p.lead{ text-align: center; font-size: 21px;  margin-bottom: 20px; font-weight: 300; line-height: 1.4; }
-
-/** CONTENT **/
-
-.form-line{ padding: 10px; color: #000;}
-input{ color:#000;}
-
-/** Index provisoire **/
-.presentation-doctor{ margin-top: 2%; }
-
-/*************/
 /* Footer   */
-/***********/
-
 section#landing-chiffres{
+  text-align: center;
   font-size:xx-large;
-  color: white; /* IE8 proofing */
-  background-color: rgba(255,255,255,.5);
+  color: #fff; /* IE8 proofing */
+  background-color: #029EB4;
   padding: 2%;
   margin-top:3%;
+  margin-bottom: 3%;
 }
-
-
-footer {  color: #fff; /* IE8 proofing */  height: 10%; }
-footer a{ display: inline-block; padding:20px; color:#fff;}
-.icon { margin-right:4%;}
-.footer-nav{ list-style: none; width: 100%; }
-.footer-nav li { display: inline; }  
-
 
 /** Personnalisation page médecin **/
 .presentation-doc{ margin-top:25px; text-align: left; }

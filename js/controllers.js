@@ -10,9 +10,9 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 		var idCabinet;
 		switch ($location.path()) {
-			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("View Seysses");
+			case '/seysses/cabinet-medical-seysses.html' : idCabinet = 2; mixpanel.track("View Seysses");
 			break;
-			case '/fontenilles/dieteticien-guerri' : idCabinet = 4; mixpanel.track("View Guerri");
+			case '/fontenilles/dieteticien-guerri.html' : idCabinet = 4; mixpanel.track("View Guerri");
 			break;
 			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
 			break;
