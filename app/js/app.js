@@ -1,5 +1,5 @@
 
-	var app = angular.module('app', ['ngRoute',  'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
+	var app = angular.module('app', [/*'ngRoute',*/  'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
 
 	var appServices = angular.module('appServices', []);
 	var appControllers = angular.module('appControllers', []);
@@ -9,7 +9,7 @@
 	// configure our routes
 	/*app.config(['$routeProvider', '$locationProvider',
 		function($routeProvider, $locationProvider) {*/
-	app.config(['$routeProvider',
+	/*app.config(['$routeProvider',
 		function($routeProvider) {
 		$routeProvider
 
@@ -43,5 +43,5 @@
 			.otherwise({
             	redirectTo: '/'
         	});
-	}]);
+	}]);*/
 	

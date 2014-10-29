@@ -20,7 +20,7 @@
     <link href="css/main.css" rel="stylesheet">
 </head>
 
-<body id="page-top" class="index">
+<body id="page-top" class="index" ng-app="app">
     <!-- Navigation -->
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -82,7 +82,7 @@
                             <h3 class="title-smaller">Nutritionniste diététicien</h3>
                             <h4>Frédéric Guerri</h4>
                             <p class="text-muted">1 lot le village - 31470 <strong>Fontenilles</strong></p>
-                            <a href="#/page-guerri" class="btn btn-lg btn-primary prendrerv">Prendre rendez-vous</a>
+                            <a href="partials/fontenilles/dieteticien-guerri.html" class="btn btn-lg btn-primary prendrerv">Prendre rendez-vous</a>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
         </div>
     </section>
 
-    <section id="landing-chiffres">
+    <section id="landing-chiffres" ng-controller="LandingController">
         <p>Déjà plus de {{rv}} rendez-vous réservés !</p>
     </section>       
 
@@ -142,13 +142,13 @@
     <script src="bower_components/jsperso/cbpAnimatedHeader.js" type="text/javascript"></script>
     <script src="bower_components/angular/angular.js" type="text/javascript"></script>
     <script src="bower_components/angular-route/angular-route.js" type="text/javascript"></script>
-    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/mixpanel/mixpanel-dev.js"></script>
-    <script src="js/app.js" type="text/javascript"></script> <!-- personnalisé-->
-    <script src="js/controllers.js" type="text/javascript"></script> <!-- personnalisé-->
-    <script src="js/services.js" type="text/javascript"></script> <!-- personnalisé-->
+    <script src="app/js/app.js" type="text/javascript"></script> <!-- personnalisé-->
+    <script src="app/js/controllers.js" type="text/javascript"></script> <!-- personnalisé-->
+    <script src="app/js/services.js" type="text/javascript"></script> <!-- personnalisé-->
 
 
 </body>

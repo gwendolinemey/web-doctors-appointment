@@ -1,5 +1,6 @@
 appControllers.controller('LandingController', 
 	function($scope) {
+		console.log("allo");
 		$scope.ps = 8;
 		$scope.rv = 21;
 	}
@@ -7,14 +8,14 @@ appControllers.controller('LandingController',
 
 appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', 'AppointmentManager', 
 	function($scope, $location, GetService, AppointmentManager){
-
+		console.log(window.location.pathname);
 		var idCabinet;
-		switch ($location.path()) {
-			case '/seysses/cabinet-medical-seysses.html' : idCabinet = 2; mixpanel.track("View Seysses");
+		switch (window.location.pathname) {
+			case '/RapiDocteur/rapidocteur_web/partials/seysses/cabinet-medical-seysses.html' : idCabinet = 2; mixpanel.track("View Seysses");
 			break;
-			case '/fontenilles/dieteticien-guerri.html' : idCabinet = 4; mixpanel.track("View Guerri");
+			case '/RapiDocteur/rapidocteur_web/partials/fontenilles/dieteticien-guerri.html' : idCabinet = 4; mixpanel.track("View Guerri");
 			break;
-			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
+			case 'partials/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
 			break;
 			case '/galaxie/galilee' : idCabinet = 10; 
 			break;
