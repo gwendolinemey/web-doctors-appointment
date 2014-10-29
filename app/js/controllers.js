@@ -32,16 +32,16 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 			// initialise select elements
 			angular.forEach($scope.doctors, function(doctor){
-				doctor["selectedAct"] = doctor.acts[0];
-				doctor["currentWeek"] = 0;
-				doctor["previousDisabled"] = true;
-				doctor["nextDisabled"] = false;
+				doctor.selectedAct = doctor.acts[0];
+				doctor.currentWeek = 0;
+				doctor.previousDisabled = true;
+				doctor.nextDisabled = false;
 
 				console.log("doctor", doctor.idPraticien);
 
 				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 					console.log('getAvailableAppointements : ', data);
-					doctor["availabilities"] = data.output;
+					doctor.availabilities = data.output;
 				}).error(function(data, status) {
 					console.log(status);
 					console.log(data);
@@ -57,16 +57,16 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		$scope.updateAvailableAppointments = function(doctor){
 			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
-				doctor["availabilities"] = data.output;
+				doctor.availabilities = data.output;
 			}).error(function(data, status) {
 				console.log(status);
 				console.log(data);
 			});
-		}
+		};
 
 		$scope.seeNext = function(doctor){
 			console.log("NEXT", doctor.currentWeek);
-			if (doctor.currentWeek == 0) {
+			if (doctor.currentWeek === 0) {
 				doctor.previousDisabled = false;
 			}
 			doctor.currentWeek++;
@@ -75,17 +75,17 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			}
 			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
-				doctor["availabilities"] = data.output;
+				doctor.availabilities = data.output;
 			}).error(function(data, status) {
 				console.log(status);
 				console.log(data);
 			});
-		}
+		};
 
 		$scope.seePrevious = function(doctor){
 			console.log("PREVIOUS", doctor.currentWeek);
 			doctor.currentWeek--;
-			if (doctor.currentWeek == 0) {
+			if (doctor.currentWeek === 0) {
 				doctor.previousDisabled = true;
 			} 
 			if (doctor.nextDisabled) {
@@ -93,12 +93,12 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			}
 			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
-				doctor["availabilities"] = data.output;
+				doctor.availabilities = data.output;
 			}).error(function(data, status) {
 				console.log(status);
 				console.log(data);
 			});
-		}
+		};
 
 		$scope.submitRV = function(doctor, day, id){
 
@@ -117,7 +117,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 			mixpanel.track("Selection RV");
 			window.location.href = '#/confirmation-rendezvous';
-		}
+		};
 	}	
 ]);
 
@@ -136,7 +136,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 		lastName: '',
 		email: '',
 		phone: ''
-	}
+	};
 
 	$scope.errorEmpty = false;
 	$scope.errorEmail = false;
@@ -159,7 +159,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	    modalInstance.result.then(function () {
 	    	window.location.href = '#/';
 	    });
-	}
+	};
 
 	$scope.doBack = function() {
 		window.history.back();
@@ -206,13 +206,14 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 		if ((!$scope.errorEmpty) && (!$scope.errorEmail) && (!$scope.errorPhone)) {
             console.log("saveRV appointment", $scope.appointment);
 
-            var appointment = new Object();
-            appointment["user"] = $scope.user;
-            appointment["start"] = $scope.appointment.time.start;
-            appointment["end"] = $scope.appointment.time.end;
-            appointment["actLabel"] = $scope.appointment.acte;
-            appointment["idDoctor"] = $scope.appointment.doctor.idPraticien;
-            appointment["idOffice"] = $scope.appointment.office;
+            var appointment = {};
+            appointment.user = $scope.user;
+            appointment.start = $scope.appointment.time.start;
+            appointment.end = $scope.appointment.time.end;
+            appointment.actLabel = $scope.appointment.acte;
+            appointment.idDoctor = $scope.appointment.doctor.idPraticien;
+            appointment.doctorName = $scope.appointment.doctor.nom;
+            appointment.idOffice = $scope.appointment.office;
 
             PostService.saveAppointment(appointment).success(function(data) {
 		        console.log(data);
@@ -225,8 +226,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 		        console.log(data);
 		    });
     	}
-    	
-    }
+    };
 }
 ]);
 
