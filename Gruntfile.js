@@ -34,16 +34,16 @@ module.exports = function(grunt) {
 				separator: ';'
 			},
 			dev: {
-			    src: [ 'app/tmp/app/*.js', 'app/js/*.js', 'app/config/dev.js' ],
-			    dest: 'app/tmp/app.js'
+			    src: [ 'app/tmp/lib/*.js', 'app/tmp/app/*.js', 'app/js/*.js', 'app/config/dev.js' ],
+			    dest: 'app/dist/app.js'
 			},
 			prod: {
 			    src: [ 'app/tmp/*.js', 'app/js/*.js', 'app/config/prod.js' ],
 			    dest: 'app/tmp/app.js'
 			},
-			final: {
+			finalProd: {
 			    src: [ 'app/tmp/lib/*.js', 'app/tmp/*.js' ],
-			    dest: 'app/dist/app.js'
+			    dest: 'app/dist/appProd.js'
 			}
 		},
 
@@ -84,7 +84,10 @@ module.exports = function(grunt) {
 
 	require('load-grunt-tasks')(grunt);
 
-	grunt.registerTask('dev', [ 'bower_concat:dev', 'jshint', 'html2js:dist', 'concat:dev', 'concat:final', 'clean:temp' ]);
-	grunt.registerTask('prod', [ 'bower_concat:prod', 'jshint', 'html2js:dist', 'concat:prod', 'uglify:temp', 'concat:final', 'clean:temp' ]);
+	grunt.registerTask('dev', [ 'bower_concat:dev', 'jshint', 'html2js:dist', 'concat:dev', 'clean:temp' ]);
+	grunt.registerTask('prod', [ 'bower_concat:prod', 'jshint', 'html2js:dist', 'concat:prod', 'uglify:temp', 'concat:finalProd', 'clean:temp' ]);
+
+	grunt.registerTask('build', [ 'bower_concat:dev', 'jshint', 'html2js:dist', 'concat:dev', 'clean:temp',
+		'bower_concat:prod', 'jshint', 'html2js:dist', 'concat:prod', 'uglify:temp', 'concat:finalProd', 'clean:temp' ]);
 	//grunt.loadNpmTasks('grunt-contrib-watch');
 };
