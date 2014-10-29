@@ -183,7 +183,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	    });
 
 	    modalInstance.result.then(function () {
-	    	window.location.href = '#/';
+	    	window.location.href = '#/seysses/cabinet-medical-seysses';
 	    });
 	};
 
