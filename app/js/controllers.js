@@ -157,6 +157,12 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	$scope.errorEmail = false;
 	$scope.errorPhone = false;
 
+	$scope.practicianLabel = "le Docteur " + $scope.appointment.doctor.nom;
+	if (isNotDoctor($scope.appointment.doctor.specialities)) {
+		$scope.practicianLabel = $scope.appointment.doctor.prenom + " " + $scope.appointment.doctor.nom;
+	}
+
+
 	console.log("recu appointment: ", $scope.appointment);
 
 	$scope.open = function (size) {
@@ -255,6 +261,14 @@ function sendAppointment(PostService, appointment) {
         console.log(status);
         console.log(data);
     });
+}
+
+function isNotDoctor(specialities) {
+    for (var i = 0; i < specialities.length; i++) {
+        if (specialities[i].idSpecialite === 2 ||  specialities[i].idSpecialite === 7) {
+            return true;
+        }
+    };
 }
 
 function validateEmail(email) { 

@@ -3,7 +3,7 @@
             <h3 class="modal-title">Votre rendez-vous est confirmé !</h3>
         </div>
         <div class="modal-body">
-        	<p class="lead">Vous avez rendez-vous le {{appointment.dayDate}} à {{appointment.time.prettyTime}} avec le Docteur {{appointment.doctor.nom}}. </p> 
+        	<p class="lead">Vous avez rendez-vous le {{appointment.dayDate}} à {{appointment.time.prettyTime}} avec {{practicianLabel}}. </p> 
             <p class="lead">Vous venez de recevoir un e-mail de confirmation. </p> 
         </div>
         <div class="modal-footer">
@@ -13,7 +13,7 @@
 
 <p class="lead">Dernier clic : confirmez !</p>  
 
-Pour confirmer votre rendez-vous avec le Docteur {{appointment.doctor.nom}} le {{appointment.dayDate}} à {{ appointment.time.prettyTime }} entrez vos coordonnées :
+Pour confirmer votre rendez-vous avec {{practicianLabel}} le {{appointment.dayDate}} à {{ appointment.time.prettyTime }} entrez vos coordonnées :
 
 
 <form name="confirmation-rv" id="confirmrv" class="input-group">
