@@ -17,6 +17,6 @@
     "angular-route": "~1.2.26",
     "components-font-awesome": "~4.2.0",
     "angular-bootstrap": "~0.11.2",
-    "mixpanel": "~2.2.0"
+    "angular-ui-router": "0.2.8-bowratic-tedium"
   }
 }
