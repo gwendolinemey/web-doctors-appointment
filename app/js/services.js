@@ -82,7 +82,7 @@
         var appointment;
         var doctor;
         var day;
-        var idOffice;
+        var office;
         var acte;
 
         return {
@@ -108,10 +108,10 @@
                 day = value;
             },
             getSelectedOffice: function(){
-                return idOffice;
+                return office;
             },
             setSelectedOffice: function(value){
-                idOffice = value;
+                office = value;
             },
             getSelectedActe: function(){
                 return acte;

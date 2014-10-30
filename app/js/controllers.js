@@ -12,16 +12,27 @@ appControllers.controller('LandingController',
 
 appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', 'AppointmentManager', 
 	function($scope, $location, GetService, AppointmentManager){
-		var idCabinet;
+		var cabinet ={
+			idCabinet:'',
+			adresse:''
+		};
+
 		switch ($location.path()) {
-			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("View Seysses");
-			break;
-			case '/fontenilles/dieteticien-guerri' : idCabinet = 1; mixpanel.track("View Guerri");
-			break;
-			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
-			break;
-			case '/galaxie/galilee' : idCabinet = 10; 
-			break;
+			case '/seysses/cabinet-medical-seysses' : cabinet.idCabinet = 2; 
+				cabinet.adresse = '';
+				mixpanel.track("View Seysses");
+				break;
+			case '/fontenilles/dieteticien-guerri' : cabinet.idCabinet = 1; 
+				cabinet.adresse = '1 lot le village - 31470 Fontenilles';
+				mixpanel.track("View Guerri");
+				break;
+			case '/toulouse/osteopathe-bertucchi' : cabinet.idCabinet = 5; 
+				cabinet.adresse = '11 place Lafourcade - 31400 Toulouse';
+				mixpanel.track("View Bertucchi");
+				break;
+			case '/galaxie/galilee' : cabinet.idCabinet = 10; 
+				cabinet.adresse = '';
+				break;
 			default : window.location.href = '#/';
 		}
 		
@@ -30,7 +41,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 		console.log('Current route name: ' + $location.path());
 
-		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
+		GetService.getDoctorsByOffice(cabinet.idCabinet).success(function(data) {
 			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
 
@@ -43,7 +54,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 				console.log("doctor", doctor.idPraticien);
 
-				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 					console.log('getAvailableAppointements : ', data);
 					doctor.availabilities = data.output;
 				}).error(function(data, status) {
@@ -59,7 +70,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		});	
 
 		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -77,7 +88,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.currentWeek == (doctor.semaines_ouvertes - 1)) {
 				doctor.nextDisabled = true;
 			}
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -95,7 +106,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.nextDisabled) {
 				doctor.nextDisabled = false;
 			}
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -111,12 +122,12 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			console.log("submitRV day: ", day);
 			console.log("submitRV app: ", id);
 			console.log("submitRV acte: ", labelActe);
-			console.log("submitRV idoff: ", idCabinet);
+			console.log("submitRV idoff: ", cabinet.idCabinet);
 
 			AppointmentManager.setSelectedAppointment(id);
 			AppointmentManager.setSelectedDay(day);
 			AppointmentManager.setSelectedDoctor(doctor);
-			AppointmentManager.setSelectedOffice(idCabinet);
+			AppointmentManager.setSelectedOffice(cabinet);
 			AppointmentManager.setSelectedActe(labelActe);
 
 			mixpanel.track("Selection RV");
@@ -209,6 +220,9 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 
 		if ((!$scope.errorEmpty) && (!$scope.errorEmail) && (!$scope.errorPhone)) {
             console.log("saveRV appointment", $scope.appointment);
+
+            var appointment = $scope.appointment;
+            appointment.user = $scope.user;
 
             PostService.saveAppointment(appointment).success(function(data) {
 		        console.log(data);
