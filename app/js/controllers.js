@@ -2,19 +2,23 @@ appControllers.controller('LandingController',
 	function($scope) {
 		$scope.ps = 8;
 		$scope.rv = 21;
+
+		$scope.guerriSelected = function(){
+			window.location.href = '#/fontenilles/dieteticien-guerri';
+			console.log("guerriSelected");
+		}
 	}
 );
 
 appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', 'AppointmentManager', 
 	function($scope, $location, GetService, AppointmentManager){
-		console.log(window.location.pathname);
 		var idCabinet;
-		switch (window.location.pathname) {
-			case '/RapiDocteur/rapidocteur_web/partials/seysses/cabinet-medical-seysses.html' : idCabinet = 2; mixpanel.track("View Seysses");
+		switch ($location.path()) {
+			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("View Seysses");
 			break;
-			case '/RapiDocteur/rapidocteur_web/partials/fontenilles/dieteticien-guerri.html' : idCabinet = 4; mixpanel.track("View Guerri");
+			case '/fontenilles/dieteticien-guerri' : idCabinet = 4; mixpanel.track("View Guerri");
 			break;
-			case 'partials/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
+			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
 			break;
 			case '/galaxie/galilee' : idCabinet = 10; 
 			break;
