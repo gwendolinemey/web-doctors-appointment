@@ -1,143 +1,45 @@
-<!DOCTYPE html>
-<html lang="fr">
+<div class="container">
+    <div class="row">               
+        <div class="col-md-6 presentation-doc">
+            <h1 class="heading">Bertucchi yeah</h1>
+            <!-- <img class="img-responsive" src="img/cabinet1_o.jpg" width="300px" alt="médecin généraliste seysses" /> -->
+            <h1 id="plus-medecin">En savoir plus sur cabinet de Seysses</h1>
+            <p>Ac ne quis a nobis hoc ita dici forte miretur, quod alia quaedam in hoc facultas sit ingeni, neque haec dicendi ratio aut disciplina, ne nos quidem huic uni studio penitus umquam dediti fuimus. Etenim omnes artes, quae ad humanitatem pertinent, habent quoddam commune vinculum, et quasi cognatione quadam inter se continentur.</p>
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- <base href="http://localhost/RapiDocteur/rapidocteur_web/"></base> -->
-
-    <title>Cabinet médical Seysses - médecins généralistes - RapiDocteur</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="bower_components/components-font-awesome/css/font-awesome.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="css/main.css" rel="stylesheet">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body ng-app="app">
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="http://localhost/RapiDocteur/rapidocteur_web/">RapiDocteur</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li><a href="/about">En savoir +</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                    <li><a href="/">Blog</a></li>
+        </div>
+        
+        <div class="col-md-6 info-doc">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2895.1763632183256!2d1.3042004000000038!3d43.47778970000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb61e6def9d9d%3A0xbc18a5c1581f4e3b!2s60+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1413365325879" width="350" height="200" frameborder="0" style="border:0"></iframe>
+            <p>60 route d'Ox, 31600 Seysses</p>
+            <p><span class="listpaiyment">Moyens de paiement :<span></p>
+                <ul class="paymentway">
+                    <li><img src="img/cardb.png" />carte bleu acceptée</li>
+                    <li><img src="img/cash.png" /> espèces acceptées</li>
+                    <li><img src="img/check.png" /> chèques acceptés</li>
                 </ul>
-            </div> <!-- /.navbar-collapse -->
-        </div> <!-- /.container -->
-    </nav>
+        </div>        
+    </div>
+    <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
+            <div id="act-choice" class="col-lg-3">
+                <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
+                <p>Quel motif ?</p>
 
-    <div class="container">
-        <div class="row">               
-            <div class="col-md-6 presentation-doc">
-                <h1 class="heading">Bertucchi yeah</h1>
-                <!-- <img class="img-responsive" src="img/cabinet1_o.jpg" width="300px" alt="médecin généraliste seysses" /> -->
-                <h1 id="plus-medecin">En savoir plus sur cabinet de Seysses</h1>
-                <p>Ac ne quis a nobis hoc ita dici forte miretur, quod alia quaedam in hoc facultas sit ingeni, neque haec dicendi ratio aut disciplina, ne nos quidem huic uni studio penitus umquam dediti fuimus. Etenim omnes artes, quae ad humanitatem pertinent, habent quoddam commune vinculum, et quasi cognatione quadam inter se continentur.</p>
-
+                <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
             </div>
-            
-            <div class="col-md-6 info-doc">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2895.1763632183256!2d1.3042004000000038!3d43.47778970000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb61e6def9d9d%3A0xbc18a5c1581f4e3b!2s60+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1413365325879" width="350" height="200" frameborder="0" style="border:0"></iframe>
-                <p>60 route d'Ox, 31600 Seysses</p>
-                <p><span class="listpaiyment">Moyens de paiement :<span></p>
-                    <ul class="paymentway">
-                        <li><img src="img/cardb.png" />carte bleu acceptée</li>
-                        <li><img src="img/cash.png" /> espèces acceptées</li>
-                        <li><img src="img/check.png" /> chèques acceptés</li>
-                    </ul>
-            </div>        
-        </div>
-        <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
-                <div id="act-choice" class="col-lg-3">
-                    <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
-                    <p>Quel motif ?</p>
-
-                    <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
-                </div>
-                <button class="col-lg-1 navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
-                <table class="col-lg-6" id="agenda-med">
-                    <tr>
-                        <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
-                    </tr>                
-                    <tr>
-                        <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
-                            <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
-                                <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
-                            </div>                        
-                        </td>                
-                    </tr>
-                </table>       
-                <button class="col-lg-1 navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button> 
-        </div>
-    </div>   
+            <button class="col-lg-1 navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
+            <table class="col-lg-6" id="agenda-med">
+                <tr>
+                    <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
+                </tr>                
+                <tr>
+                    <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                        <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
+                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
+                        </div>                        
+                    </td>                
+                </tr>
+            </table>       
+            <button class="col-lg-1 navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button> 
+    </div>
+</div>   
     
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <span class="copyright">&copy; RapiDocteur 2014 </span> made with <span id="heart">♥</span> from Toulouse
-                </div>
-                <div class="col-md-4">
-                    <ul class="list-inline social-buttons">
-                        <li><a href="https://twitter.com/RapiDocteur"><i class="fa fa-twitter"></i></a>
-                        </li>
-                        <li><a href="https://www.facebook.com/RapiDocteur"><i class="fa fa-facebook"></i></a>
-                        </li>
-                        <li><a href="https://plus.google.com/b/114510223929114221539/+RapidocteurFr/posts"><i class="fa fa-google"></i></a>
-                        </li>
-                        <li><a href="mailto:hello@rapidocteur.fr"><i class="fa fa-envelope"></i></a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <ul class="list-inline quicklinks">
-                        <li><a href="#">Mentions légales</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-     <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="bower_components/angular/angular.js" type="text/javascript"></script>
-    <script src="bower_components/angular-route/angular-route.js" type="text/javascript"></script>
-    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/mixpanel/mixpanel-dev.js"></script>
-    <script src="js/app.js" type="text/javascript"></script> <!-- personnalisé-->
-    <script src="js/controllers.js" type="text/javascript"></script> <!-- personnalisé-->
-    <script src="js/services.js" type="text/javascript"></script> <!-- personnalisé-->
-
-</body>
-
-</html>

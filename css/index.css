@@ -1,3 +1,28 @@
+/* Navbar */
+.navbar-brand{  }
+.nav-index{ padding: 5px 0;
+        border: 0;
+        background-color: transparent;
+        opacity:0.8;
+        -webkit-transition: padding .3s;
+        -moz-transition: padding .3s;
+        transition: padding .3s;
+        
+    }
+
+@media(min-width:768px) {
+    .navbar-default {
+        padding: 5px 0;
+        border: 0;
+        background-color: #fff;
+        opacity: 0.8;
+        -webkit-transition: padding .3s;
+        -moz-transition: padding .3s;
+        transition: padding .3s;
+        color: #000;
+    }
+}
+
 /* Header */ 
 header {
     text-align: center;
@@ -19,8 +44,8 @@ h1,h2,h3,h4,h5,h6 {
 }
 .lead-small{ font-size:25px; text-transform: none; line-height: 2em;}
 header .intro-text {
-    padding-top: 100px;
-    padding-bottom: 50px;
+    padding-top: 200px;
+    padding-bottom: 200px;
 }
 
 header .intro-text .intro-lead-in {
@@ -41,7 +66,7 @@ header .intro-text .intro-heading {
 }
 
 @media(min-width:768px) {
-    header .intro-text {  padding-top: 300px;  padding-bottom: 200px; }
+    header .intro-text {  padding-top: 200px;  padding-bottom: 200px; }
 
     header .intro-text .intro-lead-in {  margin-bottom: 25px; font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
         font-size: 40px; line-height: 40px;  }
@@ -64,59 +89,6 @@ header .intro-text .intro-heading {
 
 .prendrerv{ font-size: 14px; padding:7px 10px;}
 
-/* Navigation */
-.navbar-default {    border-color: transparent;    background-color: #222; }
-
-.navbar-default .navbar-brand {    font-family: "Lilita One",Helvetica,Arial,cursive;    color: #fff;}
-
-.navbar-default .navbar-brand:hover,
-.navbar-default .navbar-brand:focus,
-.navbar-default .navbar-brand:active,
-.navbar-default .navbar-brand.active {
-    color: #39c5da; }
-
-.navbar-default .navbar-collapse { border-color: rgba(255,255,255,.02); }
-
-.navbar-default .navbar-toggle { border-color: #39c5da; background-color: #39c5da; }
-
-.navbar-default .navbar-toggle .icon-bar { background-color: #fff; }
-
-.navbar-default .navbar-toggle:hover,
-.navbar-default .navbar-toggle:focus {
-    background-color: #39c5da; }
-
-.navbar-default .nav li a {
-    text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-weight: 400; letter-spacing: 1px; color: #fff; }
-
-.navbar-default .nav li a:hover,
-.navbar-default .nav li a:focus {
-    outline: 0;    color: #39c5da; }
-
-.navbar-default .navbar-nav>.active>a {
-    border-radius: 0;    color: #fff; background-color: #39c5da; }
-
-.navbar-default .navbar-nav>.active>a:hover,
-.navbar-default .navbar-nav>.active>a:focus {
-    color: #fff;   background-color: #39c5da; }
-
-@media(min-width:768px) {
-    .navbar-default {
-        padding: 25px 0;
-        border: 0;
-        background-color: transparent;
-        -webkit-transition: padding .3s;
-        -moz-transition: padding .3s;
-        transition: padding .3s;
-    }
-
-    .navbar-default .navbar-brand {
-        font-size: 2em;   -webkit-transition: all .3s;  -moz-transition: all .3s; transition: all .3s; }
-    .navbar-default .navbar-nav>.active>a { border-radius: 3px; }
-    .navbar-default.navbar-shrink { padding: 10px 0; background-color: #222;  }
-    .navbar-default.navbar-shrink .navbar-brand { font-size: 1.5em; }
-}
 
 /* Carte Pro */
 .carte-pro{ display:block; min-height: 200px; margin-top: 2%; margin-bottom: 2%; background-color: #dde4dc; padding:15px;}
@@ -125,20 +97,3 @@ header .intro-text .intro-heading {
 
 /* Footer */
 #heart{ color:red;}
-footer {
-    background-color:#494949;
-    color:#fff;
-    min-height:100px;
-    padding-top:20px;
-    padding-bottom:40px;
-}
-
-footer .nav>li>a {
-    padding:3px;
-    color:#fff;
-}
-
-footer .nav>li>a:hover {
-    background-color:transparent;
-    color:#fff;
-}

@@ -32,5 +32,9 @@
 				templateUrl : 'partials/toulouse/osteopathe-bertucchi.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/confirmation-rendezvous', {
+				templateUrl : 'partials/confirmation-rendezvous.html', 
+				controller: 'ConfirmationRendezVous'
+			})
 			/*$locationProvider.html5Mode(true);*/
 	}]);

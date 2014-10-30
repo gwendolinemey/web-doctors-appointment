@@ -1,6 +1,3 @@
-/**/
-#disponibilites{ border: 1px solid red; }
-
 /* Footer   */
 section#landing-chiffres{
   text-align: center;
@@ -12,23 +9,57 @@ section#landing-chiffres{
   margin-bottom: 3%;
 }
 
+footer { padding: 25px 0; text-align: center; }
+
+footer span.copyright { text-transform: uppercase; text-transform: none; 
+  font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif; line-height: 40px; }
+
+footer ul.quicklinks {
+    margin-bottom: 0;  text-transform: uppercase;
+    text-transform: none; font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 40px; }
+
+ul.social-buttons { margin-bottom: 0; }
+
+ul.social-buttons li a {
+    display: block;  width: 40px;
+    height: 40px; border-radius: 100%; font-size: 20px;
+    line-height: 40px; outline: 0; color: #fff;
+    background-color: #222;-webkit-transition: all .3s; -moz-transition: all .3s; transition: all .3s; }
+
+ul.social-buttons li a:hover,
+ul.social-buttons li a:focus,
+ul.social-buttons li a:active {
+    background-color: #39c5da;
+}
+
 /** Personnalisation page médecin **/
 .presentation-doc{ margin-top:25px; text-align: left; }
-.info-doc{ text-align: left; margin-top: 25px; }
+.presentation-doc .heading { text-align: center;}
+.presentation-doc .lead{ text-align: center;}
+.info-doc{ text-align: left; margin-top: 25px; padding-left: 55px; }
 #plus-medecin{ font-size: large; line-height: 50px; }
-#disponibilites{ background-color: rgba(255,255,255,.5); padding: 2%; margin-top:3%;}
+#disponibilites{ background-color: #bdc3c7; padding: 2%; margin-top:3%;}
 #agenda-med td { border:1px solid #fff; padding:15px; }
-#agenda-med th { border:1px solid #fff; padding:5px; text-align: center; background-color: #0c505a;}
+#agenda-med th { border:1px solid #fff; padding:5px; text-align: center; background-color: #39c5da; color:#fff;}
 .motif-consult{ color:#000; }
 .description-pro{ text-align: left; margin-top: 2%; margin-bottom: 2%;}
-#agenda-med th.disabled{ background-color: grey; border:1px solid #fff;}
-#agenda-med td.disabled{ background-color: grey; border:1px solid #fff;}
+#agenda-med th.disabled{ background-color: #2c3e50; border:1px solid #fff;}
+#agenda-med td.disabled{ background-color: #2c3e50; border:1px solid #fff;}
 .availableAppoint{ color: #000;}
-.navigationArrow{ color: #000;}
+.navigationArrow{ color: #000; height: 32px; width: 32px; border: none; margin:5px; color: #fff; text-align: center;}
 .paymentway li { list-style: none; margin-top: 10px; }
 .listpaiyment{ font-weight: bold;}
+#disponibilites{  }
+#page-med,
+#page-confirmation{ background-color: #ecf0f1; }
+#button-div{ float: right;}
+
 
 /*** Confirmation ***/
-#confirmrv{ max-width: 500px; margin:auto; margin-top: 2%;}
+#lastclic,
+#recap-phrase{ text-align: center; padding-top: 10px; }
+#page-confirmation{width: 80%;margin:auto; padding-bottom: 10px;}
+#confirmrv{ max-width: 500px; margin:auto;}
 #confirmrv input{ margin-top:1%; margin-bottom: 1%; }
 .modal{ color: #000;} 

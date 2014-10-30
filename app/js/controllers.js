@@ -16,7 +16,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		switch ($location.path()) {
 			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("View Seysses");
 			break;
-			case '/fontenilles/dieteticien-guerri' : idCabinet = 4; mixpanel.track("View Guerri");
+			case '/fontenilles/dieteticien-guerri' : idCabinet = 1; mixpanel.track("View Guerri");
 			break;
 			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
 			break;
