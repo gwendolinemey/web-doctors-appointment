@@ -5,8 +5,8 @@
             <h3 class="modal-title">Votre rendez-vous est confirmé !</h3>
         </div>
         <div class="modal-body">
-        	<p class="lead">Vous avez rendez-vous le {{appointment.dayDate}} à {{appointment.time.prettyTime}} avec le Docteur {{appointment.doctor.nom}}. </p> 
-            <p class="lead">Nous vous avons envoyé un e-mail de confirmation. </p> 
+            <p class="lead">Vous avez rendez-vous le {{appointment.dayDate}} à {{appointment.time.prettyTime}} avec {{practicianLabel}}. </p> 
+            <p class="lead">Vous venez de recevoir un e-mail de confirmation. </p> 
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
@@ -15,8 +15,7 @@
 <div id="page-confirmation">
     <p class="lead" id="lastclic">3ème et dernier clic : confirmez !</p>  
 
-    <p id="recap-phrase">Pour confirmer votre rendez-vous avec le Docteur {{appointment.doctor.nom}} le {{appointment.dayDate}} à {{ appointment.time.prettyTime }} entrez vos coordonnées :</p>
-
+    <p id="recap-phrase">Pour confirmer votre rendez-vous avec {{practicianLabel}} le {{appointment.dayDate}} à {{ appointment.time.prettyTime }} entrez vos coordonnées :</p>
 
     <form name="confirmation-rv" id="confirmrv" class="input-group">
     	<input type="text" name="lastName" placeholder="votre nom" class="form-control input-md" ng-model="user.lastName" />
