@@ -1,25 +1,22 @@
 
-	var app = angular.module('app', [/*'ngRoute',*/  'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
+	var app = angular.module('app', [/*'ngRoute',*/'ui.router', 'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
 
 	var appServices = angular.module('appServices', []);
 	var appControllers = angular.module('appControllers', []);
 	var appConfig = angular.module('appConfig', []);
 
 
-	// configure our routes
-	/*app.config(['$routeProvider', '$locationProvider',
-		function($routeProvider, $locationProvider) {*/
 	/*app.config(['$routeProvider',
 		function($routeProvider) {
 		$routeProvider
 
 			// route for the home page
-			.when('/', {
+			.when('/', { 
 				templateUrl : 'index.html',
 				controller  : 'LandingController'
 			})			
 
-			.when('/page-guerri', {
+			.when('/fontenilles/dieteticien-guerri', { 
 				templateUrl : 'partials/fontenilles/dieteticien-guerri.html',
 				controller  : 'CabinetCtrl'
 			})
@@ -44,4 +41,14 @@
             	redirectTo: '/'
         	});
 	}]);*/
+
+/*ui router test */
+app.config(function($stateProvider, $urlRouterProvider) {
+  $stateProvider
+    .state('guerri', {
+        url: '/fontenilles/dieteticien-guerri',
+        templateUrl: 'partials/fontenilles/dieteticien-guerri.html'
+    })
+    
+});
 	

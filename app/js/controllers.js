@@ -1,6 +1,5 @@
 appControllers.controller('LandingController', 
 	function($scope) {
-		console.log("allo");
 		$scope.ps = 8;
 		$scope.rv = 21;
 	}
