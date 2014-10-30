@@ -1,0 +1,34 @@
+<nav ng-include="'partials/header_index.html'" class="navbar-default navbar-static-top nav-index"></nav>
+
+<script type="text/ng-template" id="confirmationModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Votre rendez-vous est confirmé !</h3>
+        </div>
+        <div class="modal-body">
+        	<p class="lead">Vous avez rendez-vous le {{appointment.dayDate}} à {{appointment.time.prettyTime}} avec le Docteur {{appointment.doctor.nom}}. </p> 
+            <p class="lead">Nous vous avons envoyé un e-mail de confirmation. </p> 
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+        </div>
+</script>
+<div id="page-confirmation">
+    <p class="lead" id="lastclic">3ème et dernier clic : confirmez !</p>  
+
+    <p id="recap-phrase">Pour confirmer votre rendez-vous avec le Docteur {{appointment.doctor.nom}} le {{appointment.dayDate}} à {{ appointment.time.prettyTime }} entrez vos coordonnées :</p>
+
+
+    <form name="confirmation-rv" id="confirmrv" class="input-group">
+    	<input type="text" name="lastName" placeholder="votre nom" class="form-control input-md" ng-model="user.lastName" />
+    	<input type="text" name="firstName" placeholder="votre prénom" class="form-control input-md" ng-model="user.firstName" />
+    	<input type="email" name="email" placeholder="votre e-mail" class="form-control input-md" ng-model="user.email" />
+    	<input type="tel" name="phone" placeholder="votre numéro de téléphone" class="form-control input-md" ng-model="user.phone" />
+        <div id="button-div">
+            <a ng-click="doBack()" value="annuler">Annuler</a>
+            <button class="btn btn-lg btn-default" ng-click="saveAppointment()">Confirmer le rendez-vous</button>
+        </div>
+    </form>
+    <alert ng-show="errorEmpty" type="danger" close="hideErrors(1)">Veuillez renseigner tous les champs pour confirmer votre rendez-vous</alert>
+    <alert ng-show="errorEmail" type="danger" close="hideErrors(2)">Veuillez renseigner un e-mail valide pour confirmer votre rendez-vous</alert>
+    <alert ng-show="errorPhone" type="danger" close="hideErrors(3)">Veuillez renseigner un numéro de téléphone valide pour confirmer votre rendez-vous</alert>
+</div>
