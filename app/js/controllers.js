@@ -204,15 +204,6 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 		if ((!$scope.errorEmpty) && (!$scope.errorEmail) && (!$scope.errorPhone)) {
             console.log("saveRV appointment", $scope.appointment);
 
-            var appointment = {};
-            appointment.user = $scope.user;
-            appointment.start = $scope.appointment.time.start;
-            appointment.end = $scope.appointment.time.end;
-            appointment.actLabel = $scope.appointment.acte;
-            appointment.idDoctor = $scope.appointment.doctor.idPraticien;
-            appointment.doctorName = $scope.appointment.doctor.nom;
-            appointment.idOffice = $scope.appointment.office;
-
             PostService.saveAppointment(appointment).success(function(data) {
 		        console.log(data);
 		        if (data.status == "success") {
