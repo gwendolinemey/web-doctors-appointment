@@ -45063,7 +45063,7 @@ mixpanel.init("e6f5b0f3965428de5997c8fbb9a3ad73");
 
 angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../../rapidocteur_web/app/partials/accueil.html",
-    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-fixed-top nav-index\"></nav>\n" +
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-static-top nav-index\"></nav>\n" +
     "    <header>\n" +
     "        <div class=\"container\">\n" +
     "            <div class=\"intro-text\">\n" +
@@ -45079,8 +45079,9 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "        <div class=\"container\">\n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"col-lg-12 text-center\">\n" +
-    "                    <h2 class=\"section-heading\">Les professionnels disponibles à Fontenilles et Toulouse</h2>\n" +
-    "                    <span class=\"section-subheading text-muted\">Nous simplifions la <strong class=\"nobold\">prise de rendez-vous médicaux</strong>.<br />Avec RapiDocteur, choisissez votre professionnels et prenez rendez-vous en moins de cinq minutes, à n'importe quel moment de la journée, depuis votre ordinateur ou votre smartphone !</span>\n" +
+    "                    <h2 class=\"section-heading\">Les derniers professionnels disponibles à Fontenilles et Toulouse qui nous ont rejoint</h2>\n" +
+    "                    <!-- <span class=\"section-subheading text-muted\">RAPIDOCTEUR simplifie la <strong class=\"nobold\">prise de rendez-vous médicaux</strong>.<br />Choisissez votre professionnels et prenez rendez-vous en moins de cinq minutes, à n'importe quel moment de la journée, depuis votre ordinateur ou votre smartphone !</span> -->\n" +
+    "                    <h3>Faites votre premier clic :</h3>\n" +
     "                    \n" +
     "                </div>\n" +
     "            </div>           \n" +
@@ -45175,7 +45176,7 @@ angular.module("../../rapidocteur_web/app/partials/header_index.html", []).run([
     "                <span class=\"icon-bar\"></span>\n" +
     "                <span class=\"icon-bar\"></span>\n" +
     "            </button>\n" +
-    "            <a class=\"navbar-brand\" href=\"#/\">RAPIDOCTEUR</a>\n" +
+    "            <a class=\"navbar-brand\" href=\"#/\"><img src=\"img/logo_rapidocteur-01.png\" alt=\"logo rapidocteur\" /></a>\n" +
     "        </div>\n" +
     "\n" +
     "        <!-- Collect the nav links, forms, and other content for toggling -->\n" +
