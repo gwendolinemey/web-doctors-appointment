@@ -6,7 +6,7 @@ appControllers.controller('LandingController',
 		$scope.guerriSelected = function(){
 			window.location.href = '#/fontenilles/dieteticien-guerri';
 			console.log("guerriSelected");
-		}
+		};
 	}
 );
 
@@ -273,7 +273,7 @@ function isNotDoctor(specialities) {
         if (specialities[i].idSpecialite === 2 ||  specialities[i].idSpecialite === 7) {
             return true;
         }
-    };
+    }
 }
 
 function validateEmail(email) { 

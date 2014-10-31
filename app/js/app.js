@@ -35,6 +35,6 @@
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'
-			})
+			});
 			/*$locationProvider.html5Mode(true);*/
 	}]);
