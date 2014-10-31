@@ -1,4 +1,4 @@
 angular.module('appConfig')
 .constant('Config', {
-  'backend': 'http://alpha.rapidocteur.fr:9000'
+  'backend': 'http://api.rapidocteur.fr:9000'
 });
