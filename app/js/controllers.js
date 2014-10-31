@@ -249,6 +249,11 @@ appControllers.controller('ModalInstanceCtrl', function ($scope, $modalInstance,
 	console.log('appointment', appointment);
 	$scope.appointment = appointment;
 
+	$scope.practicianLabel = "le Docteur " + $scope.appointment.doctor.nom;
+	if (isNotDoctor($scope.appointment.doctor.specialities)) {
+		$scope.practicianLabel = $scope.appointment.doctor.prenom + " " + $scope.appointment.doctor.nom;
+	}
+
 	$scope.ok = function () {
 		$modalInstance.close();
 	};

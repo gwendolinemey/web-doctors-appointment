@@ -21,19 +21,19 @@
 		function($routeProvider) {
 		$routeProvider
 			.when('/', { 
-				templateUrl: 'partials/accueil.html',	
+				templateUrl: 'app/partials/accueil.html',	
 				controller: 'LandingController' 
 			})
 			.when('/fontenilles/dieteticien-guerri', {	
-				templateUrl : 'partials/fontenilles/dieteticien-guerri.html', 
+				templateUrl : 'app/partials/fontenilles/dieteticien-guerri.html', 
 				controller: 'CabinetCtrl'
 			})
 			.when('/toulouse/osteopathe-bertucchi', {
-				templateUrl : 'partials/toulouse/osteopathe-bertucchi.html', 
+				templateUrl : 'app/partials/toulouse/osteopathe-bertucchi.html', 
 				controller: 'CabinetCtrl'
 			})
 			.when('/confirmation-rendezvous', {
-				templateUrl : 'partials/confirmation-rendezvous.html', 
+				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'
 			})
 			/*$locationProvider.html5Mode(true);*/
