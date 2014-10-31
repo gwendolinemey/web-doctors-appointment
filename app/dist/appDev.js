@@ -38109,168 +38109,7302 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       return query ? ('' + matchItem).replace(new RegExp(escapeRegexp(query), 'gi'), '<strong>$&</strong>') : matchItem;
     };
   });
-;(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");
+;/*
+ * angular-ui-bootstrap
+ * http://angular-ui.github.io/bootstrap/
+
+ * Version: 0.11.2 - 2014-09-26
+ * License: MIT
+ */
+angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
+angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/carousel/carousel.html","template/carousel/slide.html","template/datepicker/datepicker.html","template/datepicker/day.html","template/datepicker/month.html","template/datepicker/popup.html","template/datepicker/year.html","template/modal/backdrop.html","template/modal/window.html","template/pagination/pager.html","template/pagination/pagination.html","template/tooltip/tooltip-html-unsafe-popup.html","template/tooltip/tooltip-popup.html","template/popover/popover.html","template/progressbar/bar.html","template/progressbar/progress.html","template/progressbar/progressbar.html","template/rating/rating.html","template/tabs/tab.html","template/tabs/tabset.html","template/timepicker/timepicker.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html"]);
+angular.module('ui.bootstrap.transition', [])
+
+/**
+ * $transition service provides a consistent interface to trigger CSS 3 transitions and to be informed when they complete.
+ * @param  {DOMElement} element  The DOMElement that will be animated.
+ * @param  {string|object|function} trigger  The thing that will cause the transition to start:
+ *   - As a string, it represents the css class to be added to the element.
+ *   - As an object, it represents a hash of style attributes to be applied to the element.
+ *   - As a function, it represents a function to be called that will cause the transition to occur.
+ * @return {Promise}  A promise that is resolved when the transition finishes.
+ */
+.factory('$transition', ['$q', '$timeout', '$rootScope', function($q, $timeout, $rootScope) {
+
+  var $transition = function(element, trigger, options) {
+    options = options || {};
+    var deferred = $q.defer();
+    var endEventName = $transition[options.animation ? 'animationEndEventName' : 'transitionEndEventName'];
+
+    var transitionEndHandler = function(event) {
+      $rootScope.$apply(function() {
+        element.unbind(endEventName, transitionEndHandler);
+        deferred.resolve(element);
+      });
+    };
+
+    if (endEventName) {
+      element.bind(endEventName, transitionEndHandler);
+    }
+
+    // Wrap in a timeout to allow the browser time to update the DOM before the transition is to occur
+    $timeout(function() {
+      if ( angular.isString(trigger) ) {
+        element.addClass(trigger);
+      } else if ( angular.isFunction(trigger) ) {
+        trigger(element);
+      } else if ( angular.isObject(trigger) ) {
+        element.css(trigger);
+      }
+      //If browser does not support transitions, instantly resolve
+      if ( !endEventName ) {
+        deferred.resolve(element);
+      }
+    });
+
+    // Add our custom cancel function to the promise that is returned
+    // We can call this if we are about to run a new transition, which we know will prevent this transition from ending,
+    // i.e. it will therefore never raise a transitionEnd event for that transition
+    deferred.promise.cancel = function() {
+      if ( endEventName ) {
+        element.unbind(endEventName, transitionEndHandler);
+      }
+      deferred.reject('Transition cancelled');
+    };
+
+    return deferred.promise;
+  };
+
+  // Work out the name of the transitionEnd event
+  var transElement = document.createElement('trans');
+  var transitionEndEventNames = {
+    'WebkitTransition': 'webkitTransitionEnd',
+    'MozTransition': 'transitionend',
+    'OTransition': 'oTransitionEnd',
+    'transition': 'transitionend'
+  };
+  var animationEndEventNames = {
+    'WebkitTransition': 'webkitAnimationEnd',
+    'MozTransition': 'animationend',
+    'OTransition': 'oAnimationEnd',
+    'transition': 'animationend'
+  };
+  function findEndEventName(endEventNames) {
+    for (var name in endEventNames){
+      if (transElement.style[name] !== undefined) {
+        return endEventNames[name];
+      }
+    }
+  }
+  $transition.transitionEndEventName = findEndEventName(transitionEndEventNames);
+  $transition.animationEndEventName = findEndEventName(animationEndEventNames);
+  return $transition;
+}]);
+
+angular.module('ui.bootstrap.collapse', ['ui.bootstrap.transition'])
+
+  .directive('collapse', ['$transition', function ($transition) {
+
+    return {
+      link: function (scope, element, attrs) {
+
+        var initialAnimSkip = true;
+        var currentTransition;
+
+        function doTransition(change) {
+          var newTransition = $transition(element, change);
+          if (currentTransition) {
+            currentTransition.cancel();
+          }
+          currentTransition = newTransition;
+          newTransition.then(newTransitionDone, newTransitionDone);
+          return newTransition;
+
+          function newTransitionDone() {
+            // Make sure it's this transition, otherwise, leave it alone.
+            if (currentTransition === newTransition) {
+              currentTransition = undefined;
+            }
+          }
+        }
+
+        function expand() {
+          if (initialAnimSkip) {
+            initialAnimSkip = false;
+            expandDone();
+          } else {
+            element.removeClass('collapse').addClass('collapsing');
+            doTransition({ height: element[0].scrollHeight + 'px' }).then(expandDone);
+          }
+        }
+
+        function expandDone() {
+          element.removeClass('collapsing');
+          element.addClass('collapse in');
+          element.css({height: 'auto'});
+        }
+
+        function collapse() {
+          if (initialAnimSkip) {
+            initialAnimSkip = false;
+            collapseDone();
+            element.css({height: 0});
+          } else {
+            // CSS transitions don't work with height: auto, so we have to manually change the height to a specific value
+            element.css({ height: element[0].scrollHeight + 'px' });
+            //trigger reflow so a browser realizes that height was updated from auto to a specific value
+            var x = element[0].offsetWidth;
+
+            element.removeClass('collapse in').addClass('collapsing');
+
+            doTransition({ height: 0 }).then(collapseDone);
+          }
+        }
+
+        function collapseDone() {
+          element.removeClass('collapsing');
+          element.addClass('collapse');
+        }
+
+        scope.$watch(attrs.collapse, function (shouldCollapse) {
+          if (shouldCollapse) {
+            collapse();
+          } else {
+            expand();
+          }
+        });
+      }
+    };
+  }]);
+
+angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
+
+.constant('accordionConfig', {
+  closeOthers: true
+})
+
+.controller('AccordionController', ['$scope', '$attrs', 'accordionConfig', function ($scope, $attrs, accordionConfig) {
+
+  // This array keeps track of the accordion groups
+  this.groups = [];
+
+  // Ensure that all the groups in this accordion are closed, unless close-others explicitly says not to
+  this.closeOthers = function(openGroup) {
+    var closeOthers = angular.isDefined($attrs.closeOthers) ? $scope.$eval($attrs.closeOthers) : accordionConfig.closeOthers;
+    if ( closeOthers ) {
+      angular.forEach(this.groups, function (group) {
+        if ( group !== openGroup ) {
+          group.isOpen = false;
+        }
+      });
+    }
+  };
+
+  // This is called from the accordion-group directive to add itself to the accordion
+  this.addGroup = function(groupScope) {
+    var that = this;
+    this.groups.push(groupScope);
+
+    groupScope.$on('$destroy', function (event) {
+      that.removeGroup(groupScope);
+    });
+  };
+
+  // This is called from the accordion-group directive when to remove itself
+  this.removeGroup = function(group) {
+    var index = this.groups.indexOf(group);
+    if ( index !== -1 ) {
+      this.groups.splice(index, 1);
+    }
+  };
+
+}])
+
+// The accordion directive simply sets up the directive controller
+// and adds an accordion CSS class to itself element.
+.directive('accordion', function () {
+  return {
+    restrict:'EA',
+    controller:'AccordionController',
+    transclude: true,
+    replace: false,
+    templateUrl: 'template/accordion/accordion.html'
+  };
+})
+
+// The accordion-group directive indicates a block of html that will expand and collapse in an accordion
+.directive('accordionGroup', function() {
+  return {
+    require:'^accordion',         // We need this directive to be inside an accordion
+    restrict:'EA',
+    transclude:true,              // It transcludes the contents of the directive into the template
+    replace: true,                // The element containing the directive will be replaced with the template
+    templateUrl:'template/accordion/accordion-group.html',
+    scope: {
+      heading: '@',               // Interpolate the heading attribute onto this scope
+      isOpen: '=?',
+      isDisabled: '=?'
+    },
+    controller: function() {
+      this.setHeading = function(element) {
+        this.heading = element;
+      };
+    },
+    link: function(scope, element, attrs, accordionCtrl) {
+      accordionCtrl.addGroup(scope);
+
+      scope.$watch('isOpen', function(value) {
+        if ( value ) {
+          accordionCtrl.closeOthers(scope);
+        }
+      });
+
+      scope.toggleOpen = function() {
+        if ( !scope.isDisabled ) {
+          scope.isOpen = !scope.isOpen;
+        }
+      };
+    }
+  };
+})
+
+// Use accordion-heading below an accordion-group to provide a heading containing HTML
+// <accordion-group>
+//   <accordion-heading>Heading containing HTML - <img src="..."></accordion-heading>
+// </accordion-group>
+.directive('accordionHeading', function() {
+  return {
+    restrict: 'EA',
+    transclude: true,   // Grab the contents to be used as the heading
+    template: '',       // In effect remove this element!
+    replace: true,
+    require: '^accordionGroup',
+    link: function(scope, element, attr, accordionGroupCtrl, transclude) {
+      // Pass the heading to the accordion-group controller
+      // so that it can be transcluded into the right place in the template
+      // [The second parameter to transclude causes the elements to be cloned so that they work in ng-repeat]
+      accordionGroupCtrl.setHeading(transclude(scope, function() {}));
+    }
+  };
+})
+
+// Use in the accordion-group template to indicate where you want the heading to be transcluded
+// You must provide the property on the accordion-group controller that will hold the transcluded element
+// <div class="accordion-group">
+//   <div class="accordion-heading" ><a ... accordion-transclude="heading">...</a></div>
+//   ...
+// </div>
+.directive('accordionTransclude', function() {
+  return {
+    require: '^accordionGroup',
+    link: function(scope, element, attr, controller) {
+      scope.$watch(function() { return controller[attr.accordionTransclude]; }, function(heading) {
+        if ( heading ) {
+          element.html('');
+          element.append(heading);
+        }
+      });
+    }
+  };
+});
+
+angular.module('ui.bootstrap.alert', [])
+
+.controller('AlertController', ['$scope', '$attrs', function ($scope, $attrs) {
+  $scope.closeable = 'close' in $attrs;
+}])
+
+.directive('alert', function () {
+  return {
+    restrict:'EA',
+    controller:'AlertController',
+    templateUrl:'template/alert/alert.html',
+    transclude:true,
+    replace:true,
+    scope: {
+      type: '@',
+      close: '&'
+    }
+  };
+});
+
+angular.module('ui.bootstrap.bindHtml', [])
+
+  .directive('bindHtmlUnsafe', function () {
+    return function (scope, element, attr) {
+      element.addClass('ng-binding').data('$binding', attr.bindHtmlUnsafe);
+      scope.$watch(attr.bindHtmlUnsafe, function bindHtmlUnsafeWatchAction(value) {
+        element.html(value || '');
+      });
+    };
+  });
+angular.module('ui.bootstrap.buttons', [])
+
+.constant('buttonConfig', {
+  activeClass: 'active',
+  toggleEvent: 'click'
+})
+
+.controller('ButtonsController', ['buttonConfig', function(buttonConfig) {
+  this.activeClass = buttonConfig.activeClass || 'active';
+  this.toggleEvent = buttonConfig.toggleEvent || 'click';
+}])
+
+.directive('btnRadio', function () {
+  return {
+    require: ['btnRadio', 'ngModel'],
+    controller: 'ButtonsController',
+    link: function (scope, element, attrs, ctrls) {
+      var buttonsCtrl = ctrls[0], ngModelCtrl = ctrls[1];
+
+      //model -> UI
+      ngModelCtrl.$render = function () {
+        element.toggleClass(buttonsCtrl.activeClass, angular.equals(ngModelCtrl.$modelValue, scope.$eval(attrs.btnRadio)));
+      };
+
+      //ui->model
+      element.bind(buttonsCtrl.toggleEvent, function () {
+        var isActive = element.hasClass(buttonsCtrl.activeClass);
+
+        if (!isActive || angular.isDefined(attrs.uncheckable)) {
+          scope.$apply(function () {
+            ngModelCtrl.$setViewValue(isActive ? null : scope.$eval(attrs.btnRadio));
+            ngModelCtrl.$render();
+          });
+        }
+      });
+    }
+  };
+})
+
+.directive('btnCheckbox', function () {
+  return {
+    require: ['btnCheckbox', 'ngModel'],
+    controller: 'ButtonsController',
+    link: function (scope, element, attrs, ctrls) {
+      var buttonsCtrl = ctrls[0], ngModelCtrl = ctrls[1];
+
+      function getTrueValue() {
+        return getCheckboxValue(attrs.btnCheckboxTrue, true);
+      }
+
+      function getFalseValue() {
+        return getCheckboxValue(attrs.btnCheckboxFalse, false);
+      }
+
+      function getCheckboxValue(attributeValue, defaultValue) {
+        var val = scope.$eval(attributeValue);
+        return angular.isDefined(val) ? val : defaultValue;
+      }
+
+      //model -> UI
+      ngModelCtrl.$render = function () {
+        element.toggleClass(buttonsCtrl.activeClass, angular.equals(ngModelCtrl.$modelValue, getTrueValue()));
+      };
+
+      //ui->model
+      element.bind(buttonsCtrl.toggleEvent, function () {
+        scope.$apply(function () {
+          ngModelCtrl.$setViewValue(element.hasClass(buttonsCtrl.activeClass) ? getFalseValue() : getTrueValue());
+          ngModelCtrl.$render();
+        });
+      });
+    }
+  };
+});
+
+/**
+* @ngdoc overview
+* @name ui.bootstrap.carousel
+*
+* @description
+* AngularJS version of an image carousel.
+*
+*/
+angular.module('ui.bootstrap.carousel', ['ui.bootstrap.transition'])
+.controller('CarouselController', ['$scope', '$timeout', '$transition', function ($scope, $timeout, $transition) {
+  var self = this,
+    slides = self.slides = $scope.slides = [],
+    currentIndex = -1,
+    currentTimeout, isPlaying;
+  self.currentSlide = null;
+
+  var destroyed = false;
+  /* direction: "prev" or "next" */
+  self.select = $scope.select = function(nextSlide, direction) {
+    var nextIndex = slides.indexOf(nextSlide);
+    //Decide direction if it's not given
+    if (direction === undefined) {
+      direction = nextIndex > currentIndex ? 'next' : 'prev';
+    }
+    if (nextSlide && nextSlide !== self.currentSlide) {
+      if ($scope.$currentTransition) {
+        $scope.$currentTransition.cancel();
+        //Timeout so ng-class in template has time to fix classes for finished slide
+        $timeout(goNext);
+      } else {
+        goNext();
+      }
+    }
+    function goNext() {
+      // Scope has been destroyed, stop here.
+      if (destroyed) { return; }
+      //If we have a slide to transition from and we have a transition type and we're allowed, go
+      if (self.currentSlide && angular.isString(direction) && !$scope.noTransition && nextSlide.$element) {
+        //We shouldn't do class manip in here, but it's the same weird thing bootstrap does. need to fix sometime
+        nextSlide.$element.addClass(direction);
+        var reflow = nextSlide.$element[0].offsetWidth; //force reflow
+
+        //Set all other slides to stop doing their stuff for the new transition
+        angular.forEach(slides, function(slide) {
+          angular.extend(slide, {direction: '', entering: false, leaving: false, active: false});
+        });
+        angular.extend(nextSlide, {direction: direction, active: true, entering: true});
+        angular.extend(self.currentSlide||{}, {direction: direction, leaving: true});
+
+        $scope.$currentTransition = $transition(nextSlide.$element, {});
+        //We have to create new pointers inside a closure since next & current will change
+        (function(next,current) {
+          $scope.$currentTransition.then(
+            function(){ transitionDone(next, current); },
+            function(){ transitionDone(next, current); }
+          );
+        }(nextSlide, self.currentSlide));
+      } else {
+        transitionDone(nextSlide, self.currentSlide);
+      }
+      self.currentSlide = nextSlide;
+      currentIndex = nextIndex;
+      //every time you change slides, reset the timer
+      restartTimer();
+    }
+    function transitionDone(next, current) {
+      angular.extend(next, {direction: '', active: true, leaving: false, entering: false});
+      angular.extend(current||{}, {direction: '', active: false, leaving: false, entering: false});
+      $scope.$currentTransition = null;
+    }
+  };
+  $scope.$on('$destroy', function () {
+    destroyed = true;
+  });
+
+  /* Allow outside people to call indexOf on slides array */
+  self.indexOfSlide = function(slide) {
+    return slides.indexOf(slide);
+  };
+
+  $scope.next = function() {
+    var newIndex = (currentIndex + 1) % slides.length;
+
+    //Prevent this user-triggered transition from occurring if there is already one in progress
+    if (!$scope.$currentTransition) {
+      return self.select(slides[newIndex], 'next');
+    }
+  };
+
+  $scope.prev = function() {
+    var newIndex = currentIndex - 1 < 0 ? slides.length - 1 : currentIndex - 1;
+
+    //Prevent this user-triggered transition from occurring if there is already one in progress
+    if (!$scope.$currentTransition) {
+      return self.select(slides[newIndex], 'prev');
+    }
+  };
+
+  $scope.isActive = function(slide) {
+     return self.currentSlide === slide;
+  };
+
+  $scope.$watch('interval', restartTimer);
+  $scope.$on('$destroy', resetTimer);
+
+  function restartTimer() {
+    resetTimer();
+    var interval = +$scope.interval;
+    if (!isNaN(interval) && interval>=0) {
+      currentTimeout = $timeout(timerFn, interval);
+    }
+  }
+
+  function resetTimer() {
+    if (currentTimeout) {
+      $timeout.cancel(currentTimeout);
+      currentTimeout = null;
+    }
+  }
+
+  function timerFn() {
+    if (isPlaying) {
+      $scope.next();
+      restartTimer();
+    } else {
+      $scope.pause();
+    }
+  }
+
+  $scope.play = function() {
+    if (!isPlaying) {
+      isPlaying = true;
+      restartTimer();
+    }
+  };
+  $scope.pause = function() {
+    if (!$scope.noPause) {
+      isPlaying = false;
+      resetTimer();
+    }
+  };
+
+  self.addSlide = function(slide, element) {
+    slide.$element = element;
+    slides.push(slide);
+    //if this is the first slide or the slide is set to active, select it
+    if(slides.length === 1 || slide.active) {
+      self.select(slides[slides.length-1]);
+      if (slides.length == 1) {
+        $scope.play();
+      }
+    } else {
+      slide.active = false;
+    }
+  };
+
+  self.removeSlide = function(slide) {
+    //get the index of the slide inside the carousel
+    var index = slides.indexOf(slide);
+    slides.splice(index, 1);
+    if (slides.length > 0 && slide.active) {
+      if (index >= slides.length) {
+        self.select(slides[index-1]);
+      } else {
+        self.select(slides[index]);
+      }
+    } else if (currentIndex > index) {
+      currentIndex--;
+    }
+  };
+
+}])
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.carousel.directive:carousel
+ * @restrict EA
+ *
+ * @description
+ * Carousel is the outer container for a set of image 'slides' to showcase.
+ *
+ * @param {number=} interval The time, in milliseconds, that it will take the carousel to go to the next slide.
+ * @param {boolean=} noTransition Whether to disable transitions on the carousel.
+ * @param {boolean=} noPause Whether to disable pausing on the carousel (by default, the carousel interval pauses on hover).
+ *
+ * @example
+<example module="ui.bootstrap">
+  <file name="index.html">
+    <carousel>
+      <slide>
+        <img src="http://placekitten.com/150/150" style="margin:auto;">
+        <div class="carousel-caption">
+          <p>Beautiful!</p>
+        </div>
+      </slide>
+      <slide>
+        <img src="http://placekitten.com/100/150" style="margin:auto;">
+        <div class="carousel-caption">
+          <p>D'aww!</p>
+        </div>
+      </slide>
+    </carousel>
+  </file>
+  <file name="demo.css">
+    .carousel-indicators {
+      top: auto;
+      bottom: 15px;
+    }
+  </file>
+</example>
+ */
+.directive('carousel', [function() {
+  return {
+    restrict: 'EA',
+    transclude: true,
+    replace: true,
+    controller: 'CarouselController',
+    require: 'carousel',
+    templateUrl: 'template/carousel/carousel.html',
+    scope: {
+      interval: '=',
+      noTransition: '=',
+      noPause: '='
+    }
+  };
+}])
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.carousel.directive:slide
+ * @restrict EA
+ *
+ * @description
+ * Creates a slide inside a {@link ui.bootstrap.carousel.directive:carousel carousel}.  Must be placed as a child of a carousel element.
+ *
+ * @param {boolean=} active Model binding, whether or not this slide is currently active.
+ *
+ * @example
+<example module="ui.bootstrap">
+  <file name="index.html">
+<div ng-controller="CarouselDemoCtrl">
+  <carousel>
+    <slide ng-repeat="slide in slides" active="slide.active">
+      <img ng-src="{{slide.image}}" style="margin:auto;">
+      <div class="carousel-caption">
+        <h4>Slide {{$index}}</h4>
+        <p>{{slide.text}}</p>
+      </div>
+    </slide>
+  </carousel>
+  Interval, in milliseconds: <input type="number" ng-model="myInterval">
+  <br />Enter a negative number to stop the interval.
+</div>
+  </file>
+  <file name="script.js">
+function CarouselDemoCtrl($scope) {
+  $scope.myInterval = 5000;
+}
+  </file>
+  <file name="demo.css">
+    .carousel-indicators {
+      top: auto;
+      bottom: 15px;
+    }
+  </file>
+</example>
+*/
+
+.directive('slide', function() {
+  return {
+    require: '^carousel',
+    restrict: 'EA',
+    transclude: true,
+    replace: true,
+    templateUrl: 'template/carousel/slide.html',
+    scope: {
+      active: '=?'
+    },
+    link: function (scope, element, attrs, carouselCtrl) {
+      carouselCtrl.addSlide(scope, element);
+      //when the scope is destroyed then remove the slide from the current slides array
+      scope.$on('$destroy', function() {
+        carouselCtrl.removeSlide(scope);
+      });
+
+      scope.$watch('active', function(active) {
+        if (active) {
+          carouselCtrl.select(scope);
+        }
+      });
+    }
+  };
+});
+
+angular.module('ui.bootstrap.dateparser', [])
+
+.service('dateParser', ['$locale', 'orderByFilter', function($locale, orderByFilter) {
+
+  this.parsers = {};
+
+  var formatCodeToRegex = {
+    'yyyy': {
+      regex: '\\d{4}',
+      apply: function(value) { this.year = +value; }
+    },
+    'yy': {
+      regex: '\\d{2}',
+      apply: function(value) { this.year = +value + 2000; }
+    },
+    'y': {
+      regex: '\\d{1,4}',
+      apply: function(value) { this.year = +value; }
+    },
+    'MMMM': {
+      regex: $locale.DATETIME_FORMATS.MONTH.join('|'),
+      apply: function(value) { this.month = $locale.DATETIME_FORMATS.MONTH.indexOf(value); }
+    },
+    'MMM': {
+      regex: $locale.DATETIME_FORMATS.SHORTMONTH.join('|'),
+      apply: function(value) { this.month = $locale.DATETIME_FORMATS.SHORTMONTH.indexOf(value); }
+    },
+    'MM': {
+      regex: '0[1-9]|1[0-2]',
+      apply: function(value) { this.month = value - 1; }
+    },
+    'M': {
+      regex: '[1-9]|1[0-2]',
+      apply: function(value) { this.month = value - 1; }
+    },
+    'dd': {
+      regex: '[0-2][0-9]{1}|3[0-1]{1}',
+      apply: function(value) { this.date = +value; }
+    },
+    'd': {
+      regex: '[1-2]?[0-9]{1}|3[0-1]{1}',
+      apply: function(value) { this.date = +value; }
+    },
+    'EEEE': {
+      regex: $locale.DATETIME_FORMATS.DAY.join('|')
+    },
+    'EEE': {
+      regex: $locale.DATETIME_FORMATS.SHORTDAY.join('|')
+    }
+  };
+
+  function createParser(format) {
+    var map = [], regex = format.split('');
+
+    angular.forEach(formatCodeToRegex, function(data, code) {
+      var index = format.indexOf(code);
+
+      if (index > -1) {
+        format = format.split('');
+
+        regex[index] = '(' + data.regex + ')';
+        format[index] = '$'; // Custom symbol to define consumed part of format
+        for (var i = index + 1, n = index + code.length; i < n; i++) {
+          regex[i] = '';
+          format[i] = '$';
+        }
+        format = format.join('');
+
+        map.push({ index: index, apply: data.apply });
+      }
+    });
+
+    return {
+      regex: new RegExp('^' + regex.join('') + '$'),
+      map: orderByFilter(map, 'index')
+    };
+  }
+
+  this.parse = function(input, format) {
+    if ( !angular.isString(input) || !format ) {
+      return input;
+    }
+
+    format = $locale.DATETIME_FORMATS[format] || format;
+
+    if ( !this.parsers[format] ) {
+      this.parsers[format] = createParser(format);
+    }
+
+    var parser = this.parsers[format],
+        regex = parser.regex,
+        map = parser.map,
+        results = input.match(regex);
+
+    if ( results && results.length ) {
+      var fields = { year: 1900, month: 0, date: 1, hours: 0 }, dt;
+
+      for( var i = 1, n = results.length; i < n; i++ ) {
+        var mapper = map[i-1];
+        if ( mapper.apply ) {
+          mapper.apply.call(fields, results[i]);
+        }
+      }
+
+      if ( isValid(fields.year, fields.month, fields.date) ) {
+        dt = new Date( fields.year, fields.month, fields.date, fields.hours);
+      }
+
+      return dt;
+    }
+  };
+
+  // Check if date is valid for specific month (and year for February).
+  // Month: 0 = Jan, 1 = Feb, etc
+  function isValid(year, month, date) {
+    if ( month === 1 && date > 28) {
+        return date === 29 && ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0);
+    }
+
+    if ( month === 3 || month === 5 || month === 8 || month === 10) {
+        return date < 31;
+    }
+
+    return true;
+  }
+}]);
+
+angular.module('ui.bootstrap.position', [])
+
+/**
+ * A set of utility methods that can be use to retrieve position of DOM elements.
+ * It is meant to be used where we need to absolute-position DOM elements in
+ * relation to other, existing elements (this is the case for tooltips, popovers,
+ * typeahead suggestions etc.).
+ */
+  .factory('$position', ['$document', '$window', function ($document, $window) {
+
+    function getStyle(el, cssprop) {
+      if (el.currentStyle) { //IE
+        return el.currentStyle[cssprop];
+      } else if ($window.getComputedStyle) {
+        return $window.getComputedStyle(el)[cssprop];
+      }
+      // finally try and get inline style
+      return el.style[cssprop];
+    }
+
+    /**
+     * Checks if a given element is statically positioned
+     * @param element - raw DOM element
+     */
+    function isStaticPositioned(element) {
+      return (getStyle(element, 'position') || 'static' ) === 'static';
+    }
+
+    /**
+     * returns the closest, non-statically positioned parentOffset of a given element
+     * @param element
+     */
+    var parentOffsetEl = function (element) {
+      var docDomEl = $document[0];
+      var offsetParent = element.offsetParent || docDomEl;
+      while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
+        offsetParent = offsetParent.offsetParent;
+      }
+      return offsetParent || docDomEl;
+    };
+
+    return {
+      /**
+       * Provides read-only equivalent of jQuery's position function:
+       * http://api.jquery.com/position/
+       */
+      position: function (element) {
+        var elBCR = this.offset(element);
+        var offsetParentBCR = { top: 0, left: 0 };
+        var offsetParentEl = parentOffsetEl(element[0]);
+        if (offsetParentEl != $document[0]) {
+          offsetParentBCR = this.offset(angular.element(offsetParentEl));
+          offsetParentBCR.top += offsetParentEl.clientTop - offsetParentEl.scrollTop;
+          offsetParentBCR.left += offsetParentEl.clientLeft - offsetParentEl.scrollLeft;
+        }
+
+        var boundingClientRect = element[0].getBoundingClientRect();
+        return {
+          width: boundingClientRect.width || element.prop('offsetWidth'),
+          height: boundingClientRect.height || element.prop('offsetHeight'),
+          top: elBCR.top - offsetParentBCR.top,
+          left: elBCR.left - offsetParentBCR.left
+        };
+      },
+
+      /**
+       * Provides read-only equivalent of jQuery's offset function:
+       * http://api.jquery.com/offset/
+       */
+      offset: function (element) {
+        var boundingClientRect = element[0].getBoundingClientRect();
+        return {
+          width: boundingClientRect.width || element.prop('offsetWidth'),
+          height: boundingClientRect.height || element.prop('offsetHeight'),
+          top: boundingClientRect.top + ($window.pageYOffset || $document[0].documentElement.scrollTop),
+          left: boundingClientRect.left + ($window.pageXOffset || $document[0].documentElement.scrollLeft)
+        };
+      },
+
+      /**
+       * Provides coordinates for the targetEl in relation to hostEl
+       */
+      positionElements: function (hostEl, targetEl, positionStr, appendToBody) {
+
+        var positionStrParts = positionStr.split('-');
+        var pos0 = positionStrParts[0], pos1 = positionStrParts[1] || 'center';
+
+        var hostElPos,
+          targetElWidth,
+          targetElHeight,
+          targetElPos;
+
+        hostElPos = appendToBody ? this.offset(hostEl) : this.position(hostEl);
+
+        targetElWidth = targetEl.prop('offsetWidth');
+        targetElHeight = targetEl.prop('offsetHeight');
+
+        var shiftWidth = {
+          center: function () {
+            return hostElPos.left + hostElPos.width / 2 - targetElWidth / 2;
+          },
+          left: function () {
+            return hostElPos.left;
+          },
+          right: function () {
+            return hostElPos.left + hostElPos.width;
+          }
+        };
+
+        var shiftHeight = {
+          center: function () {
+            return hostElPos.top + hostElPos.height / 2 - targetElHeight / 2;
+          },
+          top: function () {
+            return hostElPos.top;
+          },
+          bottom: function () {
+            return hostElPos.top + hostElPos.height;
+          }
+        };
+
+        switch (pos0) {
+          case 'right':
+            targetElPos = {
+              top: shiftHeight[pos1](),
+              left: shiftWidth[pos0]()
+            };
+            break;
+          case 'left':
+            targetElPos = {
+              top: shiftHeight[pos1](),
+              left: hostElPos.left - targetElWidth
+            };
+            break;
+          case 'bottom':
+            targetElPos = {
+              top: shiftHeight[pos0](),
+              left: shiftWidth[pos1]()
+            };
+            break;
+          default:
+            targetElPos = {
+              top: hostElPos.top - targetElHeight,
+              left: shiftWidth[pos1]()
+            };
+            break;
+        }
+
+        return targetElPos;
+      }
+    };
+  }]);
+
+angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootstrap.position'])
+
+.constant('datepickerConfig', {
+  formatDay: 'dd',
+  formatMonth: 'MMMM',
+  formatYear: 'yyyy',
+  formatDayHeader: 'EEE',
+  formatDayTitle: 'MMMM yyyy',
+  formatMonthTitle: 'yyyy',
+  datepickerMode: 'day',
+  minMode: 'day',
+  maxMode: 'year',
+  showWeeks: true,
+  startingDay: 0,
+  yearRange: 20,
+  minDate: null,
+  maxDate: null
+})
+
+.controller('DatepickerController', ['$scope', '$attrs', '$parse', '$interpolate', '$timeout', '$log', 'dateFilter', 'datepickerConfig', function($scope, $attrs, $parse, $interpolate, $timeout, $log, dateFilter, datepickerConfig) {
+  var self = this,
+      ngModelCtrl = { $setViewValue: angular.noop }; // nullModelCtrl;
+
+  // Modes chain
+  this.modes = ['day', 'month', 'year'];
+
+  // Configuration attributes
+  angular.forEach(['formatDay', 'formatMonth', 'formatYear', 'formatDayHeader', 'formatDayTitle', 'formatMonthTitle',
+                   'minMode', 'maxMode', 'showWeeks', 'startingDay', 'yearRange'], function( key, index ) {
+    self[key] = angular.isDefined($attrs[key]) ? (index < 8 ? $interpolate($attrs[key])($scope.$parent) : $scope.$parent.$eval($attrs[key])) : datepickerConfig[key];
+  });
+
+  // Watchable date attributes
+  angular.forEach(['minDate', 'maxDate'], function( key ) {
+    if ( $attrs[key] ) {
+      $scope.$parent.$watch($parse($attrs[key]), function(value) {
+        self[key] = value ? new Date(value) : null;
+        self.refreshView();
+      });
+    } else {
+      self[key] = datepickerConfig[key] ? new Date(datepickerConfig[key]) : null;
+    }
+  });
+
+  $scope.datepickerMode = $scope.datepickerMode || datepickerConfig.datepickerMode;
+  $scope.uniqueId = 'datepicker-' + $scope.$id + '-' + Math.floor(Math.random() * 10000);
+  this.activeDate = angular.isDefined($attrs.initDate) ? $scope.$parent.$eval($attrs.initDate) : new Date();
+
+  $scope.isActive = function(dateObject) {
+    if (self.compare(dateObject.date, self.activeDate) === 0) {
+      $scope.activeDateId = dateObject.uid;
+      return true;
+    }
+    return false;
+  };
+
+  this.init = function( ngModelCtrl_ ) {
+    ngModelCtrl = ngModelCtrl_;
+
+    ngModelCtrl.$render = function() {
+      self.render();
+    };
+  };
+
+  this.render = function() {
+    if ( ngModelCtrl.$modelValue ) {
+      var date = new Date( ngModelCtrl.$modelValue ),
+          isValid = !isNaN(date);
+
+      if ( isValid ) {
+        this.activeDate = date;
+      } else {
+        $log.error('Datepicker directive: "ng-model" value must be a Date object, a number of milliseconds since 01.01.1970 or a string representing an RFC2822 or ISO 8601 date.');
+      }
+      ngModelCtrl.$setValidity('date', isValid);
+    }
+    this.refreshView();
+  };
+
+  this.refreshView = function() {
+    if ( this.element ) {
+      this._refreshView();
+
+      var date = ngModelCtrl.$modelValue ? new Date(ngModelCtrl.$modelValue) : null;
+      ngModelCtrl.$setValidity('date-disabled', !date || (this.element && !this.isDisabled(date)));
+    }
+  };
+
+  this.createDateObject = function(date, format) {
+    var model = ngModelCtrl.$modelValue ? new Date(ngModelCtrl.$modelValue) : null;
+    return {
+      date: date,
+      label: dateFilter(date, format),
+      selected: model && this.compare(date, model) === 0,
+      disabled: this.isDisabled(date),
+      current: this.compare(date, new Date()) === 0
+    };
+  };
+
+  this.isDisabled = function( date ) {
+    return ((this.minDate && this.compare(date, this.minDate) < 0) || (this.maxDate && this.compare(date, this.maxDate) > 0) || ($attrs.dateDisabled && $scope.dateDisabled({date: date, mode: $scope.datepickerMode})));
+  };
+
+  // Split array into smaller arrays
+  this.split = function(arr, size) {
+    var arrays = [];
+    while (arr.length > 0) {
+      arrays.push(arr.splice(0, size));
+    }
+    return arrays;
+  };
+
+  $scope.select = function( date ) {
+    if ( $scope.datepickerMode === self.minMode ) {
+      var dt = ngModelCtrl.$modelValue ? new Date( ngModelCtrl.$modelValue ) : new Date(0, 0, 0, 0, 0, 0, 0);
+      dt.setFullYear( date.getFullYear(), date.getMonth(), date.getDate() );
+      ngModelCtrl.$setViewValue( dt );
+      ngModelCtrl.$render();
+    } else {
+      self.activeDate = date;
+      $scope.datepickerMode = self.modes[ self.modes.indexOf( $scope.datepickerMode ) - 1 ];
+    }
+  };
+
+  $scope.move = function( direction ) {
+    var year = self.activeDate.getFullYear() + direction * (self.step.years || 0),
+        month = self.activeDate.getMonth() + direction * (self.step.months || 0);
+    self.activeDate.setFullYear(year, month, 1);
+    self.refreshView();
+  };
+
+  $scope.toggleMode = function( direction ) {
+    direction = direction || 1;
+
+    if (($scope.datepickerMode === self.maxMode && direction === 1) || ($scope.datepickerMode === self.minMode && direction === -1)) {
+      return;
+    }
+
+    $scope.datepickerMode = self.modes[ self.modes.indexOf( $scope.datepickerMode ) + direction ];
+  };
+
+  // Key event mapper
+  $scope.keys = { 13:'enter', 32:'space', 33:'pageup', 34:'pagedown', 35:'end', 36:'home', 37:'left', 38:'up', 39:'right', 40:'down' };
+
+  var focusElement = function() {
+    $timeout(function() {
+      self.element[0].focus();
+    }, 0 , false);
+  };
+
+  // Listen for focus requests from popup directive
+  $scope.$on('datepicker.focus', focusElement);
+
+  $scope.keydown = function( evt ) {
+    var key = $scope.keys[evt.which];
+
+    if ( !key || evt.shiftKey || evt.altKey ) {
+      return;
+    }
+
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    if (key === 'enter' || key === 'space') {
+      if ( self.isDisabled(self.activeDate)) {
+        return; // do nothing
+      }
+      $scope.select(self.activeDate);
+      focusElement();
+    } else if (evt.ctrlKey && (key === 'up' || key === 'down')) {
+      $scope.toggleMode(key === 'up' ? 1 : -1);
+      focusElement();
+    } else {
+      self.handleKeyDown(key, evt);
+      self.refreshView();
+    }
+  };
+}])
+
+.directive( 'datepicker', function () {
+  return {
+    restrict: 'EA',
+    replace: true,
+    templateUrl: 'template/datepicker/datepicker.html',
+    scope: {
+      datepickerMode: '=?',
+      dateDisabled: '&'
+    },
+    require: ['datepicker', '?^ngModel'],
+    controller: 'DatepickerController',
+    link: function(scope, element, attrs, ctrls) {
+      var datepickerCtrl = ctrls[0], ngModelCtrl = ctrls[1];
+
+      if ( ngModelCtrl ) {
+        datepickerCtrl.init( ngModelCtrl );
+      }
+    }
+  };
+})
+
+.directive('daypicker', ['dateFilter', function (dateFilter) {
+  return {
+    restrict: 'EA',
+    replace: true,
+    templateUrl: 'template/datepicker/day.html',
+    require: '^datepicker',
+    link: function(scope, element, attrs, ctrl) {
+      scope.showWeeks = ctrl.showWeeks;
+
+      ctrl.step = { months: 1 };
+      ctrl.element = element;
+
+      var DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      function getDaysInMonth( year, month ) {
+        return ((month === 1) && (year % 4 === 0) && ((year % 100 !== 0) || (year % 400 === 0))) ? 29 : DAYS_IN_MONTH[month];
+      }
+
+      function getDates(startDate, n) {
+        var dates = new Array(n), current = new Date(startDate), i = 0;
+        current.setHours(12); // Prevent repeated dates because of timezone bug
+        while ( i < n ) {
+          dates[i++] = new Date(current);
+          current.setDate( current.getDate() + 1 );
+        }
+        return dates;
+      }
+
+      ctrl._refreshView = function() {
+        var year = ctrl.activeDate.getFullYear(),
+          month = ctrl.activeDate.getMonth(),
+          firstDayOfMonth = new Date(year, month, 1),
+          difference = ctrl.startingDay - firstDayOfMonth.getDay(),
+          numDisplayedFromPreviousMonth = (difference > 0) ? 7 - difference : - difference,
+          firstDate = new Date(firstDayOfMonth);
+
+        if ( numDisplayedFromPreviousMonth > 0 ) {
+          firstDate.setDate( - numDisplayedFromPreviousMonth + 1 );
+        }
+
+        // 42 is the number of days on a six-month calendar
+        var days = getDates(firstDate, 42);
+        for (var i = 0; i < 42; i ++) {
+          days[i] = angular.extend(ctrl.createDateObject(days[i], ctrl.formatDay), {
+            secondary: days[i].getMonth() !== month,
+            uid: scope.uniqueId + '-' + i
+          });
+        }
+
+        scope.labels = new Array(7);
+        for (var j = 0; j < 7; j++) {
+          scope.labels[j] = {
+            abbr: dateFilter(days[j].date, ctrl.formatDayHeader),
+            full: dateFilter(days[j].date, 'EEEE')
+          };
+        }
+
+        scope.title = dateFilter(ctrl.activeDate, ctrl.formatDayTitle);
+        scope.rows = ctrl.split(days, 7);
+
+        if ( scope.showWeeks ) {
+          scope.weekNumbers = [];
+          var weekNumber = getISO8601WeekNumber( scope.rows[0][0].date ),
+              numWeeks = scope.rows.length;
+          while( scope.weekNumbers.push(weekNumber++) < numWeeks ) {}
+        }
+      };
+
+      ctrl.compare = function(date1, date2) {
+        return (new Date( date1.getFullYear(), date1.getMonth(), date1.getDate() ) - new Date( date2.getFullYear(), date2.getMonth(), date2.getDate() ) );
+      };
+
+      function getISO8601WeekNumber(date) {
+        var checkDate = new Date(date);
+        checkDate.setDate(checkDate.getDate() + 4 - (checkDate.getDay() || 7)); // Thursday
+        var time = checkDate.getTime();
+        checkDate.setMonth(0); // Compare with Jan 1
+        checkDate.setDate(1);
+        return Math.floor(Math.round((time - checkDate) / 86400000) / 7) + 1;
+      }
+
+      ctrl.handleKeyDown = function( key, evt ) {
+        var date = ctrl.activeDate.getDate();
+
+        if (key === 'left') {
+          date = date - 1;   // up
+        } else if (key === 'up') {
+          date = date - 7;   // down
+        } else if (key === 'right') {
+          date = date + 1;   // down
+        } else if (key === 'down') {
+          date = date + 7;
+        } else if (key === 'pageup' || key === 'pagedown') {
+          var month = ctrl.activeDate.getMonth() + (key === 'pageup' ? - 1 : 1);
+          ctrl.activeDate.setMonth(month, 1);
+          date = Math.min(getDaysInMonth(ctrl.activeDate.getFullYear(), ctrl.activeDate.getMonth()), date);
+        } else if (key === 'home') {
+          date = 1;
+        } else if (key === 'end') {
+          date = getDaysInMonth(ctrl.activeDate.getFullYear(), ctrl.activeDate.getMonth());
+        }
+        ctrl.activeDate.setDate(date);
+      };
+
+      ctrl.refreshView();
+    }
+  };
+}])
+
+.directive('monthpicker', ['dateFilter', function (dateFilter) {
+  return {
+    restrict: 'EA',
+    replace: true,
+    templateUrl: 'template/datepicker/month.html',
+    require: '^datepicker',
+    link: function(scope, element, attrs, ctrl) {
+      ctrl.step = { years: 1 };
+      ctrl.element = element;
+
+      ctrl._refreshView = function() {
+        var months = new Array(12),
+            year = ctrl.activeDate.getFullYear();
+
+        for ( var i = 0; i < 12; i++ ) {
+          months[i] = angular.extend(ctrl.createDateObject(new Date(year, i, 1), ctrl.formatMonth), {
+            uid: scope.uniqueId + '-' + i
+          });
+        }
+
+        scope.title = dateFilter(ctrl.activeDate, ctrl.formatMonthTitle);
+        scope.rows = ctrl.split(months, 3);
+      };
+
+      ctrl.compare = function(date1, date2) {
+        return new Date( date1.getFullYear(), date1.getMonth() ) - new Date( date2.getFullYear(), date2.getMonth() );
+      };
+
+      ctrl.handleKeyDown = function( key, evt ) {
+        var date = ctrl.activeDate.getMonth();
+
+        if (key === 'left') {
+          date = date - 1;   // up
+        } else if (key === 'up') {
+          date = date - 3;   // down
+        } else if (key === 'right') {
+          date = date + 1;   // down
+        } else if (key === 'down') {
+          date = date + 3;
+        } else if (key === 'pageup' || key === 'pagedown') {
+          var year = ctrl.activeDate.getFullYear() + (key === 'pageup' ? - 1 : 1);
+          ctrl.activeDate.setFullYear(year);
+        } else if (key === 'home') {
+          date = 0;
+        } else if (key === 'end') {
+          date = 11;
+        }
+        ctrl.activeDate.setMonth(date);
+      };
+
+      ctrl.refreshView();
+    }
+  };
+}])
+
+.directive('yearpicker', ['dateFilter', function (dateFilter) {
+  return {
+    restrict: 'EA',
+    replace: true,
+    templateUrl: 'template/datepicker/year.html',
+    require: '^datepicker',
+    link: function(scope, element, attrs, ctrl) {
+      var range = ctrl.yearRange;
+
+      ctrl.step = { years: range };
+      ctrl.element = element;
+
+      function getStartingYear( year ) {
+        return parseInt((year - 1) / range, 10) * range + 1;
+      }
+
+      ctrl._refreshView = function() {
+        var years = new Array(range);
+
+        for ( var i = 0, start = getStartingYear(ctrl.activeDate.getFullYear()); i < range; i++ ) {
+          years[i] = angular.extend(ctrl.createDateObject(new Date(start + i, 0, 1), ctrl.formatYear), {
+            uid: scope.uniqueId + '-' + i
+          });
+        }
+
+        scope.title = [years[0].label, years[range - 1].label].join(' - ');
+        scope.rows = ctrl.split(years, 5);
+      };
+
+      ctrl.compare = function(date1, date2) {
+        return date1.getFullYear() - date2.getFullYear();
+      };
+
+      ctrl.handleKeyDown = function( key, evt ) {
+        var date = ctrl.activeDate.getFullYear();
+
+        if (key === 'left') {
+          date = date - 1;   // up
+        } else if (key === 'up') {
+          date = date - 5;   // down
+        } else if (key === 'right') {
+          date = date + 1;   // down
+        } else if (key === 'down') {
+          date = date + 5;
+        } else if (key === 'pageup' || key === 'pagedown') {
+          date += (key === 'pageup' ? - 1 : 1) * ctrl.step.years;
+        } else if (key === 'home') {
+          date = getStartingYear( ctrl.activeDate.getFullYear() );
+        } else if (key === 'end') {
+          date = getStartingYear( ctrl.activeDate.getFullYear() ) + range - 1;
+        }
+        ctrl.activeDate.setFullYear(date);
+      };
+
+      ctrl.refreshView();
+    }
+  };
+}])
+
+.constant('datepickerPopupConfig', {
+  datepickerPopup: 'yyyy-MM-dd',
+  currentText: 'Today',
+  clearText: 'Clear',
+  closeText: 'Done',
+  closeOnDateSelection: true,
+  appendToBody: false,
+  showButtonBar: true
+})
+
+.directive('datepickerPopup', ['$compile', '$parse', '$document', '$position', 'dateFilter', 'dateParser', 'datepickerPopupConfig',
+function ($compile, $parse, $document, $position, dateFilter, dateParser, datepickerPopupConfig) {
+  return {
+    restrict: 'EA',
+    require: 'ngModel',
+    scope: {
+      isOpen: '=?',
+      currentText: '@',
+      clearText: '@',
+      closeText: '@',
+      dateDisabled: '&'
+    },
+    link: function(scope, element, attrs, ngModel) {
+      var dateFormat,
+          closeOnDateSelection = angular.isDefined(attrs.closeOnDateSelection) ? scope.$parent.$eval(attrs.closeOnDateSelection) : datepickerPopupConfig.closeOnDateSelection,
+          appendToBody = angular.isDefined(attrs.datepickerAppendToBody) ? scope.$parent.$eval(attrs.datepickerAppendToBody) : datepickerPopupConfig.appendToBody;
+
+      scope.showButtonBar = angular.isDefined(attrs.showButtonBar) ? scope.$parent.$eval(attrs.showButtonBar) : datepickerPopupConfig.showButtonBar;
+
+      scope.getText = function( key ) {
+        return scope[key + 'Text'] || datepickerPopupConfig[key + 'Text'];
+      };
+
+      attrs.$observe('datepickerPopup', function(value) {
+          dateFormat = value || datepickerPopupConfig.datepickerPopup;
+          ngModel.$render();
+      });
+
+      // popup element used to display calendar
+      var popupEl = angular.element('<div datepicker-popup-wrap><div datepicker></div></div>');
+      popupEl.attr({
+        'ng-model': 'date',
+        'ng-change': 'dateSelection()'
+      });
+
+      function cameltoDash( string ){
+        return string.replace(/([A-Z])/g, function($1) { return '-' + $1.toLowerCase(); });
+      }
+
+      // datepicker element
+      var datepickerEl = angular.element(popupEl.children()[0]);
+      if ( attrs.datepickerOptions ) {
+        angular.forEach(scope.$parent.$eval(attrs.datepickerOptions), function( value, option ) {
+          datepickerEl.attr( cameltoDash(option), value );
+        });
+      }
+
+      scope.watchData = {};
+      angular.forEach(['minDate', 'maxDate', 'datepickerMode'], function( key ) {
+        if ( attrs[key] ) {
+          var getAttribute = $parse(attrs[key]);
+          scope.$parent.$watch(getAttribute, function(value){
+            scope.watchData[key] = value;
+          });
+          datepickerEl.attr(cameltoDash(key), 'watchData.' + key);
+
+          // Propagate changes from datepicker to outside
+          if ( key === 'datepickerMode' ) {
+            var setAttribute = getAttribute.assign;
+            scope.$watch('watchData.' + key, function(value, oldvalue) {
+              if ( value !== oldvalue ) {
+                setAttribute(scope.$parent, value);
+              }
+            });
+          }
+        }
+      });
+      if (attrs.dateDisabled) {
+        datepickerEl.attr('date-disabled', 'dateDisabled({ date: date, mode: mode })');
+      }
+
+      function parseDate(viewValue) {
+        if (!viewValue) {
+          ngModel.$setValidity('date', true);
+          return null;
+        } else if (angular.isDate(viewValue) && !isNaN(viewValue)) {
+          ngModel.$setValidity('date', true);
+          return viewValue;
+        } else if (angular.isString(viewValue)) {
+          var date = dateParser.parse(viewValue, dateFormat) || new Date(viewValue);
+          if (isNaN(date)) {
+            ngModel.$setValidity('date', false);
+            return undefined;
+          } else {
+            ngModel.$setValidity('date', true);
+            return date;
+          }
+        } else {
+          ngModel.$setValidity('date', false);
+          return undefined;
+        }
+      }
+      ngModel.$parsers.unshift(parseDate);
+
+      // Inner change
+      scope.dateSelection = function(dt) {
+        if (angular.isDefined(dt)) {
+          scope.date = dt;
+        }
+        ngModel.$setViewValue(scope.date);
+        ngModel.$render();
+
+        if ( closeOnDateSelection ) {
+          scope.isOpen = false;
+          element[0].focus();
+        }
+      };
+
+      element.bind('input change keyup', function() {
+        scope.$apply(function() {
+          scope.date = ngModel.$modelValue;
+        });
+      });
+
+      // Outter change
+      ngModel.$render = function() {
+        var date = ngModel.$viewValue ? dateFilter(ngModel.$viewValue, dateFormat) : '';
+        element.val(date);
+        scope.date = parseDate( ngModel.$modelValue );
+      };
+
+      var documentClickBind = function(event) {
+        if (scope.isOpen && event.target !== element[0]) {
+          scope.$apply(function() {
+            scope.isOpen = false;
+          });
+        }
+      };
+
+      var keydown = function(evt, noApply) {
+        scope.keydown(evt);
+      };
+      element.bind('keydown', keydown);
+
+      scope.keydown = function(evt) {
+        if (evt.which === 27) {
+          evt.preventDefault();
+          evt.stopPropagation();
+          scope.close();
+        } else if (evt.which === 40 && !scope.isOpen) {
+          scope.isOpen = true;
+        }
+      };
+
+      scope.$watch('isOpen', function(value) {
+        if (value) {
+          scope.$broadcast('datepicker.focus');
+          scope.position = appendToBody ? $position.offset(element) : $position.position(element);
+          scope.position.top = scope.position.top + element.prop('offsetHeight');
+
+          $document.bind('click', documentClickBind);
+        } else {
+          $document.unbind('click', documentClickBind);
+        }
+      });
+
+      scope.select = function( date ) {
+        if (date === 'today') {
+          var today = new Date();
+          if (angular.isDate(ngModel.$modelValue)) {
+            date = new Date(ngModel.$modelValue);
+            date.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+          } else {
+            date = new Date(today.setHours(0, 0, 0, 0));
+          }
+        }
+        scope.dateSelection( date );
+      };
+
+      scope.close = function() {
+        scope.isOpen = false;
+        element[0].focus();
+      };
+
+      var $popup = $compile(popupEl)(scope);
+      // Prevent jQuery cache memory leak (template is now redundant after linking)
+      popupEl.remove();
+
+      if ( appendToBody ) {
+        $document.find('body').append($popup);
+      } else {
+        element.after($popup);
+      }
+
+      scope.$on('$destroy', function() {
+        $popup.remove();
+        element.unbind('keydown', keydown);
+        $document.unbind('click', documentClickBind);
+      });
+    }
+  };
+}])
+
+.directive('datepickerPopupWrap', function() {
+  return {
+    restrict:'EA',
+    replace: true,
+    transclude: true,
+    templateUrl: 'template/datepicker/popup.html',
+    link:function (scope, element, attrs) {
+      element.bind('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    }
+  };
+});
+
+angular.module('ui.bootstrap.dropdown', [])
+
+.constant('dropdownConfig', {
+  openClass: 'open'
+})
+
+.service('dropdownService', ['$document', function($document) {
+  var openScope = null;
+
+  this.open = function( dropdownScope ) {
+    if ( !openScope ) {
+      $document.bind('click', closeDropdown);
+      $document.bind('keydown', escapeKeyBind);
+    }
+
+    if ( openScope && openScope !== dropdownScope ) {
+        openScope.isOpen = false;
+    }
+
+    openScope = dropdownScope;
+  };
+
+  this.close = function( dropdownScope ) {
+    if ( openScope === dropdownScope ) {
+      openScope = null;
+      $document.unbind('click', closeDropdown);
+      $document.unbind('keydown', escapeKeyBind);
+    }
+  };
+
+  var closeDropdown = function( evt ) {
+    var toggleElement = openScope.getToggleElement();
+    if ( evt && toggleElement && toggleElement[0].contains(evt.target) ) {
+        return;
+    }
+
+    openScope.$apply(function() {
+      openScope.isOpen = false;
+    });
+  };
+
+  var escapeKeyBind = function( evt ) {
+    if ( evt.which === 27 ) {
+      openScope.focusToggleElement();
+      closeDropdown();
+    }
+  };
+}])
+
+.controller('DropdownController', ['$scope', '$attrs', '$parse', 'dropdownConfig', 'dropdownService', '$animate', function($scope, $attrs, $parse, dropdownConfig, dropdownService, $animate) {
+  var self = this,
+      scope = $scope.$new(), // create a child scope so we are not polluting original one
+      openClass = dropdownConfig.openClass,
+      getIsOpen,
+      setIsOpen = angular.noop,
+      toggleInvoker = $attrs.onToggle ? $parse($attrs.onToggle) : angular.noop;
+
+  this.init = function( element ) {
+    self.$element = element;
+
+    if ( $attrs.isOpen ) {
+      getIsOpen = $parse($attrs.isOpen);
+      setIsOpen = getIsOpen.assign;
+
+      $scope.$watch(getIsOpen, function(value) {
+        scope.isOpen = !!value;
+      });
+    }
+  };
+
+  this.toggle = function( open ) {
+    return scope.isOpen = arguments.length ? !!open : !scope.isOpen;
+  };
+
+  // Allow other directives to watch status
+  this.isOpen = function() {
+    return scope.isOpen;
+  };
+
+  scope.getToggleElement = function() {
+    return self.toggleElement;
+  };
+
+  scope.focusToggleElement = function() {
+    if ( self.toggleElement ) {
+      self.toggleElement[0].focus();
+    }
+  };
+
+  scope.$watch('isOpen', function( isOpen, wasOpen ) {
+    $animate[isOpen ? 'addClass' : 'removeClass'](self.$element, openClass);
+
+    if ( isOpen ) {
+      scope.focusToggleElement();
+      dropdownService.open( scope );
+    } else {
+      dropdownService.close( scope );
+    }
+
+    setIsOpen($scope, isOpen);
+    if (angular.isDefined(isOpen) && isOpen !== wasOpen) {
+      toggleInvoker($scope, { open: !!isOpen });
+    }
+  });
+
+  $scope.$on('$locationChangeSuccess', function() {
+    scope.isOpen = false;
+  });
+
+  $scope.$on('$destroy', function() {
+    scope.$destroy();
+  });
+}])
+
+.directive('dropdown', function() {
+  return {
+    restrict: 'CA',
+    controller: 'DropdownController',
+    link: function(scope, element, attrs, dropdownCtrl) {
+      dropdownCtrl.init( element );
+    }
+  };
+})
+
+.directive('dropdownToggle', function() {
+  return {
+    restrict: 'CA',
+    require: '?^dropdown',
+    link: function(scope, element, attrs, dropdownCtrl) {
+      if ( !dropdownCtrl ) {
+        return;
+      }
+
+      dropdownCtrl.toggleElement = element;
+
+      var toggleDropdown = function(event) {
+        event.preventDefault();
+
+        if ( !element.hasClass('disabled') && !attrs.disabled ) {
+          scope.$apply(function() {
+            dropdownCtrl.toggle();
+          });
+        }
+      };
+
+      element.bind('click', toggleDropdown);
+
+      // WAI-ARIA
+      element.attr({ 'aria-haspopup': true, 'aria-expanded': false });
+      scope.$watch(dropdownCtrl.isOpen, function( isOpen ) {
+        element.attr('aria-expanded', !!isOpen);
+      });
+
+      scope.$on('$destroy', function() {
+        element.unbind('click', toggleDropdown);
+      });
+    }
+  };
+});
+
+angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
+
+/**
+ * A helper, internal data structure that acts as a map but also allows getting / removing
+ * elements in the LIFO order
+ */
+  .factory('$$stackedMap', function () {
+    return {
+      createNew: function () {
+        var stack = [];
+
+        return {
+          add: function (key, value) {
+            stack.push({
+              key: key,
+              value: value
+            });
+          },
+          get: function (key) {
+            for (var i = 0; i < stack.length; i++) {
+              if (key == stack[i].key) {
+                return stack[i];
+              }
+            }
+          },
+          keys: function() {
+            var keys = [];
+            for (var i = 0; i < stack.length; i++) {
+              keys.push(stack[i].key);
+            }
+            return keys;
+          },
+          top: function () {
+            return stack[stack.length - 1];
+          },
+          remove: function (key) {
+            var idx = -1;
+            for (var i = 0; i < stack.length; i++) {
+              if (key == stack[i].key) {
+                idx = i;
+                break;
+              }
+            }
+            return stack.splice(idx, 1)[0];
+          },
+          removeTop: function () {
+            return stack.splice(stack.length - 1, 1)[0];
+          },
+          length: function () {
+            return stack.length;
+          }
+        };
+      }
+    };
+  })
+
+/**
+ * A helper directive for the $modal service. It creates a backdrop element.
+ */
+  .directive('modalBackdrop', ['$timeout', function ($timeout) {
+    return {
+      restrict: 'EA',
+      replace: true,
+      templateUrl: 'template/modal/backdrop.html',
+      link: function (scope, element, attrs) {
+        scope.backdropClass = attrs.backdropClass || '';
+
+        scope.animate = false;
+
+        //trigger CSS transitions
+        $timeout(function () {
+          scope.animate = true;
+        });
+      }
+    };
+  }])
+
+  .directive('modalWindow', ['$modalStack', '$timeout', function ($modalStack, $timeout) {
+    return {
+      restrict: 'EA',
+      scope: {
+        index: '@',
+        animate: '='
+      },
+      replace: true,
+      transclude: true,
+      templateUrl: function(tElement, tAttrs) {
+        return tAttrs.templateUrl || 'template/modal/window.html';
+      },
+      link: function (scope, element, attrs) {
+        element.addClass(attrs.windowClass || '');
+        scope.size = attrs.size;
+
+        $timeout(function () {
+          // trigger CSS transitions
+          scope.animate = true;
+
+          /**
+           * Auto-focusing of a freshly-opened modal element causes any child elements
+           * with the autofocus attribute to loose focus. This is an issue on touch
+           * based devices which will show and then hide the onscreen keyboard.
+           * Attempts to refocus the autofocus element via JavaScript will not reopen
+           * the onscreen keyboard. Fixed by updated the focusing logic to only autofocus
+           * the modal element if the modal does not contain an autofocus element.
+           */
+          if (!element[0].querySelectorAll('[autofocus]').length) {
+            element[0].focus();
+          }
+        });
+
+        scope.close = function (evt) {
+          var modal = $modalStack.getTop();
+          if (modal && modal.value.backdrop && modal.value.backdrop != 'static' && (evt.target === evt.currentTarget)) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            $modalStack.dismiss(modal.key, 'backdrop click');
+          }
+        };
+      }
+    };
+  }])
+
+  .directive('modalTransclude', function () {
+    return {
+      link: function($scope, $element, $attrs, controller, $transclude) {
+        $transclude($scope.$parent, function(clone) {
+          $element.empty();
+          $element.append(clone);
+        });
+      }
+    };
+  })
+
+  .factory('$modalStack', ['$transition', '$timeout', '$document', '$compile', '$rootScope', '$$stackedMap',
+    function ($transition, $timeout, $document, $compile, $rootScope, $$stackedMap) {
+
+      var OPENED_MODAL_CLASS = 'modal-open';
+
+      var backdropDomEl, backdropScope;
+      var openedWindows = $$stackedMap.createNew();
+      var $modalStack = {};
+
+      function backdropIndex() {
+        var topBackdropIndex = -1;
+        var opened = openedWindows.keys();
+        for (var i = 0; i < opened.length; i++) {
+          if (openedWindows.get(opened[i]).value.backdrop) {
+            topBackdropIndex = i;
+          }
+        }
+        return topBackdropIndex;
+      }
+
+      $rootScope.$watch(backdropIndex, function(newBackdropIndex){
+        if (backdropScope) {
+          backdropScope.index = newBackdropIndex;
+        }
+      });
+
+      function removeModalWindow(modalInstance) {
+
+        var body = $document.find('body').eq(0);
+        var modalWindow = openedWindows.get(modalInstance).value;
+
+        //clean up the stack
+        openedWindows.remove(modalInstance);
+
+        //remove window DOM element
+        removeAfterAnimate(modalWindow.modalDomEl, modalWindow.modalScope, 300, function() {
+          modalWindow.modalScope.$destroy();
+          body.toggleClass(OPENED_MODAL_CLASS, openedWindows.length() > 0);
+          checkRemoveBackdrop();
+        });
+      }
+
+      function checkRemoveBackdrop() {
+          //remove backdrop if no longer needed
+          if (backdropDomEl && backdropIndex() == -1) {
+            var backdropScopeRef = backdropScope;
+            removeAfterAnimate(backdropDomEl, backdropScope, 150, function () {
+              backdropScopeRef.$destroy();
+              backdropScopeRef = null;
+            });
+            backdropDomEl = undefined;
+            backdropScope = undefined;
+          }
+      }
+
+      function removeAfterAnimate(domEl, scope, emulateTime, done) {
+        // Closing animation
+        scope.animate = false;
+
+        var transitionEndEventName = $transition.transitionEndEventName;
+        if (transitionEndEventName) {
+          // transition out
+          var timeout = $timeout(afterAnimating, emulateTime);
+
+          domEl.bind(transitionEndEventName, function () {
+            $timeout.cancel(timeout);
+            afterAnimating();
+            scope.$apply();
+          });
+        } else {
+          // Ensure this call is async
+          $timeout(afterAnimating);
+        }
+
+        function afterAnimating() {
+          if (afterAnimating.done) {
+            return;
+          }
+          afterAnimating.done = true;
+
+          domEl.remove();
+          if (done) {
+            done();
+          }
+        }
+      }
+
+      $document.bind('keydown', function (evt) {
+        var modal;
+
+        if (evt.which === 27) {
+          modal = openedWindows.top();
+          if (modal && modal.value.keyboard) {
+            evt.preventDefault();
+            $rootScope.$apply(function () {
+              $modalStack.dismiss(modal.key, 'escape key press');
+            });
+          }
+        }
+      });
+
+      $modalStack.open = function (modalInstance, modal) {
+
+        openedWindows.add(modalInstance, {
+          deferred: modal.deferred,
+          modalScope: modal.scope,
+          backdrop: modal.backdrop,
+          keyboard: modal.keyboard
+        });
+
+        var body = $document.find('body').eq(0),
+            currBackdropIndex = backdropIndex();
+
+        if (currBackdropIndex >= 0 && !backdropDomEl) {
+          backdropScope = $rootScope.$new(true);
+          backdropScope.index = currBackdropIndex;
+          var angularBackgroundDomEl = angular.element('<div modal-backdrop></div>');
+          angularBackgroundDomEl.attr('backdrop-class', modal.backdropClass);
+          backdropDomEl = $compile(angularBackgroundDomEl)(backdropScope);
+          body.append(backdropDomEl);
+        }
+
+        var angularDomEl = angular.element('<div modal-window></div>');
+        angularDomEl.attr({
+          'template-url': modal.windowTemplateUrl,
+          'window-class': modal.windowClass,
+          'size': modal.size,
+          'index': openedWindows.length() - 1,
+          'animate': 'animate'
+        }).html(modal.content);
+
+        var modalDomEl = $compile(angularDomEl)(modal.scope);
+        openedWindows.top().value.modalDomEl = modalDomEl;
+        body.append(modalDomEl);
+        body.addClass(OPENED_MODAL_CLASS);
+      };
+
+      $modalStack.close = function (modalInstance, result) {
+        var modalWindow = openedWindows.get(modalInstance);
+        if (modalWindow) {
+          modalWindow.value.deferred.resolve(result);
+          removeModalWindow(modalInstance);
+        }
+      };
+
+      $modalStack.dismiss = function (modalInstance, reason) {
+        var modalWindow = openedWindows.get(modalInstance);
+        if (modalWindow) {
+          modalWindow.value.deferred.reject(reason);
+          removeModalWindow(modalInstance);
+        }
+      };
+
+      $modalStack.dismissAll = function (reason) {
+        var topModal = this.getTop();
+        while (topModal) {
+          this.dismiss(topModal.key, reason);
+          topModal = this.getTop();
+        }
+      };
+
+      $modalStack.getTop = function () {
+        return openedWindows.top();
+      };
+
+      return $modalStack;
+    }])
+
+  .provider('$modal', function () {
+
+    var $modalProvider = {
+      options: {
+        backdrop: true, //can be also false or 'static'
+        keyboard: true
+      },
+      $get: ['$injector', '$rootScope', '$q', '$http', '$templateCache', '$controller', '$modalStack',
+        function ($injector, $rootScope, $q, $http, $templateCache, $controller, $modalStack) {
+
+          var $modal = {};
+
+          function getTemplatePromise(options) {
+            return options.template ? $q.when(options.template) :
+              $http.get(angular.isFunction(options.templateUrl) ? (options.templateUrl)() : options.templateUrl,
+                {cache: $templateCache}).then(function (result) {
+                  return result.data;
+              });
+          }
+
+          function getResolvePromises(resolves) {
+            var promisesArr = [];
+            angular.forEach(resolves, function (value) {
+              if (angular.isFunction(value) || angular.isArray(value)) {
+                promisesArr.push($q.when($injector.invoke(value)));
+              }
+            });
+            return promisesArr;
+          }
+
+          $modal.open = function (modalOptions) {
+
+            var modalResultDeferred = $q.defer();
+            var modalOpenedDeferred = $q.defer();
+
+            //prepare an instance of a modal to be injected into controllers and returned to a caller
+            var modalInstance = {
+              result: modalResultDeferred.promise,
+              opened: modalOpenedDeferred.promise,
+              close: function (result) {
+                $modalStack.close(modalInstance, result);
+              },
+              dismiss: function (reason) {
+                $modalStack.dismiss(modalInstance, reason);
+              }
+            };
+
+            //merge and clean up options
+            modalOptions = angular.extend({}, $modalProvider.options, modalOptions);
+            modalOptions.resolve = modalOptions.resolve || {};
+
+            //verify options
+            if (!modalOptions.template && !modalOptions.templateUrl) {
+              throw new Error('One of template or templateUrl options is required.');
+            }
+
+            var templateAndResolvePromise =
+              $q.all([getTemplatePromise(modalOptions)].concat(getResolvePromises(modalOptions.resolve)));
+
+
+            templateAndResolvePromise.then(function resolveSuccess(tplAndVars) {
+
+              var modalScope = (modalOptions.scope || $rootScope).$new();
+              modalScope.$close = modalInstance.close;
+              modalScope.$dismiss = modalInstance.dismiss;
+
+              var ctrlInstance, ctrlLocals = {};
+              var resolveIter = 1;
+
+              //controllers
+              if (modalOptions.controller) {
+                ctrlLocals.$scope = modalScope;
+                ctrlLocals.$modalInstance = modalInstance;
+                angular.forEach(modalOptions.resolve, function (value, key) {
+                  ctrlLocals[key] = tplAndVars[resolveIter++];
+                });
+
+                ctrlInstance = $controller(modalOptions.controller, ctrlLocals);
+                if (modalOptions.controllerAs) {
+                  modalScope[modalOptions.controllerAs] = ctrlInstance;
+                }
+              }
+
+              $modalStack.open(modalInstance, {
+                scope: modalScope,
+                deferred: modalResultDeferred,
+                content: tplAndVars[0],
+                backdrop: modalOptions.backdrop,
+                keyboard: modalOptions.keyboard,
+                backdropClass: modalOptions.backdropClass,
+                windowClass: modalOptions.windowClass,
+                windowTemplateUrl: modalOptions.windowTemplateUrl,
+                size: modalOptions.size
+              });
+
+            }, function resolveError(reason) {
+              modalResultDeferred.reject(reason);
+            });
+
+            templateAndResolvePromise.then(function () {
+              modalOpenedDeferred.resolve(true);
+            }, function () {
+              modalOpenedDeferred.reject(false);
+            });
+
+            return modalInstance;
+          };
+
+          return $modal;
+        }]
+    };
+
+    return $modalProvider;
+  });
+
+angular.module('ui.bootstrap.pagination', [])
+
+.controller('PaginationController', ['$scope', '$attrs', '$parse', function ($scope, $attrs, $parse) {
+  var self = this,
+      ngModelCtrl = { $setViewValue: angular.noop }, // nullModelCtrl
+      setNumPages = $attrs.numPages ? $parse($attrs.numPages).assign : angular.noop;
+
+  this.init = function(ngModelCtrl_, config) {
+    ngModelCtrl = ngModelCtrl_;
+    this.config = config;
+
+    ngModelCtrl.$render = function() {
+      self.render();
+    };
+
+    if ($attrs.itemsPerPage) {
+      $scope.$parent.$watch($parse($attrs.itemsPerPage), function(value) {
+        self.itemsPerPage = parseInt(value, 10);
+        $scope.totalPages = self.calculateTotalPages();
+      });
+    } else {
+      this.itemsPerPage = config.itemsPerPage;
+    }
+  };
+
+  this.calculateTotalPages = function() {
+    var totalPages = this.itemsPerPage < 1 ? 1 : Math.ceil($scope.totalItems / this.itemsPerPage);
+    return Math.max(totalPages || 0, 1);
+  };
+
+  this.render = function() {
+    $scope.page = parseInt(ngModelCtrl.$viewValue, 10) || 1;
+  };
+
+  $scope.selectPage = function(page) {
+    if ( $scope.page !== page && page > 0 && page <= $scope.totalPages) {
+      ngModelCtrl.$setViewValue(page);
+      ngModelCtrl.$render();
+    }
+  };
+
+  $scope.getText = function( key ) {
+    return $scope[key + 'Text'] || self.config[key + 'Text'];
+  };
+  $scope.noPrevious = function() {
+    return $scope.page === 1;
+  };
+  $scope.noNext = function() {
+    return $scope.page === $scope.totalPages;
+  };
+
+  $scope.$watch('totalItems', function() {
+    $scope.totalPages = self.calculateTotalPages();
+  });
+
+  $scope.$watch('totalPages', function(value) {
+    setNumPages($scope.$parent, value); // Readonly variable
+
+    if ( $scope.page > value ) {
+      $scope.selectPage(value);
+    } else {
+      ngModelCtrl.$render();
+    }
+  });
+}])
+
+.constant('paginationConfig', {
+  itemsPerPage: 10,
+  boundaryLinks: false,
+  directionLinks: true,
+  firstText: 'First',
+  previousText: 'Previous',
+  nextText: 'Next',
+  lastText: 'Last',
+  rotate: true
+})
+
+.directive('pagination', ['$parse', 'paginationConfig', function($parse, paginationConfig) {
+  return {
+    restrict: 'EA',
+    scope: {
+      totalItems: '=',
+      firstText: '@',
+      previousText: '@',
+      nextText: '@',
+      lastText: '@'
+    },
+    require: ['pagination', '?ngModel'],
+    controller: 'PaginationController',
+    templateUrl: 'template/pagination/pagination.html',
+    replace: true,
+    link: function(scope, element, attrs, ctrls) {
+      var paginationCtrl = ctrls[0], ngModelCtrl = ctrls[1];
+
+      if (!ngModelCtrl) {
+         return; // do nothing if no ng-model
+      }
+
+      // Setup configuration parameters
+      var maxSize = angular.isDefined(attrs.maxSize) ? scope.$parent.$eval(attrs.maxSize) : paginationConfig.maxSize,
+          rotate = angular.isDefined(attrs.rotate) ? scope.$parent.$eval(attrs.rotate) : paginationConfig.rotate;
+      scope.boundaryLinks = angular.isDefined(attrs.boundaryLinks) ? scope.$parent.$eval(attrs.boundaryLinks) : paginationConfig.boundaryLinks;
+      scope.directionLinks = angular.isDefined(attrs.directionLinks) ? scope.$parent.$eval(attrs.directionLinks) : paginationConfig.directionLinks;
+
+      paginationCtrl.init(ngModelCtrl, paginationConfig);
+
+      if (attrs.maxSize) {
+        scope.$parent.$watch($parse(attrs.maxSize), function(value) {
+          maxSize = parseInt(value, 10);
+          paginationCtrl.render();
+        });
+      }
+
+      // Create page object used in template
+      function makePage(number, text, isActive) {
+        return {
+          number: number,
+          text: text,
+          active: isActive
+        };
+      }
+
+      function getPages(currentPage, totalPages) {
+        var pages = [];
+
+        // Default page limits
+        var startPage = 1, endPage = totalPages;
+        var isMaxSized = ( angular.isDefined(maxSize) && maxSize < totalPages );
+
+        // recompute if maxSize
+        if ( isMaxSized ) {
+          if ( rotate ) {
+            // Current page is displayed in the middle of the visible ones
+            startPage = Math.max(currentPage - Math.floor(maxSize/2), 1);
+            endPage   = startPage + maxSize - 1;
+
+            // Adjust if limit is exceeded
+            if (endPage > totalPages) {
+              endPage   = totalPages;
+              startPage = endPage - maxSize + 1;
+            }
+          } else {
+            // Visible pages are paginated with maxSize
+            startPage = ((Math.ceil(currentPage / maxSize) - 1) * maxSize) + 1;
+
+            // Adjust last page if limit is exceeded
+            endPage = Math.min(startPage + maxSize - 1, totalPages);
+          }
+        }
+
+        // Add page number links
+        for (var number = startPage; number <= endPage; number++) {
+          var page = makePage(number, number, number === currentPage);
+          pages.push(page);
+        }
+
+        // Add links to move between page sets
+        if ( isMaxSized && ! rotate ) {
+          if ( startPage > 1 ) {
+            var previousPageSet = makePage(startPage - 1, '...', false);
+            pages.unshift(previousPageSet);
+          }
+
+          if ( endPage < totalPages ) {
+            var nextPageSet = makePage(endPage + 1, '...', false);
+            pages.push(nextPageSet);
+          }
+        }
+
+        return pages;
+      }
+
+      var originalRender = paginationCtrl.render;
+      paginationCtrl.render = function() {
+        originalRender();
+        if (scope.page > 0 && scope.page <= scope.totalPages) {
+          scope.pages = getPages(scope.page, scope.totalPages);
+        }
+      };
+    }
+  };
+}])
+
+.constant('pagerConfig', {
+  itemsPerPage: 10,
+  previousText: '« Previous',
+  nextText: 'Next »',
+  align: true
+})
+
+.directive('pager', ['pagerConfig', function(pagerConfig) {
+  return {
+    restrict: 'EA',
+    scope: {
+      totalItems: '=',
+      previousText: '@',
+      nextText: '@'
+    },
+    require: ['pager', '?ngModel'],
+    controller: 'PaginationController',
+    templateUrl: 'template/pagination/pager.html',
+    replace: true,
+    link: function(scope, element, attrs, ctrls) {
+      var paginationCtrl = ctrls[0], ngModelCtrl = ctrls[1];
+
+      if (!ngModelCtrl) {
+         return; // do nothing if no ng-model
+      }
+
+      scope.align = angular.isDefined(attrs.align) ? scope.$parent.$eval(attrs.align) : pagerConfig.align;
+      paginationCtrl.init(ngModelCtrl, pagerConfig);
+    }
+  };
+}]);
+
+/**
+ * The following features are still outstanding: animation as a
+ * function, placement as a function, inside, support for more triggers than
+ * just mouse enter/leave, html tooltips, and selector delegation.
+ */
+angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap.bindHtml' ] )
+
+/**
+ * The $tooltip service creates tooltip- and popover-like directives as well as
+ * houses global options for them.
+ */
+.provider( '$tooltip', function () {
+  // The default options tooltip and popover.
+  var defaultOptions = {
+    placement: 'top',
+    animation: true,
+    popupDelay: 0
+  };
+
+  // Default hide triggers for each show trigger
+  var triggerMap = {
+    'mouseenter': 'mouseleave',
+    'click': 'click',
+    'focus': 'blur'
+  };
+
+  // The options specified to the provider globally.
+  var globalOptions = {};
+
+  /**
+   * `options({})` allows global configuration of all tooltips in the
+   * application.
+   *
+   *   var app = angular.module( 'App', ['ui.bootstrap.tooltip'], function( $tooltipProvider ) {
+   *     // place tooltips left instead of top by default
+   *     $tooltipProvider.options( { placement: 'left' } );
+   *   });
+   */
+	this.options = function( value ) {
+		angular.extend( globalOptions, value );
+	};
+
+  /**
+   * This allows you to extend the set of trigger mappings available. E.g.:
+   *
+   *   $tooltipProvider.setTriggers( 'openTrigger': 'closeTrigger' );
+   */
+  this.setTriggers = function setTriggers ( triggers ) {
+    angular.extend( triggerMap, triggers );
+  };
+
+  /**
+   * This is a helper function for translating camel-case to snake-case.
+   */
+  function snake_case(name){
+    var regexp = /[A-Z]/g;
+    var separator = '-';
+    return name.replace(regexp, function(letter, pos) {
+      return (pos ? separator : '') + letter.toLowerCase();
+    });
+  }
+
+  /**
+   * Returns the actual instance of the $tooltip service.
+   * TODO support multiple triggers
+   */
+  this.$get = [ '$window', '$compile', '$timeout', '$parse', '$document', '$position', '$interpolate', function ( $window, $compile, $timeout, $parse, $document, $position, $interpolate ) {
+    return function $tooltip ( type, prefix, defaultTriggerShow ) {
+      var options = angular.extend( {}, defaultOptions, globalOptions );
+
+      /**
+       * Returns an object of show and hide triggers.
+       *
+       * If a trigger is supplied,
+       * it is used to show the tooltip; otherwise, it will use the `trigger`
+       * option passed to the `$tooltipProvider.options` method; else it will
+       * default to the trigger supplied to this directive factory.
+       *
+       * The hide trigger is based on the show trigger. If the `trigger` option
+       * was passed to the `$tooltipProvider.options` method, it will use the
+       * mapped trigger from `triggerMap` or the passed trigger if the map is
+       * undefined; otherwise, it uses the `triggerMap` value of the show
+       * trigger; else it will just use the show trigger.
+       */
+      function getTriggers ( trigger ) {
+        var show = trigger || options.trigger || defaultTriggerShow;
+        var hide = triggerMap[show] || show;
+        return {
+          show: show,
+          hide: hide
+        };
+      }
+
+      var directiveName = snake_case( type );
+
+      var startSym = $interpolate.startSymbol();
+      var endSym = $interpolate.endSymbol();
+      var template =
+        '<div '+ directiveName +'-popup '+
+          'title="'+startSym+'tt_title'+endSym+'" '+
+          'content="'+startSym+'tt_content'+endSym+'" '+
+          'placement="'+startSym+'tt_placement'+endSym+'" '+
+          'animation="tt_animation" '+
+          'is-open="tt_isOpen"'+
+          '>'+
+        '</div>';
+
+      return {
+        restrict: 'EA',
+        scope: true,
+        compile: function (tElem, tAttrs) {
+          var tooltipLinker = $compile( template );
+
+          return function link ( scope, element, attrs ) {
+            var tooltip;
+            var transitionTimeout;
+            var popupTimeout;
+            var appendToBody = angular.isDefined( options.appendToBody ) ? options.appendToBody : false;
+            var triggers = getTriggers( undefined );
+            var hasEnableExp = angular.isDefined(attrs[prefix+'Enable']);
+
+            var positionTooltip = function () {
+
+              var ttPosition = $position.positionElements(element, tooltip, scope.tt_placement, appendToBody);
+              ttPosition.top += 'px';
+              ttPosition.left += 'px';
+
+              // Now set the calculated positioning.
+              tooltip.css( ttPosition );
+            };
+
+            // By default, the tooltip is not open.
+            // TODO add ability to start tooltip opened
+            scope.tt_isOpen = false;
+
+            function toggleTooltipBind () {
+              if ( ! scope.tt_isOpen ) {
+                showTooltipBind();
+              } else {
+                hideTooltipBind();
+              }
+            }
+
+            // Show the tooltip with delay if specified, otherwise show it immediately
+            function showTooltipBind() {
+              if(hasEnableExp && !scope.$eval(attrs[prefix+'Enable'])) {
+                return;
+              }
+              if ( scope.tt_popupDelay ) {
+                // Do nothing if the tooltip was already scheduled to pop-up.
+                // This happens if show is triggered multiple times before any hide is triggered.
+                if (!popupTimeout) {
+                  popupTimeout = $timeout( show, scope.tt_popupDelay, false );
+                  popupTimeout.then(function(reposition){reposition();});
+                }
+              } else {
+                show()();
+              }
+            }
+
+            function hideTooltipBind () {
+              scope.$apply(function () {
+                hide();
+              });
+            }
+
+            // Show the tooltip popup element.
+            function show() {
+
+              popupTimeout = null;
+
+              // If there is a pending remove transition, we must cancel it, lest the
+              // tooltip be mysteriously removed.
+              if ( transitionTimeout ) {
+                $timeout.cancel( transitionTimeout );
+                transitionTimeout = null;
+              }
+
+              // Don't show empty tooltips.
+              if ( ! scope.tt_content ) {
+                return angular.noop;
+              }
+
+              createTooltip();
+
+              // Set the initial positioning.
+              tooltip.css({ top: 0, left: 0, display: 'block' });
+
+              // Now we add it to the DOM because need some info about it. But it's not 
+              // visible yet anyway.
+              if ( appendToBody ) {
+                  $document.find( 'body' ).append( tooltip );
+              } else {
+                element.after( tooltip );
+              }
+
+              positionTooltip();
+
+              // And show the tooltip.
+              scope.tt_isOpen = true;
+              scope.$digest(); // digest required as $apply is not called
+
+              // Return positioning function as promise callback for correct
+              // positioning after draw.
+              return positionTooltip;
+            }
+
+            // Hide the tooltip popup element.
+            function hide() {
+              // First things first: we don't show it anymore.
+              scope.tt_isOpen = false;
+
+              //if tooltip is going to be shown after delay, we must cancel this
+              $timeout.cancel( popupTimeout );
+              popupTimeout = null;
+
+              // And now we remove it from the DOM. However, if we have animation, we 
+              // need to wait for it to expire beforehand.
+              // FIXME: this is a placeholder for a port of the transitions library.
+              if ( scope.tt_animation ) {
+                if (!transitionTimeout) {
+                  transitionTimeout = $timeout(removeTooltip, 500);
+                }
+              } else {
+                removeTooltip();
+              }
+            }
+
+            function createTooltip() {
+              // There can only be one tooltip element per directive shown at once.
+              if (tooltip) {
+                removeTooltip();
+              }
+              tooltip = tooltipLinker(scope, function () {});
+
+              // Get contents rendered into the tooltip
+              scope.$digest();
+            }
+
+            function removeTooltip() {
+              transitionTimeout = null;
+              if (tooltip) {
+                tooltip.remove();
+                tooltip = null;
+              }
+            }
+
+            /**
+             * Observe the relevant attributes.
+             */
+            attrs.$observe( type, function ( val ) {
+              scope.tt_content = val;
+
+              if (!val && scope.tt_isOpen ) {
+                hide();
+              }
+            });
+
+            attrs.$observe( prefix+'Title', function ( val ) {
+              scope.tt_title = val;
+            });
+
+            attrs.$observe( prefix+'Placement', function ( val ) {
+              scope.tt_placement = angular.isDefined( val ) ? val : options.placement;
+            });
+
+            attrs.$observe( prefix+'PopupDelay', function ( val ) {
+              var delay = parseInt( val, 10 );
+              scope.tt_popupDelay = ! isNaN(delay) ? delay : options.popupDelay;
+            });
+
+            var unregisterTriggers = function () {
+              element.unbind(triggers.show, showTooltipBind);
+              element.unbind(triggers.hide, hideTooltipBind);
+            };
+
+            attrs.$observe( prefix+'Trigger', function ( val ) {
+              unregisterTriggers();
+
+              triggers = getTriggers( val );
+
+              if ( triggers.show === triggers.hide ) {
+                element.bind( triggers.show, toggleTooltipBind );
+              } else {
+                element.bind( triggers.show, showTooltipBind );
+                element.bind( triggers.hide, hideTooltipBind );
+              }
+            });
+
+            var animation = scope.$eval(attrs[prefix + 'Animation']);
+            scope.tt_animation = angular.isDefined(animation) ? !!animation : options.animation;
+
+            attrs.$observe( prefix+'AppendToBody', function ( val ) {
+              appendToBody = angular.isDefined( val ) ? $parse( val )( scope ) : appendToBody;
+            });
+
+            // if a tooltip is attached to <body> we need to remove it on
+            // location change as its parent scope will probably not be destroyed
+            // by the change.
+            if ( appendToBody ) {
+              scope.$on('$locationChangeSuccess', function closeTooltipOnLocationChangeSuccess () {
+              if ( scope.tt_isOpen ) {
+                hide();
+              }
+            });
+            }
+
+            // Make sure tooltip is destroyed and removed.
+            scope.$on('$destroy', function onDestroyTooltip() {
+              $timeout.cancel( transitionTimeout );
+              $timeout.cancel( popupTimeout );
+              unregisterTriggers();
+              removeTooltip();
+            });
+          };
+        }
+      };
+    };
+  }];
+})
+
+.directive( 'tooltipPopup', function () {
+  return {
+    restrict: 'EA',
+    replace: true,
+    scope: { content: '@', placement: '@', animation: '&', isOpen: '&' },
+    templateUrl: 'template/tooltip/tooltip-popup.html'
+  };
+})
+
+.directive( 'tooltip', [ '$tooltip', function ( $tooltip ) {
+  return $tooltip( 'tooltip', 'tooltip', 'mouseenter' );
+}])
+
+.directive( 'tooltipHtmlUnsafePopup', function () {
+  return {
+    restrict: 'EA',
+    replace: true,
+    scope: { content: '@', placement: '@', animation: '&', isOpen: '&' },
+    templateUrl: 'template/tooltip/tooltip-html-unsafe-popup.html'
+  };
+})
+
+.directive( 'tooltipHtmlUnsafe', [ '$tooltip', function ( $tooltip ) {
+  return $tooltip( 'tooltipHtmlUnsafe', 'tooltip', 'mouseenter' );
+}]);
+
+/**
+ * The following features are still outstanding: popup delay, animation as a
+ * function, placement as a function, inside, support for more triggers than
+ * just mouse enter/leave, html popovers, and selector delegatation.
+ */
+angular.module( 'ui.bootstrap.popover', [ 'ui.bootstrap.tooltip' ] )
+
+.directive( 'popoverPopup', function () {
+  return {
+    restrict: 'EA',
+    replace: true,
+    scope: { title: '@', content: '@', placement: '@', animation: '&', isOpen: '&' },
+    templateUrl: 'template/popover/popover.html'
+  };
+})
+
+.directive( 'popover', [ '$tooltip', function ( $tooltip ) {
+  return $tooltip( 'popover', 'popover', 'click' );
+}]);
+
+angular.module('ui.bootstrap.progressbar', [])
+
+.constant('progressConfig', {
+  animate: true,
+  max: 100
+})
+
+.controller('ProgressController', ['$scope', '$attrs', 'progressConfig', function($scope, $attrs, progressConfig) {
+    var self = this,
+        animate = angular.isDefined($attrs.animate) ? $scope.$parent.$eval($attrs.animate) : progressConfig.animate;
+
+    this.bars = [];
+    $scope.max = angular.isDefined($attrs.max) ? $scope.$parent.$eval($attrs.max) : progressConfig.max;
+
+    this.addBar = function(bar, element) {
+        if ( !animate ) {
+            element.css({'transition': 'none'});
+        }
+
+        this.bars.push(bar);
+
+        bar.$watch('value', function( value ) {
+            bar.percent = +(100 * value / $scope.max).toFixed(2);
+        });
+
+        bar.$on('$destroy', function() {
+            element = null;
+            self.removeBar(bar);
+        });
+    };
+
+    this.removeBar = function(bar) {
+        this.bars.splice(this.bars.indexOf(bar), 1);
+    };
+}])
+
+.directive('progress', function() {
+    return {
+        restrict: 'EA',
+        replace: true,
+        transclude: true,
+        controller: 'ProgressController',
+        require: 'progress',
+        scope: {},
+        templateUrl: 'template/progressbar/progress.html'
+    };
+})
+
+.directive('bar', function() {
+    return {
+        restrict: 'EA',
+        replace: true,
+        transclude: true,
+        require: '^progress',
+        scope: {
+            value: '=',
+            type: '@'
+        },
+        templateUrl: 'template/progressbar/bar.html',
+        link: function(scope, element, attrs, progressCtrl) {
+            progressCtrl.addBar(scope, element);
+        }
+    };
+})
+
+.directive('progressbar', function() {
+    return {
+        restrict: 'EA',
+        replace: true,
+        transclude: true,
+        controller: 'ProgressController',
+        scope: {
+            value: '=',
+            type: '@'
+        },
+        templateUrl: 'template/progressbar/progressbar.html',
+        link: function(scope, element, attrs, progressCtrl) {
+            progressCtrl.addBar(scope, angular.element(element.children()[0]));
+        }
+    };
+});
+angular.module('ui.bootstrap.rating', [])
+
+.constant('ratingConfig', {
+  max: 5,
+  stateOn: null,
+  stateOff: null
+})
+
+.controller('RatingController', ['$scope', '$attrs', 'ratingConfig', function($scope, $attrs, ratingConfig) {
+  var ngModelCtrl  = { $setViewValue: angular.noop };
+
+  this.init = function(ngModelCtrl_) {
+    ngModelCtrl = ngModelCtrl_;
+    ngModelCtrl.$render = this.render;
+
+    this.stateOn = angular.isDefined($attrs.stateOn) ? $scope.$parent.$eval($attrs.stateOn) : ratingConfig.stateOn;
+    this.stateOff = angular.isDefined($attrs.stateOff) ? $scope.$parent.$eval($attrs.stateOff) : ratingConfig.stateOff;
+
+    var ratingStates = angular.isDefined($attrs.ratingStates) ? $scope.$parent.$eval($attrs.ratingStates) :
+                        new Array( angular.isDefined($attrs.max) ? $scope.$parent.$eval($attrs.max) : ratingConfig.max );
+    $scope.range = this.buildTemplateObjects(ratingStates);
+  };
+
+  this.buildTemplateObjects = function(states) {
+    for (var i = 0, n = states.length; i < n; i++) {
+      states[i] = angular.extend({ index: i }, { stateOn: this.stateOn, stateOff: this.stateOff }, states[i]);
+    }
+    return states;
+  };
+
+  $scope.rate = function(value) {
+    if ( !$scope.readonly && value >= 0 && value <= $scope.range.length ) {
+      ngModelCtrl.$setViewValue(value);
+      ngModelCtrl.$render();
+    }
+  };
+
+  $scope.enter = function(value) {
+    if ( !$scope.readonly ) {
+      $scope.value = value;
+    }
+    $scope.onHover({value: value});
+  };
+
+  $scope.reset = function() {
+    $scope.value = ngModelCtrl.$viewValue;
+    $scope.onLeave();
+  };
+
+  $scope.onKeydown = function(evt) {
+    if (/(37|38|39|40)/.test(evt.which)) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      $scope.rate( $scope.value + (evt.which === 38 || evt.which === 39 ? 1 : -1) );
+    }
+  };
+
+  this.render = function() {
+    $scope.value = ngModelCtrl.$viewValue;
+  };
+}])
+
+.directive('rating', function() {
+  return {
+    restrict: 'EA',
+    require: ['rating', 'ngModel'],
+    scope: {
+      readonly: '=?',
+      onHover: '&',
+      onLeave: '&'
+    },
+    controller: 'RatingController',
+    templateUrl: 'template/rating/rating.html',
+    replace: true,
+    link: function(scope, element, attrs, ctrls) {
+      var ratingCtrl = ctrls[0], ngModelCtrl = ctrls[1];
+
+      if ( ngModelCtrl ) {
+        ratingCtrl.init( ngModelCtrl );
+      }
+    }
+  };
+});
+
+/**
+ * @ngdoc overview
+ * @name ui.bootstrap.tabs
+ *
+ * @description
+ * AngularJS version of the tabs directive.
+ */
+
+angular.module('ui.bootstrap.tabs', [])
+
+.controller('TabsetController', ['$scope', function TabsetCtrl($scope) {
+  var ctrl = this,
+      tabs = ctrl.tabs = $scope.tabs = [];
+
+  ctrl.select = function(selectedTab) {
+    angular.forEach(tabs, function(tab) {
+      if (tab.active && tab !== selectedTab) {
+        tab.active = false;
+        tab.onDeselect();
+      }
+    });
+    selectedTab.active = true;
+    selectedTab.onSelect();
+  };
+
+  ctrl.addTab = function addTab(tab) {
+    tabs.push(tab);
+    // we can't run the select function on the first tab
+    // since that would select it twice
+    if (tabs.length === 1) {
+      tab.active = true;
+    } else if (tab.active) {
+      ctrl.select(tab);
+    }
+  };
+
+  ctrl.removeTab = function removeTab(tab) {
+    var index = tabs.indexOf(tab);
+    //Select a new tab if the tab to be removed is selected
+    if (tab.active && tabs.length > 1) {
+      //If this is the last tab, select the previous tab. else, the next tab.
+      var newActiveIndex = index == tabs.length - 1 ? index - 1 : index + 1;
+      ctrl.select(tabs[newActiveIndex]);
+    }
+    tabs.splice(index, 1);
+  };
+}])
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tabset
+ * @restrict EA
+ *
+ * @description
+ * Tabset is the outer container for the tabs directive
+ *
+ * @param {boolean=} vertical Whether or not to use vertical styling for the tabs.
+ * @param {boolean=} justified Whether or not to use justified styling for the tabs.
+ *
+ * @example
+<example module="ui.bootstrap">
+  <file name="index.html">
+    <tabset>
+      <tab heading="Tab 1"><b>First</b> Content!</tab>
+      <tab heading="Tab 2"><i>Second</i> Content!</tab>
+    </tabset>
+    <hr />
+    <tabset vertical="true">
+      <tab heading="Vertical Tab 1"><b>First</b> Vertical Content!</tab>
+      <tab heading="Vertical Tab 2"><i>Second</i> Vertical Content!</tab>
+    </tabset>
+    <tabset justified="true">
+      <tab heading="Justified Tab 1"><b>First</b> Justified Content!</tab>
+      <tab heading="Justified Tab 2"><i>Second</i> Justified Content!</tab>
+    </tabset>
+  </file>
+</example>
+ */
+.directive('tabset', function() {
+  return {
+    restrict: 'EA',
+    transclude: true,
+    replace: true,
+    scope: {
+      type: '@'
+    },
+    controller: 'TabsetController',
+    templateUrl: 'template/tabs/tabset.html',
+    link: function(scope, element, attrs) {
+      scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
+      scope.justified = angular.isDefined(attrs.justified) ? scope.$parent.$eval(attrs.justified) : false;
+    }
+  };
+})
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tab
+ * @restrict EA
+ *
+ * @param {string=} heading The visible heading, or title, of the tab. Set HTML headings with {@link ui.bootstrap.tabs.directive:tabHeading tabHeading}.
+ * @param {string=} select An expression to evaluate when the tab is selected.
+ * @param {boolean=} active A binding, telling whether or not this tab is selected.
+ * @param {boolean=} disabled A binding, telling whether or not this tab is disabled.
+ *
+ * @description
+ * Creates a tab with a heading and content. Must be placed within a {@link ui.bootstrap.tabs.directive:tabset tabset}.
+ *
+ * @example
+<example module="ui.bootstrap">
+  <file name="index.html">
+    <div ng-controller="TabsDemoCtrl">
+      <button class="btn btn-small" ng-click="items[0].active = true">
+        Select item 1, using active binding
+      </button>
+      <button class="btn btn-small" ng-click="items[1].disabled = !items[1].disabled">
+        Enable/disable item 2, using disabled binding
+      </button>
+      <br />
+      <tabset>
+        <tab heading="Tab 1">First Tab</tab>
+        <tab select="alertMe()">
+          <tab-heading><i class="icon-bell"></i> Alert me!</tab-heading>
+          Second Tab, with alert callback and html heading!
+        </tab>
+        <tab ng-repeat="item in items"
+          heading="{{item.title}}"
+          disabled="item.disabled"
+          active="item.active">
+          {{item.content}}
+        </tab>
+      </tabset>
+    </div>
+  </file>
+  <file name="script.js">
+    function TabsDemoCtrl($scope) {
+      $scope.items = [
+        { title:"Dynamic Title 1", content:"Dynamic Item 0" },
+        { title:"Dynamic Title 2", content:"Dynamic Item 1", disabled: true }
+      ];
+
+      $scope.alertMe = function() {
+        setTimeout(function() {
+          alert("You've selected the alert tab!");
+        });
+      };
+    };
+  </file>
+</example>
+ */
+
+/**
+ * @ngdoc directive
+ * @name ui.bootstrap.tabs.directive:tabHeading
+ * @restrict EA
+ *
+ * @description
+ * Creates an HTML heading for a {@link ui.bootstrap.tabs.directive:tab tab}. Must be placed as a child of a tab element.
+ *
+ * @example
+<example module="ui.bootstrap">
+  <file name="index.html">
+    <tabset>
+      <tab>
+        <tab-heading><b>HTML</b> in my titles?!</tab-heading>
+        And some content, too!
+      </tab>
+      <tab>
+        <tab-heading><i class="icon-heart"></i> Icon heading?!?</tab-heading>
+        That's right.
+      </tab>
+    </tabset>
+  </file>
+</example>
+ */
+.directive('tab', ['$parse', function($parse) {
+  return {
+    require: '^tabset',
+    restrict: 'EA',
+    replace: true,
+    templateUrl: 'template/tabs/tab.html',
+    transclude: true,
+    scope: {
+      active: '=?',
+      heading: '@',
+      onSelect: '&select', //This callback is called in contentHeadingTransclude
+                          //once it inserts the tab's content into the dom
+      onDeselect: '&deselect'
+    },
+    controller: function() {
+      //Empty controller so other directives can require being 'under' a tab
+    },
+    compile: function(elm, attrs, transclude) {
+      return function postLink(scope, elm, attrs, tabsetCtrl) {
+        scope.$watch('active', function(active) {
+          if (active) {
+            tabsetCtrl.select(scope);
+          }
+        });
+
+        scope.disabled = false;
+        if ( attrs.disabled ) {
+          scope.$parent.$watch($parse(attrs.disabled), function(value) {
+            scope.disabled = !! value;
+          });
+        }
+
+        scope.select = function() {
+          if ( !scope.disabled ) {
+            scope.active = true;
+          }
+        };
+
+        tabsetCtrl.addTab(scope);
+        scope.$on('$destroy', function() {
+          tabsetCtrl.removeTab(scope);
+        });
+
+        //We need to transclude later, once the content container is ready.
+        //when this link happens, we're inside a tab heading.
+        scope.$transcludeFn = transclude;
+      };
+    }
+  };
+}])
+
+.directive('tabHeadingTransclude', [function() {
+  return {
+    restrict: 'A',
+    require: '^tab',
+    link: function(scope, elm, attrs, tabCtrl) {
+      scope.$watch('headingElement', function updateHeadingElement(heading) {
+        if (heading) {
+          elm.html('');
+          elm.append(heading);
+        }
+      });
+    }
+  };
+}])
+
+.directive('tabContentTransclude', function() {
+  return {
+    restrict: 'A',
+    require: '^tabset',
+    link: function(scope, elm, attrs) {
+      var tab = scope.$eval(attrs.tabContentTransclude);
+
+      //Now our tab is ready to be transcluded: both the tab heading area
+      //and the tab content area are loaded.  Transclude 'em both.
+      tab.$transcludeFn(tab.$parent, function(contents) {
+        angular.forEach(contents, function(node) {
+          if (isTabHeading(node)) {
+            //Let tabHeadingTransclude know.
+            tab.headingElement = node;
+          } else {
+            elm.append(node);
+          }
+        });
+      });
+    }
+  };
+  function isTabHeading(node) {
+    return node.tagName &&  (
+      node.hasAttribute('tab-heading') ||
+      node.hasAttribute('data-tab-heading') ||
+      node.tagName.toLowerCase() === 'tab-heading' ||
+      node.tagName.toLowerCase() === 'data-tab-heading'
+    );
+  }
+})
+
+;
+
+angular.module('ui.bootstrap.timepicker', [])
+
+.constant('timepickerConfig', {
+  hourStep: 1,
+  minuteStep: 1,
+  showMeridian: true,
+  meridians: null,
+  readonlyInput: false,
+  mousewheel: true
+})
+
+.controller('TimepickerController', ['$scope', '$attrs', '$parse', '$log', '$locale', 'timepickerConfig', function($scope, $attrs, $parse, $log, $locale, timepickerConfig) {
+  var selected = new Date(),
+      ngModelCtrl = { $setViewValue: angular.noop }, // nullModelCtrl
+      meridians = angular.isDefined($attrs.meridians) ? $scope.$parent.$eval($attrs.meridians) : timepickerConfig.meridians || $locale.DATETIME_FORMATS.AMPMS;
+
+  this.init = function( ngModelCtrl_, inputs ) {
+    ngModelCtrl = ngModelCtrl_;
+    ngModelCtrl.$render = this.render;
+
+    var hoursInputEl = inputs.eq(0),
+        minutesInputEl = inputs.eq(1);
+
+    var mousewheel = angular.isDefined($attrs.mousewheel) ? $scope.$parent.$eval($attrs.mousewheel) : timepickerConfig.mousewheel;
+    if ( mousewheel ) {
+      this.setupMousewheelEvents( hoursInputEl, minutesInputEl );
+    }
+
+    $scope.readonlyInput = angular.isDefined($attrs.readonlyInput) ? $scope.$parent.$eval($attrs.readonlyInput) : timepickerConfig.readonlyInput;
+    this.setupInputEvents( hoursInputEl, minutesInputEl );
+  };
+
+  var hourStep = timepickerConfig.hourStep;
+  if ($attrs.hourStep) {
+    $scope.$parent.$watch($parse($attrs.hourStep), function(value) {
+      hourStep = parseInt(value, 10);
+    });
+  }
+
+  var minuteStep = timepickerConfig.minuteStep;
+  if ($attrs.minuteStep) {
+    $scope.$parent.$watch($parse($attrs.minuteStep), function(value) {
+      minuteStep = parseInt(value, 10);
+    });
+  }
+
+  // 12H / 24H mode
+  $scope.showMeridian = timepickerConfig.showMeridian;
+  if ($attrs.showMeridian) {
+    $scope.$parent.$watch($parse($attrs.showMeridian), function(value) {
+      $scope.showMeridian = !!value;
+
+      if ( ngModelCtrl.$error.time ) {
+        // Evaluate from template
+        var hours = getHoursFromTemplate(), minutes = getMinutesFromTemplate();
+        if (angular.isDefined( hours ) && angular.isDefined( minutes )) {
+          selected.setHours( hours );
+          refresh();
+        }
+      } else {
+        updateTemplate();
+      }
+    });
+  }
+
+  // Get $scope.hours in 24H mode if valid
+  function getHoursFromTemplate ( ) {
+    var hours = parseInt( $scope.hours, 10 );
+    var valid = ( $scope.showMeridian ) ? (hours > 0 && hours < 13) : (hours >= 0 && hours < 24);
+    if ( !valid ) {
+      return undefined;
+    }
+
+    if ( $scope.showMeridian ) {
+      if ( hours === 12 ) {
+        hours = 0;
+      }
+      if ( $scope.meridian === meridians[1] ) {
+        hours = hours + 12;
+      }
+    }
+    return hours;
+  }
+
+  function getMinutesFromTemplate() {
+    var minutes = parseInt($scope.minutes, 10);
+    return ( minutes >= 0 && minutes < 60 ) ? minutes : undefined;
+  }
+
+  function pad( value ) {
+    return ( angular.isDefined(value) && value.toString().length < 2 ) ? '0' + value : value;
+  }
+
+  // Respond on mousewheel spin
+  this.setupMousewheelEvents = function( hoursInputEl, minutesInputEl ) {
+    var isScrollingUp = function(e) {
+      if (e.originalEvent) {
+        e = e.originalEvent;
+      }
+      //pick correct delta variable depending on event
+      var delta = (e.wheelDelta) ? e.wheelDelta : -e.deltaY;
+      return (e.detail || delta > 0);
+    };
+
+    hoursInputEl.bind('mousewheel wheel', function(e) {
+      $scope.$apply( (isScrollingUp(e)) ? $scope.incrementHours() : $scope.decrementHours() );
+      e.preventDefault();
+    });
+
+    minutesInputEl.bind('mousewheel wheel', function(e) {
+      $scope.$apply( (isScrollingUp(e)) ? $scope.incrementMinutes() : $scope.decrementMinutes() );
+      e.preventDefault();
+    });
+
+  };
+
+  this.setupInputEvents = function( hoursInputEl, minutesInputEl ) {
+    if ( $scope.readonlyInput ) {
+      $scope.updateHours = angular.noop;
+      $scope.updateMinutes = angular.noop;
+      return;
+    }
+
+    var invalidate = function(invalidHours, invalidMinutes) {
+      ngModelCtrl.$setViewValue( null );
+      ngModelCtrl.$setValidity('time', false);
+      if (angular.isDefined(invalidHours)) {
+        $scope.invalidHours = invalidHours;
+      }
+      if (angular.isDefined(invalidMinutes)) {
+        $scope.invalidMinutes = invalidMinutes;
+      }
+    };
+
+    $scope.updateHours = function() {
+      var hours = getHoursFromTemplate();
+
+      if ( angular.isDefined(hours) ) {
+        selected.setHours( hours );
+        refresh( 'h' );
+      } else {
+        invalidate(true);
+      }
+    };
+
+    hoursInputEl.bind('blur', function(e) {
+      if ( !$scope.invalidHours && $scope.hours < 10) {
+        $scope.$apply( function() {
+          $scope.hours = pad( $scope.hours );
+        });
+      }
+    });
+
+    $scope.updateMinutes = function() {
+      var minutes = getMinutesFromTemplate();
+
+      if ( angular.isDefined(minutes) ) {
+        selected.setMinutes( minutes );
+        refresh( 'm' );
+      } else {
+        invalidate(undefined, true);
+      }
+    };
+
+    minutesInputEl.bind('blur', function(e) {
+      if ( !$scope.invalidMinutes && $scope.minutes < 10 ) {
+        $scope.$apply( function() {
+          $scope.minutes = pad( $scope.minutes );
+        });
+      }
+    });
+
+  };
+
+  this.render = function() {
+    var date = ngModelCtrl.$modelValue ? new Date( ngModelCtrl.$modelValue ) : null;
+
+    if ( isNaN(date) ) {
+      ngModelCtrl.$setValidity('time', false);
+      $log.error('Timepicker directive: "ng-model" value must be a Date object, a number of milliseconds since 01.01.1970 or a string representing an RFC2822 or ISO 8601 date.');
+    } else {
+      if ( date ) {
+        selected = date;
+      }
+      makeValid();
+      updateTemplate();
+    }
+  };
+
+  // Call internally when we know that model is valid.
+  function refresh( keyboardChange ) {
+    makeValid();
+    ngModelCtrl.$setViewValue( new Date(selected) );
+    updateTemplate( keyboardChange );
+  }
+
+  function makeValid() {
+    ngModelCtrl.$setValidity('time', true);
+    $scope.invalidHours = false;
+    $scope.invalidMinutes = false;
+  }
+
+  function updateTemplate( keyboardChange ) {
+    var hours = selected.getHours(), minutes = selected.getMinutes();
+
+    if ( $scope.showMeridian ) {
+      hours = ( hours === 0 || hours === 12 ) ? 12 : hours % 12; // Convert 24 to 12 hour system
+    }
+
+    $scope.hours = keyboardChange === 'h' ? hours : pad(hours);
+    $scope.minutes = keyboardChange === 'm' ? minutes : pad(minutes);
+    $scope.meridian = selected.getHours() < 12 ? meridians[0] : meridians[1];
+  }
+
+  function addMinutes( minutes ) {
+    var dt = new Date( selected.getTime() + minutes * 60000 );
+    selected.setHours( dt.getHours(), dt.getMinutes() );
+    refresh();
+  }
+
+  $scope.incrementHours = function() {
+    addMinutes( hourStep * 60 );
+  };
+  $scope.decrementHours = function() {
+    addMinutes( - hourStep * 60 );
+  };
+  $scope.incrementMinutes = function() {
+    addMinutes( minuteStep );
+  };
+  $scope.decrementMinutes = function() {
+    addMinutes( - minuteStep );
+  };
+  $scope.toggleMeridian = function() {
+    addMinutes( 12 * 60 * (( selected.getHours() < 12 ) ? 1 : -1) );
+  };
+}])
+
+.directive('timepicker', function () {
+  return {
+    restrict: 'EA',
+    require: ['timepicker', '?^ngModel'],
+    controller:'TimepickerController',
+    replace: true,
+    scope: {},
+    templateUrl: 'template/timepicker/timepicker.html',
+    link: function(scope, element, attrs, ctrls) {
+      var timepickerCtrl = ctrls[0], ngModelCtrl = ctrls[1];
+
+      if ( ngModelCtrl ) {
+        timepickerCtrl.init( ngModelCtrl, element.find('input') );
+      }
+    }
+  };
+});
+
+angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap.bindHtml'])
+
+/**
+ * A helper service that can parse typeahead's syntax (string provided by users)
+ * Extracted to a separate service for ease of unit testing
+ */
+  .factory('typeaheadParser', ['$parse', function ($parse) {
+
+  //                      00000111000000000000022200000000000000003333333333333330000000000044000
+  var TYPEAHEAD_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w\d]*))\s+in\s+([\s\S]+?)$/;
+
+  return {
+    parse:function (input) {
+
+      var match = input.match(TYPEAHEAD_REGEXP);
+      if (!match) {
+        throw new Error(
+          'Expected typeahead specification in form of "_modelValue_ (as _label_)? for _item_ in _collection_"' +
+            ' but got "' + input + '".');
+      }
+
+      return {
+        itemName:match[3],
+        source:$parse(match[4]),
+        viewMapper:$parse(match[2] || match[1]),
+        modelMapper:$parse(match[1])
+      };
+    }
+  };
+}])
+
+  .directive('typeahead', ['$compile', '$parse', '$q', '$timeout', '$document', '$position', 'typeaheadParser',
+    function ($compile, $parse, $q, $timeout, $document, $position, typeaheadParser) {
+
+  var HOT_KEYS = [9, 13, 27, 38, 40];
+
+  return {
+    require:'ngModel',
+    link:function (originalScope, element, attrs, modelCtrl) {
+
+      //SUPPORTED ATTRIBUTES (OPTIONS)
+
+      //minimal no of characters that needs to be entered before typeahead kicks-in
+      var minSearch = originalScope.$eval(attrs.typeaheadMinLength) || 1;
+
+      //minimal wait time after last character typed before typehead kicks-in
+      var waitTime = originalScope.$eval(attrs.typeaheadWaitMs) || 0;
+
+      //should it restrict model values to the ones selected from the popup only?
+      var isEditable = originalScope.$eval(attrs.typeaheadEditable) !== false;
+
+      //binding to a variable that indicates if matches are being retrieved asynchronously
+      var isLoadingSetter = $parse(attrs.typeaheadLoading).assign || angular.noop;
+
+      //a callback executed when a match is selected
+      var onSelectCallback = $parse(attrs.typeaheadOnSelect);
+
+      var inputFormatter = attrs.typeaheadInputFormatter ? $parse(attrs.typeaheadInputFormatter) : undefined;
+
+      var appendToBody =  attrs.typeaheadAppendToBody ? originalScope.$eval(attrs.typeaheadAppendToBody) : false;
+
+      //INTERNAL VARIABLES
+
+      //model setter executed upon match selection
+      var $setModelValue = $parse(attrs.ngModel).assign;
+
+      //expressions used by typeahead
+      var parserResult = typeaheadParser.parse(attrs.typeahead);
+
+      var hasFocus;
+
+      //create a child scope for the typeahead directive so we are not polluting original scope
+      //with typeahead-specific data (matches, query etc.)
+      var scope = originalScope.$new();
+      originalScope.$on('$destroy', function(){
+        scope.$destroy();
+      });
+
+      // WAI-ARIA
+      var popupId = 'typeahead-' + scope.$id + '-' + Math.floor(Math.random() * 10000);
+      element.attr({
+        'aria-autocomplete': 'list',
+        'aria-expanded': false,
+        'aria-owns': popupId
+      });
+
+      //pop-up element used to display matches
+      var popUpEl = angular.element('<div typeahead-popup></div>');
+      popUpEl.attr({
+        id: popupId,
+        matches: 'matches',
+        active: 'activeIdx',
+        select: 'select(activeIdx)',
+        query: 'query',
+        position: 'position'
+      });
+      //custom item template
+      if (angular.isDefined(attrs.typeaheadTemplateUrl)) {
+        popUpEl.attr('template-url', attrs.typeaheadTemplateUrl);
+      }
+
+      var resetMatches = function() {
+        scope.matches = [];
+        scope.activeIdx = -1;
+        element.attr('aria-expanded', false);
+      };
+
+      var getMatchId = function(index) {
+        return popupId + '-option-' + index;
+      };
+
+      // Indicate that the specified match is the active (pre-selected) item in the list owned by this typeahead.
+      // This attribute is added or removed automatically when the `activeIdx` changes.
+      scope.$watch('activeIdx', function(index) {
+        if (index < 0) {
+          element.removeAttr('aria-activedescendant');
+        } else {
+          element.attr('aria-activedescendant', getMatchId(index));
+        }
+      });
+
+      var getMatchesAsync = function(inputValue) {
+
+        var locals = {$viewValue: inputValue};
+        isLoadingSetter(originalScope, true);
+        $q.when(parserResult.source(originalScope, locals)).then(function(matches) {
+
+          //it might happen that several async queries were in progress if a user were typing fast
+          //but we are interested only in responses that correspond to the current view value
+          var onCurrentRequest = (inputValue === modelCtrl.$viewValue);
+          if (onCurrentRequest && hasFocus) {
+            if (matches.length > 0) {
+
+              scope.activeIdx = 0;
+              scope.matches.length = 0;
+
+              //transform labels
+              for(var i=0; i<matches.length; i++) {
+                locals[parserResult.itemName] = matches[i];
+                scope.matches.push({
+                  id: getMatchId(i),
+                  label: parserResult.viewMapper(scope, locals),
+                  model: matches[i]
+                });
+              }
+
+              scope.query = inputValue;
+              //position pop-up with matches - we need to re-calculate its position each time we are opening a window
+              //with matches as a pop-up might be absolute-positioned and position of an input might have changed on a page
+              //due to other elements being rendered
+              scope.position = appendToBody ? $position.offset(element) : $position.position(element);
+              scope.position.top = scope.position.top + element.prop('offsetHeight');
+
+              element.attr('aria-expanded', true);
+            } else {
+              resetMatches();
+            }
+          }
+          if (onCurrentRequest) {
+            isLoadingSetter(originalScope, false);
+          }
+        }, function(){
+          resetMatches();
+          isLoadingSetter(originalScope, false);
+        });
+      };
+
+      resetMatches();
+
+      //we need to propagate user's query so we can higlight matches
+      scope.query = undefined;
+
+      //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later 
+      var timeoutPromise;
+
+      var scheduleSearchWithTimeout = function(inputValue) {
+        timeoutPromise = $timeout(function () {
+          getMatchesAsync(inputValue);
+        }, waitTime);
+      };
+
+      var cancelPreviousTimeout = function() {
+        if (timeoutPromise) {
+          $timeout.cancel(timeoutPromise);
+        }
+      };
+
+      //plug into $parsers pipeline to open a typeahead on view changes initiated from DOM
+      //$parsers kick-in on all the changes coming from the view as well as manually triggered by $setViewValue
+      modelCtrl.$parsers.unshift(function (inputValue) {
+
+        hasFocus = true;
+
+        if (inputValue && inputValue.length >= minSearch) {
+          if (waitTime > 0) {
+            cancelPreviousTimeout();
+            scheduleSearchWithTimeout(inputValue);
+          } else {
+            getMatchesAsync(inputValue);
+          }
+        } else {
+          isLoadingSetter(originalScope, false);
+          cancelPreviousTimeout();
+          resetMatches();
+        }
+
+        if (isEditable) {
+          return inputValue;
+        } else {
+          if (!inputValue) {
+            // Reset in case user had typed something previously.
+            modelCtrl.$setValidity('editable', true);
+            return inputValue;
+          } else {
+            modelCtrl.$setValidity('editable', false);
+            return undefined;
+          }
+        }
+      });
+
+      modelCtrl.$formatters.push(function (modelValue) {
+
+        var candidateViewValue, emptyViewValue;
+        var locals = {};
+
+        if (inputFormatter) {
+
+          locals['$model'] = modelValue;
+          return inputFormatter(originalScope, locals);
+
+        } else {
+
+          //it might happen that we don't have enough info to properly render input value
+          //we need to check for this situation and simply return model value if we can't apply custom formatting
+          locals[parserResult.itemName] = modelValue;
+          candidateViewValue = parserResult.viewMapper(originalScope, locals);
+          locals[parserResult.itemName] = undefined;
+          emptyViewValue = parserResult.viewMapper(originalScope, locals);
+
+          return candidateViewValue!== emptyViewValue ? candidateViewValue : modelValue;
+        }
+      });
+
+      scope.select = function (activeIdx) {
+        //called from within the $digest() cycle
+        var locals = {};
+        var model, item;
+
+        locals[parserResult.itemName] = item = scope.matches[activeIdx].model;
+        model = parserResult.modelMapper(originalScope, locals);
+        $setModelValue(originalScope, model);
+        modelCtrl.$setValidity('editable', true);
+
+        onSelectCallback(originalScope, {
+          $item: item,
+          $model: model,
+          $label: parserResult.viewMapper(originalScope, locals)
+        });
+
+        resetMatches();
+
+        //return focus to the input element if a match was selected via a mouse click event
+        // use timeout to avoid $rootScope:inprog error
+        $timeout(function() { element[0].focus(); }, 0, false);
+      };
+
+      //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27)
+      element.bind('keydown', function (evt) {
+
+        //typeahead is open and an "interesting" key was pressed
+        if (scope.matches.length === 0 || HOT_KEYS.indexOf(evt.which) === -1) {
+          return;
+        }
+
+        evt.preventDefault();
+
+        if (evt.which === 40) {
+          scope.activeIdx = (scope.activeIdx + 1) % scope.matches.length;
+          scope.$digest();
+
+        } else if (evt.which === 38) {
+          scope.activeIdx = (scope.activeIdx ? scope.activeIdx : scope.matches.length) - 1;
+          scope.$digest();
+
+        } else if (evt.which === 13 || evt.which === 9) {
+          scope.$apply(function () {
+            scope.select(scope.activeIdx);
+          });
+
+        } else if (evt.which === 27) {
+          evt.stopPropagation();
+
+          resetMatches();
+          scope.$digest();
+        }
+      });
+
+      element.bind('blur', function (evt) {
+        hasFocus = false;
+      });
+
+      // Keep reference to click handler to unbind it.
+      var dismissClickHandler = function (evt) {
+        if (element[0] !== evt.target) {
+          resetMatches();
+          scope.$digest();
+        }
+      };
+
+      $document.bind('click', dismissClickHandler);
+
+      originalScope.$on('$destroy', function(){
+        $document.unbind('click', dismissClickHandler);
+      });
+
+      var $popup = $compile(popUpEl)(scope);
+      if ( appendToBody ) {
+        $document.find('body').append($popup);
+      } else {
+        element.after($popup);
+      }
+    }
+  };
+
+}])
+
+  .directive('typeaheadPopup', function () {
+    return {
+      restrict:'EA',
+      scope:{
+        matches:'=',
+        query:'=',
+        active:'=',
+        position:'=',
+        select:'&'
+      },
+      replace:true,
+      templateUrl:'template/typeahead/typeahead-popup.html',
+      link:function (scope, element, attrs) {
+
+        scope.templateUrl = attrs.templateUrl;
+
+        scope.isOpen = function () {
+          return scope.matches.length > 0;
+        };
+
+        scope.isActive = function (matchIdx) {
+          return scope.active == matchIdx;
+        };
+
+        scope.selectActive = function (matchIdx) {
+          scope.active = matchIdx;
+        };
+
+        scope.selectMatch = function (activeIdx) {
+          scope.select({activeIdx:activeIdx});
+        };
+      }
+    };
+  })
+
+  .directive('typeaheadMatch', ['$http', '$templateCache', '$compile', '$parse', function ($http, $templateCache, $compile, $parse) {
+    return {
+      restrict:'EA',
+      scope:{
+        index:'=',
+        match:'=',
+        query:'='
+      },
+      link:function (scope, element, attrs) {
+        var tplUrl = $parse(attrs.templateUrl)(scope.$parent) || 'template/typeahead/typeahead-match.html';
+        $http.get(tplUrl, {cache: $templateCache}).success(function(tplContent){
+           element.replaceWith($compile(tplContent.trim())(scope));
+        });
+      }
+    };
+  }])
+
+  .filter('typeaheadHighlight', function() {
+
+    function escapeRegexp(queryToEscape) {
+      return queryToEscape.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1');
+    }
+
+    return function(matchItem, query) {
+      return query ? ('' + matchItem).replace(new RegExp(escapeRegexp(query), 'gi'), '<strong>$&</strong>') : matchItem;
+    };
+  });
+
+angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/accordion/accordion-group.html",
+    "<div class=\"panel panel-default\">\n" +
+    "  <div class=\"panel-heading\">\n" +
+    "    <h4 class=\"panel-title\">\n" +
+    "      <a class=\"accordion-toggle\" ng-click=\"toggleOpen()\" accordion-transclude=\"heading\"><span ng-class=\"{'text-muted': isDisabled}\">{{heading}}</span></a>\n" +
+    "    </h4>\n" +
+    "  </div>\n" +
+    "  <div class=\"panel-collapse\" collapse=\"!isOpen\">\n" +
+    "	  <div class=\"panel-body\" ng-transclude></div>\n" +
+    "  </div>\n" +
+    "</div>");
+}]);
+
+angular.module("template/accordion/accordion.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/accordion/accordion.html",
+    "<div class=\"panel-group\" ng-transclude></div>");
+}]);
+
+angular.module("template/alert/alert.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/alert/alert.html",
+    "<div class=\"alert\" ng-class=\"['alert-' + (type || 'warning'), closeable ? 'alert-dismissable' : null]\" role=\"alert\">\n" +
+    "    <button ng-show=\"closeable\" type=\"button\" class=\"close\" ng-click=\"close()\">\n" +
+    "        <span aria-hidden=\"true\">&times;</span>\n" +
+    "        <span class=\"sr-only\">Close</span>\n" +
+    "    </button>\n" +
+    "    <div ng-transclude></div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("template/carousel/carousel.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/carousel/carousel.html",
+    "<div ng-mouseenter=\"pause()\" ng-mouseleave=\"play()\" class=\"carousel\" ng-swipe-right=\"prev()\" ng-swipe-left=\"next()\">\n" +
+    "    <ol class=\"carousel-indicators\" ng-show=\"slides.length > 1\">\n" +
+    "        <li ng-repeat=\"slide in slides track by $index\" ng-class=\"{active: isActive(slide)}\" ng-click=\"select(slide)\"></li>\n" +
+    "    </ol>\n" +
+    "    <div class=\"carousel-inner\" ng-transclude></div>\n" +
+    "    <a class=\"left carousel-control\" ng-click=\"prev()\" ng-show=\"slides.length > 1\"><span class=\"glyphicon glyphicon-chevron-left\"></span></a>\n" +
+    "    <a class=\"right carousel-control\" ng-click=\"next()\" ng-show=\"slides.length > 1\"><span class=\"glyphicon glyphicon-chevron-right\"></span></a>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("template/carousel/slide.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/carousel/slide.html",
+    "<div ng-class=\"{\n" +
+    "    'active': leaving || (active && !entering),\n" +
+    "    'prev': (next || active) && direction=='prev',\n" +
+    "    'next': (next || active) && direction=='next',\n" +
+    "    'right': direction=='prev',\n" +
+    "    'left': direction=='next'\n" +
+    "  }\" class=\"item text-center\" ng-transclude></div>\n" +
+    "");
+}]);
+
+angular.module("template/datepicker/datepicker.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/datepicker/datepicker.html",
+    "<div ng-switch=\"datepickerMode\" role=\"application\" ng-keydown=\"keydown($event)\">\n" +
+    "  <daypicker ng-switch-when=\"day\" tabindex=\"0\"></daypicker>\n" +
+    "  <monthpicker ng-switch-when=\"month\" tabindex=\"0\"></monthpicker>\n" +
+    "  <yearpicker ng-switch-when=\"year\" tabindex=\"0\"></yearpicker>\n" +
+    "</div>");
+}]);
+
+angular.module("template/datepicker/day.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/datepicker/day.html",
+    "<table role=\"grid\" aria-labelledby=\"{{uniqueId}}-title\" aria-activedescendant=\"{{activeDateId}}\">\n" +
+    "  <thead>\n" +
+    "    <tr>\n" +
+    "      <th><button type=\"button\" class=\"btn btn-default btn-sm pull-left\" ng-click=\"move(-1)\" tabindex=\"-1\"><i class=\"glyphicon glyphicon-chevron-left\"></i></button></th>\n" +
+    "      <th colspan=\"{{5 + showWeeks}}\"><button id=\"{{uniqueId}}-title\" role=\"heading\" aria-live=\"assertive\" aria-atomic=\"true\" type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"toggleMode()\" tabindex=\"-1\" style=\"width:100%;\"><strong>{{title}}</strong></button></th>\n" +
+    "      <th><button type=\"button\" class=\"btn btn-default btn-sm pull-right\" ng-click=\"move(1)\" tabindex=\"-1\"><i class=\"glyphicon glyphicon-chevron-right\"></i></button></th>\n" +
+    "    </tr>\n" +
+    "    <tr>\n" +
+    "      <th ng-show=\"showWeeks\" class=\"text-center\"></th>\n" +
+    "      <th ng-repeat=\"label in labels track by $index\" class=\"text-center\"><small aria-label=\"{{label.full}}\">{{label.abbr}}</small></th>\n" +
+    "    </tr>\n" +
+    "  </thead>\n" +
+    "  <tbody>\n" +
+    "    <tr ng-repeat=\"row in rows track by $index\">\n" +
+    "      <td ng-show=\"showWeeks\" class=\"text-center h6\"><em>{{ weekNumbers[$index] }}</em></td>\n" +
+    "      <td ng-repeat=\"dt in row track by dt.date\" class=\"text-center\" role=\"gridcell\" id=\"{{dt.uid}}\" aria-disabled=\"{{!!dt.disabled}}\">\n" +
+    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default btn-sm\" ng-class=\"{'btn-info': dt.selected, active: isActive(dt)}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled\" tabindex=\"-1\"><span ng-class=\"{'text-muted': dt.secondary, 'text-info': dt.current}\">{{dt.label}}</span></button>\n" +
+    "      </td>\n" +
+    "    </tr>\n" +
+    "  </tbody>\n" +
+    "</table>\n" +
+    "");
+}]);
+
+angular.module("template/datepicker/month.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/datepicker/month.html",
+    "<table role=\"grid\" aria-labelledby=\"{{uniqueId}}-title\" aria-activedescendant=\"{{activeDateId}}\">\n" +
+    "  <thead>\n" +
+    "    <tr>\n" +
+    "      <th><button type=\"button\" class=\"btn btn-default btn-sm pull-left\" ng-click=\"move(-1)\" tabindex=\"-1\"><i class=\"glyphicon glyphicon-chevron-left\"></i></button></th>\n" +
+    "      <th><button id=\"{{uniqueId}}-title\" role=\"heading\" aria-live=\"assertive\" aria-atomic=\"true\" type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"toggleMode()\" tabindex=\"-1\" style=\"width:100%;\"><strong>{{title}}</strong></button></th>\n" +
+    "      <th><button type=\"button\" class=\"btn btn-default btn-sm pull-right\" ng-click=\"move(1)\" tabindex=\"-1\"><i class=\"glyphicon glyphicon-chevron-right\"></i></button></th>\n" +
+    "    </tr>\n" +
+    "  </thead>\n" +
+    "  <tbody>\n" +
+    "    <tr ng-repeat=\"row in rows track by $index\">\n" +
+    "      <td ng-repeat=\"dt in row track by dt.date\" class=\"text-center\" role=\"gridcell\" id=\"{{dt.uid}}\" aria-disabled=\"{{!!dt.disabled}}\">\n" +
+    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default\" ng-class=\"{'btn-info': dt.selected, active: isActive(dt)}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled\" tabindex=\"-1\"><span ng-class=\"{'text-info': dt.current}\">{{dt.label}}</span></button>\n" +
+    "      </td>\n" +
+    "    </tr>\n" +
+    "  </tbody>\n" +
+    "</table>\n" +
+    "");
+}]);
+
+angular.module("template/datepicker/popup.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/datepicker/popup.html",
+    "<ul class=\"dropdown-menu\" ng-style=\"{display: (isOpen && 'block') || 'none', top: position.top+'px', left: position.left+'px'}\" ng-keydown=\"keydown($event)\">\n" +
+    "	<li ng-transclude></li>\n" +
+    "	<li ng-if=\"showButtonBar\" style=\"padding:10px 9px 2px\">\n" +
+    "		<span class=\"btn-group\">\n" +
+    "			<button type=\"button\" class=\"btn btn-sm btn-info\" ng-click=\"select('today')\">{{ getText('current') }}</button>\n" +
+    "			<button type=\"button\" class=\"btn btn-sm btn-danger\" ng-click=\"select(null)\">{{ getText('clear') }}</button>\n" +
+    "		</span>\n" +
+    "		<button type=\"button\" class=\"btn btn-sm btn-success pull-right\" ng-click=\"close()\">{{ getText('close') }}</button>\n" +
+    "	</li>\n" +
+    "</ul>\n" +
+    "");
+}]);
+
+angular.module("template/datepicker/year.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/datepicker/year.html",
+    "<table role=\"grid\" aria-labelledby=\"{{uniqueId}}-title\" aria-activedescendant=\"{{activeDateId}}\">\n" +
+    "  <thead>\n" +
+    "    <tr>\n" +
+    "      <th><button type=\"button\" class=\"btn btn-default btn-sm pull-left\" ng-click=\"move(-1)\" tabindex=\"-1\"><i class=\"glyphicon glyphicon-chevron-left\"></i></button></th>\n" +
+    "      <th colspan=\"3\"><button id=\"{{uniqueId}}-title\" role=\"heading\" aria-live=\"assertive\" aria-atomic=\"true\" type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"toggleMode()\" tabindex=\"-1\" style=\"width:100%;\"><strong>{{title}}</strong></button></th>\n" +
+    "      <th><button type=\"button\" class=\"btn btn-default btn-sm pull-right\" ng-click=\"move(1)\" tabindex=\"-1\"><i class=\"glyphicon glyphicon-chevron-right\"></i></button></th>\n" +
+    "    </tr>\n" +
+    "  </thead>\n" +
+    "  <tbody>\n" +
+    "    <tr ng-repeat=\"row in rows track by $index\">\n" +
+    "      <td ng-repeat=\"dt in row track by dt.date\" class=\"text-center\" role=\"gridcell\" id=\"{{dt.uid}}\" aria-disabled=\"{{!!dt.disabled}}\">\n" +
+    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default\" ng-class=\"{'btn-info': dt.selected, active: isActive(dt)}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled\" tabindex=\"-1\"><span ng-class=\"{'text-info': dt.current}\">{{dt.label}}</span></button>\n" +
+    "      </td>\n" +
+    "    </tr>\n" +
+    "  </tbody>\n" +
+    "</table>\n" +
+    "");
+}]);
+
+angular.module("template/modal/backdrop.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/modal/backdrop.html",
+    "<div class=\"modal-backdrop fade {{ backdropClass }}\"\n" +
+    "     ng-class=\"{in: animate}\"\n" +
+    "     ng-style=\"{'z-index': 1040 + (index && 1 || 0) + index*10}\"\n" +
+    "></div>\n" +
+    "");
+}]);
+
+angular.module("template/modal/window.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/modal/window.html",
+    "<div tabindex=\"-1\" role=\"dialog\" class=\"modal fade\" ng-class=\"{in: animate}\" ng-style=\"{'z-index': 1050 + index*10, display: 'block'}\" ng-click=\"close($event)\">\n" +
+    "    <div class=\"modal-dialog\" ng-class=\"{'modal-sm': size == 'sm', 'modal-lg': size == 'lg'}\"><div class=\"modal-content\" modal-transclude></div></div>\n" +
+    "</div>");
+}]);
+
+angular.module("template/pagination/pager.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/pagination/pager.html",
+    "<ul class=\"pager\">\n" +
+    "  <li ng-class=\"{disabled: noPrevious(), previous: align}\"><a href ng-click=\"selectPage(page - 1)\">{{getText('previous')}}</a></li>\n" +
+    "  <li ng-class=\"{disabled: noNext(), next: align}\"><a href ng-click=\"selectPage(page + 1)\">{{getText('next')}}</a></li>\n" +
+    "</ul>");
+}]);
+
+angular.module("template/pagination/pagination.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/pagination/pagination.html",
+    "<ul class=\"pagination\">\n" +
+    "  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noPrevious()}\"><a href ng-click=\"selectPage(1)\">{{getText('first')}}</a></li>\n" +
+    "  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noPrevious()}\"><a href ng-click=\"selectPage(page - 1)\">{{getText('previous')}}</a></li>\n" +
+    "  <li ng-repeat=\"page in pages track by $index\" ng-class=\"{active: page.active}\"><a href ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
+    "  <li ng-if=\"directionLinks\" ng-class=\"{disabled: noNext()}\"><a href ng-click=\"selectPage(page + 1)\">{{getText('next')}}</a></li>\n" +
+    "  <li ng-if=\"boundaryLinks\" ng-class=\"{disabled: noNext()}\"><a href ng-click=\"selectPage(totalPages)\">{{getText('last')}}</a></li>\n" +
+    "</ul>");
+}]);
+
+angular.module("template/tooltip/tooltip-html-unsafe-popup.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/tooltip/tooltip-html-unsafe-popup.html",
+    "<div class=\"tooltip {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
+    "  <div class=\"tooltip-arrow\"></div>\n" +
+    "  <div class=\"tooltip-inner\" bind-html-unsafe=\"content\"></div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("template/tooltip/tooltip-popup.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/tooltip/tooltip-popup.html",
+    "<div class=\"tooltip {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
+    "  <div class=\"tooltip-arrow\"></div>\n" +
+    "  <div class=\"tooltip-inner\" ng-bind=\"content\"></div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("template/popover/popover.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/popover/popover.html",
+    "<div class=\"popover {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
+    "  <div class=\"arrow\"></div>\n" +
+    "\n" +
+    "  <div class=\"popover-inner\">\n" +
+    "      <h3 class=\"popover-title\" ng-bind=\"title\" ng-show=\"title\"></h3>\n" +
+    "      <div class=\"popover-content\" ng-bind=\"content\"></div>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("template/progressbar/bar.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/progressbar/bar.html",
+    "<div class=\"progress-bar\" ng-class=\"type && 'progress-bar-' + type\" role=\"progressbar\" aria-valuenow=\"{{value}}\" aria-valuemin=\"0\" aria-valuemax=\"{{max}}\" ng-style=\"{width: percent + '%'}\" aria-valuetext=\"{{percent | number:0}}%\" ng-transclude></div>");
+}]);
+
+angular.module("template/progressbar/progress.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/progressbar/progress.html",
+    "<div class=\"progress\" ng-transclude></div>");
+}]);
+
+angular.module("template/progressbar/progressbar.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/progressbar/progressbar.html",
+    "<div class=\"progress\">\n" +
+    "  <div class=\"progress-bar\" ng-class=\"type && 'progress-bar-' + type\" role=\"progressbar\" aria-valuenow=\"{{value}}\" aria-valuemin=\"0\" aria-valuemax=\"{{max}}\" ng-style=\"{width: percent + '%'}\" aria-valuetext=\"{{percent | number:0}}%\" ng-transclude></div>\n" +
+    "</div>");
+}]);
+
+angular.module("template/rating/rating.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/rating/rating.html",
+    "<span ng-mouseleave=\"reset()\" ng-keydown=\"onKeydown($event)\" tabindex=\"0\" role=\"slider\" aria-valuemin=\"0\" aria-valuemax=\"{{range.length}}\" aria-valuenow=\"{{value}}\">\n" +
+    "    <i ng-repeat=\"r in range track by $index\" ng-mouseenter=\"enter($index + 1)\" ng-click=\"rate($index + 1)\" class=\"glyphicon\" ng-class=\"$index < value && (r.stateOn || 'glyphicon-star') || (r.stateOff || 'glyphicon-star-empty')\">\n" +
+    "        <span class=\"sr-only\">({{ $index < value ? '*' : ' ' }})</span>\n" +
+    "    </i>\n" +
+    "</span>");
+}]);
+
+angular.module("template/tabs/tab.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/tabs/tab.html",
+    "<li ng-class=\"{active: active, disabled: disabled}\">\n" +
+    "  <a ng-click=\"select()\" tab-heading-transclude>{{heading}}</a>\n" +
+    "</li>\n" +
+    "");
+}]);
+
+angular.module("template/tabs/tabset.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/tabs/tabset.html",
+    "<div>\n" +
+    "  <ul class=\"nav nav-{{type || 'tabs'}}\" ng-class=\"{'nav-stacked': vertical, 'nav-justified': justified}\" ng-transclude></ul>\n" +
+    "  <div class=\"tab-content\">\n" +
+    "    <div class=\"tab-pane\" \n" +
+    "         ng-repeat=\"tab in tabs\" \n" +
+    "         ng-class=\"{active: tab.active}\"\n" +
+    "         tab-content-transclude=\"tab\">\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("template/timepicker/timepicker.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/timepicker/timepicker.html",
+    "<table>\n" +
+    "	<tbody>\n" +
+    "		<tr class=\"text-center\">\n" +
+    "			<td><a ng-click=\"incrementHours()\" class=\"btn btn-link\"><span class=\"glyphicon glyphicon-chevron-up\"></span></a></td>\n" +
+    "			<td>&nbsp;</td>\n" +
+    "			<td><a ng-click=\"incrementMinutes()\" class=\"btn btn-link\"><span class=\"glyphicon glyphicon-chevron-up\"></span></a></td>\n" +
+    "			<td ng-show=\"showMeridian\"></td>\n" +
+    "		</tr>\n" +
+    "		<tr>\n" +
+    "			<td style=\"width:50px;\" class=\"form-group\" ng-class=\"{'has-error': invalidHours}\">\n" +
+    "				<input type=\"text\" ng-model=\"hours\" ng-change=\"updateHours()\" class=\"form-control text-center\" ng-mousewheel=\"incrementHours()\" ng-readonly=\"readonlyInput\" maxlength=\"2\">\n" +
+    "			</td>\n" +
+    "			<td>:</td>\n" +
+    "			<td style=\"width:50px;\" class=\"form-group\" ng-class=\"{'has-error': invalidMinutes}\">\n" +
+    "				<input type=\"text\" ng-model=\"minutes\" ng-change=\"updateMinutes()\" class=\"form-control text-center\" ng-readonly=\"readonlyInput\" maxlength=\"2\">\n" +
+    "			</td>\n" +
+    "			<td ng-show=\"showMeridian\"><button type=\"button\" class=\"btn btn-default text-center\" ng-click=\"toggleMeridian()\">{{meridian}}</button></td>\n" +
+    "		</tr>\n" +
+    "		<tr class=\"text-center\">\n" +
+    "			<td><a ng-click=\"decrementHours()\" class=\"btn btn-link\"><span class=\"glyphicon glyphicon-chevron-down\"></span></a></td>\n" +
+    "			<td>&nbsp;</td>\n" +
+    "			<td><a ng-click=\"decrementMinutes()\" class=\"btn btn-link\"><span class=\"glyphicon glyphicon-chevron-down\"></span></a></td>\n" +
+    "			<td ng-show=\"showMeridian\"></td>\n" +
+    "		</tr>\n" +
+    "	</tbody>\n" +
+    "</table>\n" +
+    "");
+}]);
+
+angular.module("template/typeahead/typeahead-match.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/typeahead/typeahead-match.html",
+    "<a tabindex=\"-1\" bind-html-unsafe=\"match.label | typeaheadHighlight:query\"></a>");
+}]);
+
+angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/typeahead/typeahead-popup.html",
+    "<ul class=\"dropdown-menu\" ng-show=\"isOpen()\" ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
+    "    <li ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{match.id}}\">\n" +
+    "        <div typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
+    "    </li>\n" +
+    "</ul>\n" +
+    "");
+}]);
+;/**
+ * State-based routing for AngularJS
+ * @version v0.2.8
+ * @link http://angular-ui.github.com/
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
+
+/* commonjs package manager support (eg componentjs) */
+if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
+  module.exports = 'ui.router';
+}
+
+(function (window, angular, undefined) {
+/*jshint globalstrict:true*/
+/*global angular:false*/
+'use strict';
+
+var isDefined = angular.isDefined,
+    isFunction = angular.isFunction,
+    isString = angular.isString,
+    isObject = angular.isObject,
+    isArray = angular.isArray,
+    forEach = angular.forEach,
+    extend = angular.extend,
+    copy = angular.copy;
+
+function inherit(parent, extra) {
+  return extend(new (extend(function() {}, { prototype: parent }))(), extra);
+}
+
+function merge(dst) {
+  forEach(arguments, function(obj) {
+    if (obj !== dst) {
+      forEach(obj, function(value, key) {
+        if (!dst.hasOwnProperty(key)) dst[key] = value;
+      });
+    }
+  });
+  return dst;
+}
+
+/**
+ * Finds the common ancestor path between two states.
+ *
+ * @param {Object} first The first state.
+ * @param {Object} second The second state.
+ * @return {Array} Returns an array of state names in descending order, not including the root.
+ */
+function ancestors(first, second) {
+  var path = [];
+
+  for (var n in first.path) {
+    if (first.path[n] !== second.path[n]) break;
+    path.push(first.path[n]);
+  }
+  return path;
+}
+
+/**
+ * IE8-safe wrapper for `Object.keys()`.
+ *
+ * @param {Object} object A JavaScript object.
+ * @return {Array} Returns the keys of the object as an array.
+ */
+function keys(object) {
+  if (Object.keys) {
+    return Object.keys(object);
+  }
+  var result = [];
+
+  angular.forEach(object, function(val, key) {
+    result.push(key);
+  });
+  return result;
+}
+
+/**
+ * IE8-safe wrapper for `Array.prototype.indexOf()`.
+ *
+ * @param {Array} array A JavaScript array.
+ * @param {*} value A value to search the array for.
+ * @return {Number} Returns the array index value of `value`, or `-1` if not present.
+ */
+function arraySearch(array, value) {
+  if (Array.prototype.indexOf) {
+    return array.indexOf(value, Number(arguments[2]) || 0);
+  }
+  var len = array.length >>> 0, from = Number(arguments[2]) || 0;
+  from = (from < 0) ? Math.ceil(from) : Math.floor(from);
+
+  if (from < 0) from += len;
+
+  for (; from < len; from++) {
+    if (from in array && array[from] === value) return from;
+  }
+  return -1;
+}
+
+/**
+ * Merges a set of parameters with all parameters inherited between the common parents of the
+ * current state and a given destination state.
+ *
+ * @param {Object} currentParams The value of the current state parameters ($stateParams).
+ * @param {Object} newParams The set of parameters which will be composited with inherited params.
+ * @param {Object} $current Internal definition of object representing the current state.
+ * @param {Object} $to Internal definition of object representing state to transition to.
+ */
+function inheritParams(currentParams, newParams, $current, $to) {
+  var parents = ancestors($current, $to), parentParams, inherited = {}, inheritList = [];
+
+  for (var i in parents) {
+    if (!parents[i].params || !parents[i].params.length) continue;
+    parentParams = parents[i].params;
+
+    for (var j in parentParams) {
+      if (arraySearch(inheritList, parentParams[j]) >= 0) continue;
+      inheritList.push(parentParams[j]);
+      inherited[parentParams[j]] = currentParams[parentParams[j]];
+    }
+  }
+  return extend({}, inherited, newParams);
+}
+
+/**
+ * Normalizes a set of values to string or `null`, filtering them by a list of keys.
+ *
+ * @param {Array} keys The list of keys to normalize/return.
+ * @param {Object} values An object hash of values to normalize.
+ * @return {Object} Returns an object hash of normalized string values.
+ */
+function normalize(keys, values) {
+  var normalized = {};
+
+  forEach(keys, function (name) {
+    var value = values[name];
+    normalized[name] = (value != null) ? String(value) : null;
+  });
+  return normalized;
+}
+
+/**
+ * Performs a non-strict comparison of the subset of two objects, defined by a list of keys.
+ *
+ * @param {Object} a The first object.
+ * @param {Object} b The second object.
+ * @param {Array} keys The list of keys within each object to compare. If the list is empty or not specified,
+ *                     it defaults to the list of keys in `a`.
+ * @return {Boolean} Returns `true` if the keys match, otherwise `false`.
+ */
+function equalForKeys(a, b, keys) {
+  if (!keys) {
+    keys = [];
+    for (var n in a) keys.push(n); // Used instead of Object.keys() for IE8 compatibility
+  }
+
+  for (var i=0; i<keys.length; i++) {
+    var k = keys[i];
+    if (a[k] != b[k]) return false; // Not '===', values aren't necessarily normalized
+  }
+  return true;
+}
+
+/**
+ * Returns the subset of an object, based on a list of keys.
+ *
+ * @param {Array} keys
+ * @param {Object} values
+ * @return {Boolean} Returns a subset of `values`.
+ */
+function filterByKeys(keys, values) {
+  var filtered = {};
+
+  forEach(keys, function (name) {
+    filtered[name] = values[name];
+  });
+  return filtered;
+}
+
+/**
+ * @ngdoc overview
+ * @name ui.router.util
+ *
+ * @description
+ *
+ */
+angular.module('ui.router.util', ['ng']);
+
+/**
+ * @ngdoc overview
+ * @name ui.router.router
+ * 
+ * @requires ui.router.util
+ *
+ * @description
+ *
+ */
+angular.module('ui.router.router', ['ui.router.util']);
+
+/**
+ * @ngdoc overview
+ * @name ui.router.router
+ * 
+ * @requires ui.router.router
+ * @requires ui.router.util
+ *
+ * @description
+ *
+ */
+angular.module('ui.router.state', ['ui.router.router', 'ui.router.util']);
+
+/**
+ * @ngdoc overview
+ * @name ui.router
+ *
+ * @requires ui.router.state
+ *
+ * @description
+ *
+ */
+angular.module('ui.router', ['ui.router.state']);
+/**
+ * @ngdoc overview
+ * @name ui.router.compat
+ *
+ * @requires ui.router
+ *
+ * @description
+ *
+ */
+angular.module('ui.router.compat', ['ui.router']);
+
+/**
+ * @ngdoc object
+ * @name ui.router.util.$resolve
+ *
+ * @requires $q
+ * @requires $injector
+ *
+ * @description
+ * Manages resolution of (acyclic) graphs of promises.
+ */
+$Resolve.$inject = ['$q', '$injector'];
+function $Resolve(  $q,    $injector) {
+  
+  var VISIT_IN_PROGRESS = 1,
+      VISIT_DONE = 2,
+      NOTHING = {},
+      NO_DEPENDENCIES = [],
+      NO_LOCALS = NOTHING,
+      NO_PARENT = extend($q.when(NOTHING), { $$promises: NOTHING, $$values: NOTHING });
+  
+
+  /**
+   * @ngdoc function
+   * @name ui.router.util.$resolve#study
+   * @methodOf ui.router.util.$resolve
+   *
+   * @description
+   * Studies a set of invocables that are likely to be used multiple times.
+   * <pre>
+   * $resolve.study(invocables)(locals, parent, self)
+   * </pre>
+   * is equivalent to
+   * <pre>
+   * $resolve.resolve(invocables, locals, parent, self)
+   * </pre>
+   * but the former is more efficient (in fact `resolve` just calls `study` 
+   * internally).
+   *
+   * @param {object} invocables Invocable objects
+   * @return {function} a function to pass in locals, parent and self
+   */
+  this.study = function (invocables) {
+    if (!isObject(invocables)) throw new Error("'invocables' must be an object");
+    
+    // Perform a topological sort of invocables to build an ordered plan
+    var plan = [], cycle = [], visited = {};
+    function visit(value, key) {
+      if (visited[key] === VISIT_DONE) return;
+      
+      cycle.push(key);
+      if (visited[key] === VISIT_IN_PROGRESS) {
+        cycle.splice(0, cycle.indexOf(key));
+        throw new Error("Cyclic dependency: " + cycle.join(" -> "));
+      }
+      visited[key] = VISIT_IN_PROGRESS;
+      
+      if (isString(value)) {
+        plan.push(key, [ function() { return $injector.get(value); }], NO_DEPENDENCIES);
+      } else {
+        var params = $injector.annotate(value);
+        forEach(params, function (param) {
+          if (param !== key && invocables.hasOwnProperty(param)) visit(invocables[param], param);
+        });
+        plan.push(key, value, params);
+      }
+      
+      cycle.pop();
+      visited[key] = VISIT_DONE;
+    }
+    forEach(invocables, visit);
+    invocables = cycle = visited = null; // plan is all that's required
+    
+    function isResolve(value) {
+      return isObject(value) && value.then && value.$$promises;
+    }
+    
+    return function (locals, parent, self) {
+      if (isResolve(locals) && self === undefined) {
+        self = parent; parent = locals; locals = null;
+      }
+      if (!locals) locals = NO_LOCALS;
+      else if (!isObject(locals)) {
+        throw new Error("'locals' must be an object");
+      }       
+      if (!parent) parent = NO_PARENT;
+      else if (!isResolve(parent)) {
+        throw new Error("'parent' must be a promise returned by $resolve.resolve()");
+      }
+      
+      // To complete the overall resolution, we have to wait for the parent
+      // promise and for the promise for each invokable in our plan.
+      var resolution = $q.defer(),
+          result = resolution.promise,
+          promises = result.$$promises = {},
+          values = extend({}, locals),
+          wait = 1 + plan.length/3,
+          merged = false;
+          
+      function done() {
+        // Merge parent values we haven't got yet and publish our own $$values
+        if (!--wait) {
+          if (!merged) merge(values, parent.$$values); 
+          result.$$values = values;
+          result.$$promises = true; // keep for isResolve()
+          resolution.resolve(values);
+        }
+      }
+      
+      function fail(reason) {
+        result.$$failure = reason;
+        resolution.reject(reason);
+      }
+      
+      // Short-circuit if parent has already failed
+      if (isDefined(parent.$$failure)) {
+        fail(parent.$$failure);
+        return result;
+      }
+      
+      // Merge parent values if the parent has already resolved, or merge
+      // parent promises and wait if the parent resolve is still in progress.
+      if (parent.$$values) {
+        merged = merge(values, parent.$$values);
+        done();
+      } else {
+        extend(promises, parent.$$promises);
+        parent.then(done, fail);
+      }
+      
+      // Process each invocable in the plan, but ignore any where a local of the same name exists.
+      for (var i=0, ii=plan.length; i<ii; i+=3) {
+        if (locals.hasOwnProperty(plan[i])) done();
+        else invoke(plan[i], plan[i+1], plan[i+2]);
+      }
+      
+      function invoke(key, invocable, params) {
+        // Create a deferred for this invocation. Failures will propagate to the resolution as well.
+        var invocation = $q.defer(), waitParams = 0;
+        function onfailure(reason) {
+          invocation.reject(reason);
+          fail(reason);
+        }
+        // Wait for any parameter that we have a promise for (either from parent or from this
+        // resolve; in that case study() will have made sure it's ordered before us in the plan).
+        forEach(params, function (dep) {
+          if (promises.hasOwnProperty(dep) && !locals.hasOwnProperty(dep)) {
+            waitParams++;
+            promises[dep].then(function (result) {
+              values[dep] = result;
+              if (!(--waitParams)) proceed();
+            }, onfailure);
+          }
+        });
+        if (!waitParams) proceed();
+        function proceed() {
+          if (isDefined(result.$$failure)) return;
+          try {
+            invocation.resolve($injector.invoke(invocable, self, values));
+            invocation.promise.then(function (result) {
+              values[key] = result;
+              done();
+            }, onfailure);
+          } catch (e) {
+            onfailure(e);
+          }
+        }
+        // Publish promise synchronously; invocations further down in the plan may depend on it.
+        promises[key] = invocation.promise;
+      }
+      
+      return result;
+    };
+  };
+  
+  /**
+   * @ngdoc function
+   * @name ui.router.util.$resolve#resolve
+   * @methodOf ui.router.util.$resolve
+   *
+   * @description
+   * Resolves a set of invocables. An invocable is a function to be invoked via 
+   * `$injector.invoke()`, and can have an arbitrary number of dependencies. 
+   * An invocable can either return a value directly,
+   * or a `$q` promise. If a promise is returned it will be resolved and the 
+   * resulting value will be used instead. Dependencies of invocables are resolved 
+   * (in this order of precedence)
+   *
+   * - from the specified `locals`
+   * - from another invocable that is part of this `$resolve` call
+   * - from an invocable that is inherited from a `parent` call to `$resolve` 
+   *   (or recursively
+   * - from any ancestor `$resolve` of that parent).
+   *
+   * The return value of `$resolve` is a promise for an object that contains 
+   * (in this order of precedence)
+   *
+   * - any `locals` (if specified)
+   * - the resolved return values of all injectables
+   * - any values inherited from a `parent` call to `$resolve` (if specified)
+   *
+   * The promise will resolve after the `parent` promise (if any) and all promises 
+   * returned by injectables have been resolved. If any invocable 
+   * (or `$injector.invoke`) throws an exception, or if a promise returned by an 
+   * invocable is rejected, the `$resolve` promise is immediately rejected with the 
+   * same error. A rejection of a `parent` promise (if specified) will likewise be 
+   * propagated immediately. Once the `$resolve` promise has been rejected, no 
+   * further invocables will be called.
+   * 
+   * Cyclic dependencies between invocables are not permitted and will caues `$resolve`
+   * to throw an error. As a special case, an injectable can depend on a parameter 
+   * with the same name as the injectable, which will be fulfilled from the `parent` 
+   * injectable of the same name. This allows inherited values to be decorated. 
+   * Note that in this case any other injectable in the same `$resolve` with the same
+   * dependency would see the decorated value, not the inherited value.
+   *
+   * Note that missing dependencies -- unlike cyclic dependencies -- will cause an 
+   * (asynchronous) rejection of the `$resolve` promise rather than a (synchronous) 
+   * exception.
+   *
+   * Invocables are invoked eagerly as soon as all dependencies are available. 
+   * This is true even for dependencies inherited from a `parent` call to `$resolve`.
+   *
+   * As a special case, an invocable can be a string, in which case it is taken to 
+   * be a service name to be passed to `$injector.get()`. This is supported primarily 
+   * for backwards-compatibility with the `resolve` property of `$routeProvider` 
+   * routes.
+   *
+   * @param {object} invocables functions to invoke or 
+   * `$injector` services to fetch.
+   * @param {object} locals  values to make available to the injectables
+   * @param {object} parent  a promise returned by another call to `$resolve`.
+   * @param {object} self  the `this` for the invoked methods
+   * @return {object} Promise for an object that contains the resolved return value
+   * of all invocables, as well as any inherited and local values.
+   */
+  this.resolve = function (invocables, locals, parent, self) {
+    return this.study(invocables)(locals, parent, self);
+  };
+}
+
+angular.module('ui.router.util').service('$resolve', $Resolve);
+
+
+/**
+ * @ngdoc object
+ * @name ui.router.util.$templateFactory
+ *
+ * @requires $http
+ * @requires $templateCache
+ * @requires $injector
+ *
+ * @description
+ * Service. Manages loading of templates.
+ */
+$TemplateFactory.$inject = ['$http', '$templateCache', '$injector'];
+function $TemplateFactory(  $http,   $templateCache,   $injector) {
+
+  /**
+   * @ngdoc function
+   * @name ui.router.util.$templateFactory#fromConfig
+   * @methodOf ui.router.util.$templateFactory
+   *
+   * @description
+   * Creates a template from a configuration object. 
+   *
+   * @param {object} config Configuration object for which to load a template. 
+   * The following properties are search in the specified order, and the first one 
+   * that is defined is used to create the template:
+   *
+   * @param {string|object} config.template html string template or function to 
+   * load via {@link ui.router.util.$templateFactory#fromString fromString}.
+   * @param {string|object} config.templateUrl url to load or a function returning 
+   * the url to load via {@link ui.router.util.$templateFactory#fromUrl fromUrl}.
+   * @param {Function} config.templateProvider function to invoke via 
+   * {@link ui.router.util.$templateFactory#fromProvider fromProvider}.
+   * @param {object} params  Parameters to pass to the template function.
+   * @param {object} locals Locals to pass to `invoke` if the template is loaded 
+   * via a `templateProvider`. Defaults to `{ params: params }`.
+   *
+   * @return {string|object}  The template html as a string, or a promise for 
+   * that string,or `null` if no template is configured.
+   */
+  this.fromConfig = function (config, params, locals) {
+    return (
+      isDefined(config.template) ? this.fromString(config.template, params) :
+      isDefined(config.templateUrl) ? this.fromUrl(config.templateUrl, params) :
+      isDefined(config.templateProvider) ? this.fromProvider(config.templateProvider, params, locals) :
+      null
+    );
+  };
+
+  /**
+   * @ngdoc function
+   * @name ui.router.util.$templateFactory#fromString
+   * @methodOf ui.router.util.$templateFactory
+   *
+   * @description
+   * Creates a template from a string or a function returning a string.
+   *
+   * @param {string|object} template html template as a string or function that 
+   * returns an html template as a string.
+   * @param {object} params Parameters to pass to the template function.
+   *
+   * @return {string|object} The template html as a string, or a promise for that 
+   * string.
+   */
+  this.fromString = function (template, params) {
+    return isFunction(template) ? template(params) : template;
+  };
+
+  /**
+   * @ngdoc function
+   * @name ui.router.util.$templateFactory#fromUrl
+   * @methodOf ui.router.util.$templateFactory
+   * 
+   * @description
+   * Loads a template from the a URL via `$http` and `$templateCache`.
+   *
+   * @param {string|Function} url url of the template to load, or a function 
+   * that returns a url.
+   * @param {Object} params Parameters to pass to the url function.
+   * @return {string|Promise.<string>} The template html as a string, or a promise 
+   * for that string.
+   */
+  this.fromUrl = function (url, params) {
+    if (isFunction(url)) url = url(params);
+    if (url == null) return null;
+    else return $http
+        .get(url, { cache: $templateCache })
+        .then(function(response) { return response.data; });
+  };
+
+  /**
+   * @ngdoc function
+   * @name ui.router.util.$templateFactory#fromUrl
+   * @methodOf ui.router.util.$templateFactory
+   *
+   * @description
+   * Creates a template by invoking an injectable provider function.
+   *
+   * @param {Function} provider Function to invoke via `$injector.invoke`
+   * @param {Object} params Parameters for the template.
+   * @param {Object} locals Locals to pass to `invoke`. Defaults to 
+   * `{ params: params }`.
+   * @return {string|Promise.<string>} The template html as a string, or a promise 
+   * for that string.
+   */
+  this.fromProvider = function (provider, params, locals) {
+    return $injector.invoke(provider, null, locals || { params: params });
+  };
+}
+
+angular.module('ui.router.util').service('$templateFactory', $TemplateFactory);
+
+/**
+ * Matches URLs against patterns and extracts named parameters from the path or the search
+ * part of the URL. A URL pattern consists of a path pattern, optionally followed by '?' and a list
+ * of search parameters. Multiple search parameter names are separated by '&'. Search parameters
+ * do not influence whether or not a URL is matched, but their values are passed through into
+ * the matched parameters returned by {@link UrlMatcher#exec exec}.
+ * 
+ * Path parameter placeholders can be specified using simple colon/catch-all syntax or curly brace
+ * syntax, which optionally allows a regular expression for the parameter to be specified:
+ *
+ * * ':' name - colon placeholder
+ * * '*' name - catch-all placeholder
+ * * '{' name '}' - curly placeholder
+ * * '{' name ':' regexp '}' - curly placeholder with regexp. Should the regexp itself contain
+ *   curly braces, they must be in matched pairs or escaped with a backslash.
+ *
+ * Parameter names may contain only word characters (latin letters, digits, and underscore) and
+ * must be unique within the pattern (across both path and search parameters). For colon 
+ * placeholders or curly placeholders without an explicit regexp, a path parameter matches any
+ * number of characters other than '/'. For catch-all placeholders the path parameter matches
+ * any number of characters.
+ * 
+ * ### Examples
+ * 
+ * * '/hello/' - Matches only if the path is exactly '/hello/'. There is no special treatment for
+ *   trailing slashes, and patterns have to match the entire path, not just a prefix.
+ * * '/user/:id' - Matches '/user/bob' or '/user/1234!!!' or even '/user/' but not '/user' or
+ *   '/user/bob/details'. The second path segment will be captured as the parameter 'id'.
+ * * '/user/{id}' - Same as the previous example, but using curly brace syntax.
+ * * '/user/{id:[^/]*}' - Same as the previous example.
+ * * '/user/{id:[0-9a-fA-F]{1,8}}' - Similar to the previous example, but only matches if the id
+ *   parameter consists of 1 to 8 hex digits.
+ * * '/files/{path:.*}' - Matches any URL starting with '/files/' and captures the rest of the
+ *   path into the parameter 'path'.
+ * * '/files/*path' - ditto.
+ *
+ * @constructor
+ * @param {string} pattern  the pattern to compile into a matcher.
+ *
+ * @property {string} prefix  A static prefix of this pattern. The matcher guarantees that any
+ *   URL matching this matcher (i.e. any string for which {@link UrlMatcher#exec exec()} returns
+ *   non-null) will start with this prefix.
+ */
+function UrlMatcher(pattern) {
+
+  // Find all placeholders and create a compiled pattern, using either classic or curly syntax:
+  //   '*' name
+  //   ':' name
+  //   '{' name '}'
+  //   '{' name ':' regexp '}'
+  // The regular expression is somewhat complicated due to the need to allow curly braces
+  // inside the regular expression. The placeholder regexp breaks down as follows:
+  //    ([:*])(\w+)               classic placeholder ($1 / $2)
+  //    \{(\w+)(?:\:( ... ))?\}   curly brace placeholder ($3) with optional regexp ... ($4)
+  //    (?: ... | ... | ... )+    the regexp consists of any number of atoms, an atom being either
+  //    [^{}\\]+                  - anything other than curly braces or backslash
+  //    \\.                       - a backslash escape
+  //    \{(?:[^{}\\]+|\\.)*\}     - a matched set of curly braces containing other atoms
+  var placeholder = /([:*])(\w+)|\{(\w+)(?:\:((?:[^{}\\]+|\\.|\{(?:[^{}\\]+|\\.)*\})+))?\}/g,
+      names = {}, compiled = '^', last = 0, m,
+      segments = this.segments = [],
+      params = this.params = [];
+
+  function addParameter(id) {
+    if (!/^\w+(-+\w+)*$/.test(id)) throw new Error("Invalid parameter name '" + id + "' in pattern '" + pattern + "'");
+    if (names[id]) throw new Error("Duplicate parameter name '" + id + "' in pattern '" + pattern + "'");
+    names[id] = true;
+    params.push(id);
+  }
+
+  function quoteRegExp(string) {
+    return string.replace(/[\\\[\]\^$*+?.()|{}]/g, "\\$&");
+  }
+
+  this.source = pattern;
+
+  // Split into static segments separated by path parameter placeholders.
+  // The number of segments is always 1 more than the number of parameters.
+  var id, regexp, segment;
+  while ((m = placeholder.exec(pattern))) {
+    id = m[2] || m[3]; // IE[78] returns '' for unmatched groups instead of null
+    regexp = m[4] || (m[1] == '*' ? '.*' : '[^/]*');
+    segment = pattern.substring(last, m.index);
+    if (segment.indexOf('?') >= 0) break; // we're into the search part
+    compiled += quoteRegExp(segment) + '(' + regexp + ')';
+    addParameter(id);
+    segments.push(segment);
+    last = placeholder.lastIndex;
+  }
+  segment = pattern.substring(last);
+
+  // Find any search parameter names and remove them from the last segment
+  var i = segment.indexOf('?');
+  if (i >= 0) {
+    var search = this.sourceSearch = segment.substring(i);
+    segment = segment.substring(0, i);
+    this.sourcePath = pattern.substring(0, last+i);
+
+    // Allow parameters to be separated by '?' as well as '&' to make concat() easier
+    forEach(search.substring(1).split(/[&?]/), addParameter);
+  } else {
+    this.sourcePath = pattern;
+    this.sourceSearch = '';
+  }
+
+  compiled += quoteRegExp(segment) + '$';
+  segments.push(segment);
+  this.regexp = new RegExp(compiled);
+  this.prefix = segments[0];
+}
+
+/**
+ * Returns a new matcher for a pattern constructed by appending the path part and adding the
+ * search parameters of the specified pattern to this pattern. The current pattern is not
+ * modified. This can be understood as creating a pattern for URLs that are relative to (or
+ * suffixes of) the current pattern.
+ *
+ * ### Example
+ * The following two matchers are equivalent:
+ * ```
+ * new UrlMatcher('/user/{id}?q').concat('/details?date');
+ * new UrlMatcher('/user/{id}/details?q&date');
+ * ```
+ *
+ * @param {string} pattern  The pattern to append.
+ * @return {UrlMatcher}  A matcher for the concatenated pattern.
+ */
+UrlMatcher.prototype.concat = function (pattern) {
+  // Because order of search parameters is irrelevant, we can add our own search
+  // parameters to the end of the new pattern. Parse the new pattern by itself
+  // and then join the bits together, but it's much easier to do this on a string level.
+  return new UrlMatcher(this.sourcePath + pattern + this.sourceSearch);
+};
+
+UrlMatcher.prototype.toString = function () {
+  return this.source;
+};
+
+/**
+ * Tests the specified path against this matcher, and returns an object containing the captured
+ * parameter values, or null if the path does not match. The returned object contains the values
+ * of any search parameters that are mentioned in the pattern, but their value may be null if
+ * they are not present in `searchParams`. This means that search parameters are always treated
+ * as optional.
+ *
+ * ### Example
+ * ```
+ * new UrlMatcher('/user/{id}?q&r').exec('/user/bob', { x:'1', q:'hello' });
+ * // returns { id:'bob', q:'hello', r:null }
+ * ```
+ *
+ * @param {string} path  The URL path to match, e.g. `$location.path()`.
+ * @param {Object} searchParams  URL search parameters, e.g. `$location.search()`.
+ * @return {Object}  The captured parameter values.
+ */
+UrlMatcher.prototype.exec = function (path, searchParams) {
+  var m = this.regexp.exec(path);
+  if (!m) return null;
+
+  var params = this.params, nTotal = params.length,
+    nPath = this.segments.length-1,
+    values = {}, i;
+
+  if (nPath !== m.length - 1) throw new Error("Unbalanced capture group in route '" + this.source + "'");
+
+  for (i=0; i<nPath; i++) values[params[i]] = m[i+1];
+  for (/**/; i<nTotal; i++) values[params[i]] = searchParams[params[i]];
+
+  return values;
+};
+
+/**
+ * Returns the names of all path and search parameters of this pattern in an unspecified order.
+ * @return {Array.<string>}  An array of parameter names. Must be treated as read-only. If the
+ *    pattern has no parameters, an empty array is returned.
+ */
+UrlMatcher.prototype.parameters = function () {
+  return this.params;
+};
+
+/**
+ * Creates a URL that matches this pattern by substituting the specified values
+ * for the path and search parameters. Null values for path parameters are
+ * treated as empty strings.
+ *
+ * ### Example
+ * ```
+ * new UrlMatcher('/user/{id}?q').format({ id:'bob', q:'yes' });
+ * // returns '/user/bob?q=yes'
+ * ```
+ *
+ * @param {Object} values  the values to substitute for the parameters in this pattern.
+ * @return {string}  the formatted URL (path and optionally search part).
+ */
+UrlMatcher.prototype.format = function (values) {
+  var segments = this.segments, params = this.params;
+  if (!values) return segments.join('');
+
+  var nPath = segments.length-1, nTotal = params.length,
+    result = segments[0], i, search, value;
+
+  for (i=0; i<nPath; i++) {
+    value = values[params[i]];
+    // TODO: Maybe we should throw on null here? It's not really good style to use '' and null interchangeabley
+    if (value != null) result += encodeURIComponent(value);
+    result += segments[i+1];
+  }
+  for (/**/; i<nTotal; i++) {
+    value = values[params[i]];
+    if (value != null) {
+      result += (search ? '&' : '?') + params[i] + '=' + encodeURIComponent(value);
+      search = true;
+    }
+  }
+
+  return result;
+};
+
+/**
+ * Service. Factory for {@link UrlMatcher} instances. The factory is also available to providers
+ * under the name `$urlMatcherFactoryProvider`.
+ * @constructor
+ * @name $urlMatcherFactory
+ */
+function $UrlMatcherFactory() {
+  /**
+   * Creates a {@link UrlMatcher} for the specified pattern.
+   * @function
+   * @name $urlMatcherFactory#compile
+   * @methodOf $urlMatcherFactory
+   * @param {string} pattern  The URL pattern.
+   * @return {UrlMatcher}  The UrlMatcher.
+   */
+  this.compile = function (pattern) {
+    return new UrlMatcher(pattern);
+  };
+
+  /**
+   * Returns true if the specified object is a UrlMatcher, or false otherwise.
+   * @function
+   * @name $urlMatcherFactory#isMatcher
+   * @methodOf $urlMatcherFactory
+   * @param {Object} o
+   * @return {boolean}
+   */
+  this.isMatcher = function (o) {
+    return isObject(o) && isFunction(o.exec) && isFunction(o.format) && isFunction(o.concat);
+  };
+
+  this.$get = function () {
+    return this;
+  };
+}
+
+// Register as a provider so it's available to other providers
+angular.module('ui.router.util').provider('$urlMatcherFactory', $UrlMatcherFactory);
+
+/**
+ * @ngdoc object
+ * @name ui.router.router.$urlRouterProvider
+ *
+ * @requires ui.router.util.$urlMatcherFactoryProvider
+ *
+ * @description
+ * `$urlRouterProvider` has the responsibility of watching `$location`. 
+ * When `$location` changes it runs through a list of rules one by one until a 
+ * match is found. `$urlRouterProvider` is used behind the scenes anytime you specify 
+ * a url in a state configuration. All urls are compiled into a UrlMatcher object.
+ *
+ * There are several methods on `$urlRouterProvider` that make it useful to use directly
+ * in your module config.
+ */
+$UrlRouterProvider.$inject = ['$urlMatcherFactoryProvider'];
+function $UrlRouterProvider(  $urlMatcherFactory) {
+  var rules = [], 
+      otherwise = null;
+
+  // Returns a string that is a prefix of all strings matching the RegExp
+  function regExpPrefix(re) {
+    var prefix = /^\^((?:\\[^a-zA-Z0-9]|[^\\\[\]\^$*+?.()|{}]+)*)/.exec(re.source);
+    return (prefix != null) ? prefix[1].replace(/\\(.)/g, "$1") : '';
+  }
+
+  // Interpolates matched values into a String.replace()-style pattern
+  function interpolate(pattern, match) {
+    return pattern.replace(/\$(\$|\d{1,2})/, function (m, what) {
+      return match[what === '$' ? 0 : Number(what)];
+    });
+  }
+
+  /**
+   * @ngdoc function
+   * @name ui.router.router.$urlRouterProvider#rule
+   * @methodOf ui.router.router.$urlRouterProvider
+   *
+   * @description
+   * Defines rules that are used by `$urlRouterProvider to find matches for
+   * specific URLs.
+   *
+   * @example
+   * <pre>
+   * var app = angular.module('app', ['ui.router.router']);
+   *
+   * app.config(function ($urlRouterProvider) {
+   *   // Here's an example of how you might allow case insensitive urls
+   *   $urlRouterProvider.rule(function ($injector, $location) {
+   *     var path = $location.path(),
+   *         normalized = path.toLowerCase();
+   *
+   *     if (path !== normalized) {
+   *       return normalized;
+   *     }
+   *   });
+   * });
+   * </pre>
+   *
+   * @param {object} rule Handler function that takes `$injector` and `$location`
+   * services as arguments. You can use them to return a valid path as a string.
+   *
+   * @return {object} $urlRouterProvider - $urlRouterProvider instance
+   */
+  this.rule =
+    function (rule) {
+      if (!isFunction(rule)) throw new Error("'rule' must be a function");
+      rules.push(rule);
+      return this;
+    };
+
+  /**
+   * @ngdoc object
+   * @name ui.router.router.$urlRouterProvider#otherwise
+   * @methodOf ui.router.router.$urlRouterProvider
+   *
+   * @description
+   * Defines a path that is used when an invalied route is requested.
+   *
+   * @example
+   * <pre>
+   * var app = angular.module('app', ['ui.router.router']);
+   *
+   * app.config(function ($urlRouterProvider) {
+   *   // if the path doesn't match any of the urls you configured
+   *   // otherwise will take care of routing the user to the
+   *   // specified url
+   *   $urlRouterProvider.otherwise('/index');
+   *
+   *   // Example of using function rule as param
+   *   $urlRouterProvider.otherwise(function ($injector, $location) {
+   *     ...
+   *   });
+   * });
+   * </pre>
+   *
+   * @param {string|object} rule The url path you want to redirect to or a function 
+   * rule that returns the url path. The function version is passed two params: 
+   * `$injector` and `$location` services.
+   *
+   * @return {object} $urlRouterProvider - $urlRouterProvider instance
+   */
+  this.otherwise =
+    function (rule) {
+      if (isString(rule)) {
+        var redirect = rule;
+        rule = function () { return redirect; };
+      }
+      else if (!isFunction(rule)) throw new Error("'rule' must be a function");
+      otherwise = rule;
+      return this;
+    };
+
+
+  function handleIfMatch($injector, handler, match) {
+    if (!match) return false;
+    var result = $injector.invoke(handler, handler, { $match: match });
+    return isDefined(result) ? result : true;
+  }
+
+  /**
+   * @ngdoc function
+   * @name ui.router.router.$urlRouterProvider#when
+   * @methodOf ui.router.router.$urlRouterProvider
+   *
+   * @description
+   * Registers a handler for a given url matching. if handle is a string, it is
+   * treated as a redirect, and is interpolated according to the syyntax of match
+   * (i.e. like String.replace() for RegExp, or like a UrlMatcher pattern otherwise).
+   *
+   * If the handler is a function, it is injectable. It gets invoked if `$location`
+   * matches. You have the option of inject the match object as `$match`.
+   *
+   * The handler can return
+   *
+   * - **falsy** to indicate that the rule didn't match after all, then `$urlRouter`
+   *   will continue trying to find another one that matches.
+   * - **string** which is treated as a redirect and passed to `$location.url()`
+   * - **void** or any **truthy** value tells `$urlRouter` that the url was handled.
+   *
+   * @example
+   * <pre>
+   * var app = angular.module('app', ['ui.router.router']);
+   *
+   * app.config(function ($urlRouterProvider) {
+   *   $urlRouterProvider.when($state.url, function ($match, $stateParams) {
+   *     if ($state.$current.navigable !== state ||
+   *         !equalForKeys($match, $stateParams) {
+   *      $state.transitionTo(state, $match, false);
+   *     }
+   *   });
+   * });
+   * </pre>
+   *
+   * @param {string|object} what The incoming path that you want to redirect.
+   * @param {string|object} handler The path you want to redirect your user to.
+   */
+  this.when =
+    function (what, handler) {
+      var redirect, handlerIsString = isString(handler);
+      if (isString(what)) what = $urlMatcherFactory.compile(what);
+
+      if (!handlerIsString && !isFunction(handler) && !isArray(handler))
+        throw new Error("invalid 'handler' in when()");
+
+      var strategies = {
+        matcher: function (what, handler) {
+          if (handlerIsString) {
+            redirect = $urlMatcherFactory.compile(handler);
+            handler = ['$match', function ($match) { return redirect.format($match); }];
+          }
+          return extend(function ($injector, $location) {
+            return handleIfMatch($injector, handler, what.exec($location.path(), $location.search()));
+          }, {
+            prefix: isString(what.prefix) ? what.prefix : ''
+          });
+        },
+        regex: function (what, handler) {
+          if (what.global || what.sticky) throw new Error("when() RegExp must not be global or sticky");
+
+          if (handlerIsString) {
+            redirect = handler;
+            handler = ['$match', function ($match) { return interpolate(redirect, $match); }];
+          }
+          return extend(function ($injector, $location) {
+            return handleIfMatch($injector, handler, what.exec($location.path()));
+          }, {
+            prefix: regExpPrefix(what)
+          });
+        }
+      };
+
+      var check = { matcher: $urlMatcherFactory.isMatcher(what), regex: what instanceof RegExp };
+
+      for (var n in check) {
+        if (check[n]) {
+          return this.rule(strategies[n](what, handler));
+        }
+      }
+
+      throw new Error("invalid 'what' in when()");
+    };
+
+  /**
+   * @ngdoc object
+   * @name ui.router.router.$urlRouter
+   *
+   * @requires $location
+   * @requires $rootScope
+   * @requires $injector
+   *
+   * @description
+   *
+   */
+  this.$get =
+    [        '$location', '$rootScope', '$injector',
+    function ($location,   $rootScope,   $injector) {
+      // TODO: Optimize groups of rules with non-empty prefix into some sort of decision tree
+      function update(evt) {
+        if (evt && evt.defaultPrevented) return;
+        function check(rule) {
+          var handled = rule($injector, $location);
+          if (handled) {
+            if (isString(handled)) $location.replace().url(handled);
+            return true;
+          }
+          return false;
+        }
+        var n=rules.length, i;
+        for (i=0; i<n; i++) {
+          if (check(rules[i])) return;
+        }
+        // always check otherwise last to allow dynamic updates to the set of rules
+        if (otherwise) check(otherwise);
+      }
+
+      $rootScope.$on('$locationChangeSuccess', update);
+
+      return {
+        /**
+         * @ngdoc function
+         * @name ui.router.router.$urlRouter#sync
+         * @methodOf ui.router.router.$urlRouter
+         *
+         * @description
+         * Triggers an update; the same update that happens when the address bar url changes, aka `$locationChangeSuccess`.
+         * This method is useful when you need to use `preventDefault()` on the `$locationChangeSuccess` event, 
+         * perform some custom logic (route protection, auth, config, redirection, etc) and then finally proceed 
+         * with the transition by calling `$urlRouter.sync()`.
+         *
+         * @example
+         * <pre>
+         * angular.module('app', ['ui.router']);
+         *   .run(function($rootScope, $urlRouter) {
+         *     $rootScope.$on('$locationChangeSuccess', function(evt) {
+         *       // Halt state change from even starting
+         *       evt.preventDefault();
+         *       // Perform custom logic
+         *       var meetsRequirement = ...
+         *       // Continue with the update and state transition if logic allows
+         *       if (meetsRequirement) $urlRouter.sync();
+         *     });
+         * });
+         * </pre>
+         */
+        sync: function () {
+          update();
+        }
+      };
+    }];
+}
+
+angular.module('ui.router.router').provider('$urlRouter', $UrlRouterProvider);
+
+/**
+ * @ngdoc object
+ * @name ui.router.state.$stateProvider
+ *
+ * @requires ui.router.router.$urlRouterProvider
+ * @requires ui.router.util.$urlMatcherFactoryProvider
+ * @requires $locationProvider
+ *
+ * @description
+ * The new `$stateProvider` works similar to Angular's v1 router, but it focuses purely
+ * on state.
+ *
+ * A state corresponds to a "place" in the application in terms of the overall UI and
+ * navigation. A state describes (via the controller / template / view properties) what
+ * the UI looks like and does at that place.
+ *
+ * States often have things in common, and the primary way of factoring out these
+ * commonalities in this model is via the state hierarchy, i.e. parent/child states aka
+ * nested states.
+ *
+ * The `$stateProvider` provides interfaces to declare these states for your app.
+ */
+$StateProvider.$inject = ['$urlRouterProvider', '$urlMatcherFactoryProvider', '$locationProvider'];
+function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory,           $locationProvider) {
+
+  var root, states = {}, $state, queue = {}, abstractKey = 'abstract';
+
+  // Builds state properties from definition passed to registerState()
+  var stateBuilder = {
+
+    // Derive parent state from a hierarchical name only if 'parent' is not explicitly defined.
+    // state.children = [];
+    // if (parent) parent.children.push(state);
+    parent: function(state) {
+      if (isDefined(state.parent) && state.parent) return findState(state.parent);
+      // regex matches any valid composite state name
+      // would match "contact.list" but not "contacts"
+      var compositeName = /^(.+)\.[^.]+$/.exec(state.name);
+      return compositeName ? findState(compositeName[1]) : root;
+    },
+
+    // inherit 'data' from parent and override by own values (if any)
+    data: function(state) {
+      if (state.parent && state.parent.data) {
+        state.data = state.self.data = extend({}, state.parent.data, state.data);
+      }
+      return state.data;
+    },
+
+    // Build a URLMatcher if necessary, either via a relative or absolute URL
+    url: function(state) {
+      var url = state.url;
+
+      if (isString(url)) {
+        if (url.charAt(0) == '^') {
+          return $urlMatcherFactory.compile(url.substring(1));
+        }
+        return (state.parent.navigable || root).url.concat(url);
+      }
+
+      if ($urlMatcherFactory.isMatcher(url) || url == null) {
+        return url;
+      }
+      throw new Error("Invalid url '" + url + "' in state '" + state + "'");
+    },
+
+    // Keep track of the closest ancestor state that has a URL (i.e. is navigable)
+    navigable: function(state) {
+      return state.url ? state : (state.parent ? state.parent.navigable : null);
+    },
+
+    // Derive parameters for this state and ensure they're a super-set of parent's parameters
+    params: function(state) {
+      if (!state.params) {
+        return state.url ? state.url.parameters() : state.parent.params;
+      }
+      if (!isArray(state.params)) throw new Error("Invalid params in state '" + state + "'");
+      if (state.url) throw new Error("Both params and url specicified in state '" + state + "'");
+      return state.params;
+    },
+
+    // If there is no explicit multi-view configuration, make one up so we don't have
+    // to handle both cases in the view directive later. Note that having an explicit
+    // 'views' property will mean the default unnamed view properties are ignored. This
+    // is also a good time to resolve view names to absolute names, so everything is a
+    // straight lookup at link time.
+    views: function(state) {
+      var views = {};
+
+      forEach(isDefined(state.views) ? state.views : { '': state }, function (view, name) {
+        if (name.indexOf('@') < 0) name += '@' + state.parent.name;
+        views[name] = view;
+      });
+      return views;
+    },
+
+    ownParams: function(state) {
+      if (!state.parent) {
+        return state.params;
+      }
+      var paramNames = {}; forEach(state.params, function (p) { paramNames[p] = true; });
+
+      forEach(state.parent.params, function (p) {
+        if (!paramNames[p]) {
+          throw new Error("Missing required parameter '" + p + "' in state '" + state.name + "'");
+        }
+        paramNames[p] = false;
+      });
+      var ownParams = [];
+
+      forEach(paramNames, function (own, p) {
+        if (own) ownParams.push(p);
+      });
+      return ownParams;
+    },
+
+    // Keep a full path from the root down to this state as this is needed for state activation.
+    path: function(state) {
+      return state.parent ? state.parent.path.concat(state) : []; // exclude root from path
+    },
+
+    // Speed up $state.contains() as it's used a lot
+    includes: function(state) {
+      var includes = state.parent ? extend({}, state.parent.includes) : {};
+      includes[state.name] = true;
+      return includes;
+    },
+
+    $delegates: {}
+  };
+
+  function isRelative(stateName) {
+    return stateName.indexOf(".") === 0 || stateName.indexOf("^") === 0;
+  }
+
+  function findState(stateOrName, base) {
+    var isStr = isString(stateOrName),
+        name  = isStr ? stateOrName : stateOrName.name,
+        path  = isRelative(name);
+
+    if (path) {
+      if (!base) throw new Error("No reference point given for path '"  + name + "'");
+      var rel = name.split("."), i = 0, pathLength = rel.length, current = base;
+
+      for (; i < pathLength; i++) {
+        if (rel[i] === "" && i === 0) {
+          current = base;
+          continue;
+        }
+        if (rel[i] === "^") {
+          if (!current.parent) throw new Error("Path '" + name + "' not valid for state '" + base.name + "'");
+          current = current.parent;
+          continue;
+        }
+        break;
+      }
+      rel = rel.slice(i).join(".");
+      name = current.name + (current.name && rel ? "." : "") + rel;
+    }
+    var state = states[name];
+
+    if (state && (isStr || (!isStr && (state === stateOrName || state.self === stateOrName)))) {
+      return state;
+    }
+    return undefined;
+  }
+
+  function queueState(parentName, state) {
+    if (!queue[parentName]) {
+      queue[parentName] = [];
+    }
+    queue[parentName].push(state);
+  }
+
+  function registerState(state) {
+    // Wrap a new object around the state so we can store our private details easily.
+    state = inherit(state, {
+      self: state,
+      resolve: state.resolve || {},
+      toString: function() { return this.name; }
+    });
+
+    var name = state.name;
+    if (!isString(name) || name.indexOf('@') >= 0) throw new Error("State must have a valid name");
+    if (states.hasOwnProperty(name)) throw new Error("State '" + name + "'' is already defined");
+
+    // Get parent name
+    var parentName = (name.indexOf('.') !== -1) ? name.substring(0, name.lastIndexOf('.'))
+        : (isString(state.parent)) ? state.parent
+        : '';
+
+    // If parent is not registered yet, add state to queue and register later
+    if (parentName && !states[parentName]) {
+      return queueState(parentName, state.self);
+    }
+
+    for (var key in stateBuilder) {
+      if (isFunction(stateBuilder[key])) state[key] = stateBuilder[key](state, stateBuilder.$delegates[key]);
+    }
+    states[name] = state;
+
+    // Register the state in the global state list and with $urlRouter if necessary.
+    if (!state[abstractKey] && state.url) {
+      $urlRouterProvider.when(state.url, ['$match', '$stateParams', function ($match, $stateParams) {
+        if ($state.$current.navigable != state || !equalForKeys($match, $stateParams)) {
+          $state.transitionTo(state, $match, { location: false });
+        }
+      }]);
+    }
+
+    // Register any queued children
+    if (queue[name]) {
+      for (var i = 0; i < queue[name].length; i++) {
+        registerState(queue[name][i]);
+      }
+    }
+
+    return state;
+  }
+
+
+  // Implicit root state that is always active
+  root = registerState({
+    name: '',
+    url: '^',
+    views: null,
+    'abstract': true
+  });
+  root.navigable = null;
+
+
+  /**
+   * @ngdoc function
+   * @name ui.router.state.$stateProvider#decorator
+   * @methodOf ui.router.state.$stateProvider
+   *
+   * @description
+   * Allows you to extend (carefully) or override (at your own peril) the 
+   * `stateBuilder` object used internally by `$stateProvider`. This can be used 
+   * to add custom functionality to ui-router, for example inferring templateUrl 
+   * based on the state name.
+   *
+   * When passing only a name, it returns the current (original or decorated) builder
+   * function that matches `name`.
+   *
+   * The builder functions that can be decorated are listed below. Though not all
+   * necessarily have a good use case for decoration, that is up to you to decide.
+   *
+   * In addition, users can attach custom decorators, which will generate new 
+   * properties within the state's internal definition. There is currently no clear 
+   * use-case for this beyond accessing internal states (i.e. $state.$current), 
+   * however, expect this to become increasingly relevant as we introduce additional 
+   * meta-programming features.
+   *
+   * **Warning**: Decorators should not be interdependent because the order of 
+   * execution of the builder functions in nondeterministic. Builder functions 
+   * should only be dependent on the state definition object and super function.
+   *
+   *
+   * Existing builder functions and current return values:
+   *
+   * - parent - `{object}` - returns the parent state object.
+   * - data - `{object}` - returns state data, including any inherited data that is not
+   *   overridden by own values (if any).
+   * - url - `{object}` - returns a UrlMatcher or null.
+   * - navigable - returns closest ancestor state that has a URL (aka is 
+   *   navigable).
+   * - params - `{object}` - returns an array of state params that are ensured to 
+   *   be a super-set of parent's params.
+   * - views - `{object}` - returns a views object where each key is an absolute view 
+   *   name (i.e. "viewName@stateName") and each value is the config object 
+   *   (template, controller) for the view. Even when you don't use the views object 
+   *   explicitly on a state config, one is still created for you internally.
+   *   So by decorating this builder function you have access to decorating template 
+   *   and controller properties.
+   * - ownParams - `{object}` - returns an array of params that belong to the state, 
+   *   not including any params defined by ancestor states.
+   * - path - `{string}` - returns the full path from the root down to this state. 
+   *   Needed for state activation.
+   * - includes - `{object}` - returns an object that includes every state that 
+   *   would pass a '$state.includes()' test.
+   *
+   * @example
+   * <pre>
+   * // Override the internal 'views' builder with a function that takes the state
+   * // definition, and a reference to the internal function being overridden:
+   * $stateProvider.decorator('views', function ($state, parent) {
+   *   var result = {},
+   *       views = parent(state);
+   *
+   *   angular.forEach(view, function (config, name) {
+   *     var autoName = (state.name + '.' + name).replace('.', '/');
+   *     config.templateUrl = config.templateUrl || '/partials/' + autoName + '.html';
+   *     result[name] = config;
+   *   });
+   *   return result;
+   * });
+   *
+   * $stateProvider.state('home', {
+   *   views: {
+   *     'contact.list': { controller: 'ListController' },
+   *     'contact.item': { controller: 'ItemController' }
+   *   }
+   * });
+   *
+   * // ...
+   *
+   * $state.go('home');
+   * // Auto-populates list and item views with /partials/home/contact/list.html,
+   * // and /partials/home/contact/item.html, respectively.
+   * </pre>
+   *
+   * @param {string} name The name of the builder function to decorate. 
+   * @param {object} func A function that is responsible for decorating the original 
+   * builder function. The function receives two parameters:
+   *
+   *   - `{object}` - state - The state config object.
+   *   - `{object}` - super - The original builder function.
+   *
+   * @return {object} $stateProvider - $stateProvider instance
+   */
+  this.decorator = decorator;
+  function decorator(name, func) {
+    /*jshint validthis: true */
+    if (isString(name) && !isDefined(func)) {
+      return stateBuilder[name];
+    }
+    if (!isFunction(func) || !isString(name)) {
+      return this;
+    }
+    if (stateBuilder[name] && !stateBuilder.$delegates[name]) {
+      stateBuilder.$delegates[name] = stateBuilder[name];
+    }
+    stateBuilder[name] = func;
+    return this;
+  }
+
+  /**
+   * @ngdoc function
+   * @name ui.router.state.$stateProvider#state
+   * @methodOf ui.router.state.$stateProvider
+   *
+   * @description
+   * Registers a state configuration under a given state name. The stateConfig object
+   * has the following acceptable properties.
+   * 
+   * - [`template`, `templateUrl`, `templateProvider`] - There are three ways to setup
+   *   your templates.
+   *
+   *   - `{string|object}` - template - String HTML content, or function that returns an HTML
+   *   string.
+   *   - `{string}` - templateUrl - String URL path to template file OR function,
+   *   that returns URL path string.
+   *   - `{object}` - templateProvider - Provider function that returns HTML content
+   *   string.
+   *
+   * - [`controller`, `controllerProvider`] - A controller paired to the state. You can
+   *   either use a controller, or a controller provider.
+   *
+   *   - `{string|object}` - controller - Controller function or controller name.
+   *   - `{object}` - controllerProvider - Injectable provider function that returns
+   *   the actual controller or string.
+   *
+   * - `{object}` - resolve - A map of dependencies which should be injected into the
+   *   controller.
+   *
+   * - `{string}` - url - A url with optional parameters. When a state is navigated or
+   *   transitioned to, the `$stateParams` service will be populated with any 
+   *   parameters that were passed.
+   *
+   * - `{object}` - params - An array of parameter names or regular expressions. Only 
+   *   use this within a state if you are not using url. Otherwise you can specify your
+   *   parameters within the url. When a state is navigated or transitioned to, the 
+   *   $stateParams service will be populated with any parameters that were passed.
+   *
+   * - `{object}` - views - Use the views property to set up multiple views. 
+   *   If you don't need multiple views within a single state this property is not 
+   *   needed. Tip: remember that often nested views are more useful and powerful 
+   *   than multiple sibling views.
+   *
+   * - `{boolean}` - abstract - An abstract state will never be directly activated, 
+   *   but can provide inherited properties to its common children states.
+   *
+   * - `{object}` - onEnter - Callback function for when a state is entered. Good way
+   *   to trigger an action or dispatch an event, such as opening a dialog.
+   *
+   * - `{object}` - onExit - Callback function for when a state is exited. Good way to
+   *   trigger an action or dispatch an event, such as opening a dialog.
+   *
+   * - `{object}` - data - Arbitrary data object, useful for custom configuration.
+   *
+   * @example
+   * <pre>
+   * // The state() method takes a unique stateName (String) and a stateConfig (Object)
+   * $stateProvider.state(stateName, stateConfig);
+   *
+   * // stateName can be a single top-level name (must be unique).
+   * $stateProvider.state("home", {});
+   *
+   * // Or it can be a nested state name. This state is a child of the above "home" state.
+   * $stateProvider.state("home.newest", {});
+   *
+   * // Nest states as deeply as needed.
+   * $stateProvider.state("home.newest.abc.xyz.inception", {});
+   *
+   * // state() returns $stateProvider, so you can chain state declarations.
+   * $stateProvider
+   *   .state("home", {})
+   *   .state("about", {})
+   *   .state("contacts", {});
+   * </pre>
+   *
+   * @param {string} name A unique state name, e.g. "home", "about", "contacts". 
+   * To create a parent/child state use a dot, e.g. "about.sales", "home.newest".
+   * @param {object} definition State configuratino object.
+   */
+  this.state = state;
+  function state(name, definition) {
+    /*jshint validthis: true */
+    if (isObject(name)) definition = name;
+    else definition.name = name;
+    registerState(definition);
+    return this;
+  }
+
+  /**
+   * @ngdoc object
+   * @name ui.router.state.$state
+   *
+   * @requires $rootScope
+   * @requires $q
+   * @requires ui.router.state.$view
+   * @requires $injector
+   * @requires ui.router.util.$resolve
+   * @requires ui.router.state.$stateParams
+   *
+   * @property {object} params A param object, e.g. {sectionId: section.id)}, that 
+   * you'd like to test against the current active state.
+   * @property {object} current A reference to the state's config object. However 
+   * you passed it in. Useful for accessing custom data.
+   * @property {object} transition Currently pending transition. A promise that'll 
+   * resolve or reject.
+   *
+   * @description
+   * `$state` service is responsible for representing states as well as transitioning
+   * between them. It also provides interfaces to ask for current state or even states
+   * you're coming from.
+   */
+  // $urlRouter is injected just to ensure it gets instantiated
+  this.$get = $get;
+  $get.$inject = ['$rootScope', '$q', '$view', '$injector', '$resolve', '$stateParams', '$location', '$urlRouter'];
+  function $get(   $rootScope,   $q,   $view,   $injector,   $resolve,   $stateParams,   $location,   $urlRouter) {
+
+    var TransitionSuperseded = $q.reject(new Error('transition superseded'));
+    var TransitionPrevented = $q.reject(new Error('transition prevented'));
+    var TransitionAborted = $q.reject(new Error('transition aborted'));
+    var TransitionFailed = $q.reject(new Error('transition failed'));
+    var currentLocation = $location.url();
+
+    function syncUrl() {
+      if ($location.url() !== currentLocation) {
+        $location.url(currentLocation);
+        $location.replace();
+      }
+    }
+
+    root.locals = { resolve: null, globals: { $stateParams: {} } };
+    $state = {
+      params: {},
+      current: root.self,
+      $current: root,
+      transition: null
+    };
+
+    /**
+     * @ngdoc function
+     * @name ui.router.state.$state#reload
+     * @methodOf ui.router.state.$state
+     *
+     * @description
+     * Reloads the current state by re-transitioning to it.
+     *
+     * @example
+     * <pre>
+     * var app angular.module('app', ['ui.router.state']);
+     *
+     * app.controller('ctrl', function ($state) {
+     *   $state.reload();
+     * });
+     * </pre>
+     */
+    $state.reload = function reload() {
+      $state.transitionTo($state.current, $stateParams, { reload: true, inherit: false, notify: false });
+    };
+
+    /**
+     * @ngdoc function
+     * @name ui.router.state.$state#go
+     * @methodOf ui.router.state.$state
+     *
+     * @description
+     * Convenience method for transitioning to a new state. `$state.go` calls 
+     * `$state.transitionTo` internally but automatically sets options to 
+     * `{ location: true, inherit: true, relative: $state.$current, notify: true }`. 
+     * This allows you to easily use an absolute or relative to path and specify 
+     * only the parameters you'd like to update (while letting unspecified parameters 
+     * inherit from the current state.
+     *
+     * Some examples:
+     *
+     * - `$state.go('contact.detail')` - will go to the `contact.detail` state
+     * - `$state.go('^')` - will go to a parent state
+     * - `$state.go('^.sibling')` - will go to a sibling state
+     * - `$state.go('.child.grandchild')` - will go to grandchild state
+     *
+     * @example
+     * <pre>
+     * var app = angular.module('app', ['ui.router.state']);
+     *
+     * app.controller('ctrl', function ($scope, $state) {
+     *   $scope.changeState = function () {
+     *     $state.go('contact.detail');
+     *   };
+     * });
+     * </pre>
+     *
+     * @param {string} to Absolute State Name or Relative State Path.
+     * @param {object} params A map of the parameters that will be sent to the state, 
+     * will populate $stateParams.
+     * @param {object} options If Object is passed, object is an options hash.
+     */
+    $state.go = function go(to, params, options) {
+      return this.transitionTo(to, params, extend({ inherit: true, relative: $state.$current }, options));
+    };
+
+    /**
+     * @ngdoc function
+     * @name ui.router.state.$state#transitionTo
+     * @methodOf ui.router.state.$state
+     *
+     * @description
+     * Low-level method for transitioning to a new state. {@link ui.router.state.$state#methods_go $state.go}
+     * uses `transitionTo` internally. `$state.go` is recommended in most situations.
+     *
+     * @example
+     * <pre>
+     * var app = angular.module('app', ['ui.router.state']);
+     *
+     * app.controller('ctrl', function ($scope, $state) {
+     *   $scope.changeState = function () {
+     *     $state.transitionTo('contact.detail');
+     *   };
+     * });
+     * </pre>
+     *
+     * @param {string} to Absolute State Name or Relative State Path.
+     * @param {object} params A map of the parameters that will be sent to the state, 
+     * will populate $stateParams.
+     * @param {object} options If Object is passed, object is an options hash.
+     */
+    $state.transitionTo = function transitionTo(to, toParams, options) {
+      toParams = toParams || {};
+      options = extend({
+        location: true, inherit: false, relative: null, notify: true, reload: false, $retry: false
+      }, options || {});
+
+      var from = $state.$current, fromParams = $state.params, fromPath = from.path;
+      var evt, toState = findState(to, options.relative);
+
+      if (!isDefined(toState)) {
+        // Broadcast not found event and abort the transition if prevented
+        var redirect = { to: to, toParams: toParams, options: options };
+        evt = $rootScope.$broadcast('$stateNotFound', redirect, from.self, fromParams);
+        if (evt.defaultPrevented) {
+          syncUrl();
+          return TransitionAborted;
+        }
+
+        // Allow the handler to return a promise to defer state lookup retry
+        if (evt.retry) {
+          if (options.$retry) {
+            syncUrl();
+            return TransitionFailed;
+          }
+          var retryTransition = $state.transition = $q.when(evt.retry);
+          retryTransition.then(function() {
+            if (retryTransition !== $state.transition) return TransitionSuperseded;
+            redirect.options.$retry = true;
+            return $state.transitionTo(redirect.to, redirect.toParams, redirect.options);
+          }, function() {
+            return TransitionAborted;
+          });
+          syncUrl();
+          return retryTransition;
+        }
+
+        // Always retry once if the $stateNotFound was not prevented
+        // (handles either redirect changed or state lazy-definition)
+        to = redirect.to;
+        toParams = redirect.toParams;
+        options = redirect.options;
+        toState = findState(to, options.relative);
+        if (!isDefined(toState)) {
+          if (options.relative) throw new Error("Could not resolve '" + to + "' from state '" + options.relative + "'");
+          throw new Error("No such state '" + to + "'");
+        }
+      }
+      if (toState[abstractKey]) throw new Error("Cannot transition to abstract state '" + to + "'");
+      if (options.inherit) toParams = inheritParams($stateParams, toParams || {}, $state.$current, toState);
+      to = toState;
+
+      var toPath = to.path;
+
+      // Starting from the root of the path, keep all levels that haven't changed
+      var keep, state, locals = root.locals, toLocals = [];
+      for (keep = 0, state = toPath[keep];
+           state && state === fromPath[keep] && equalForKeys(toParams, fromParams, state.ownParams) && !options.reload;
+           keep++, state = toPath[keep]) {
+        locals = toLocals[keep] = state.locals;
+      }
+
+      // If we're going to the same state and all locals are kept, we've got nothing to do.
+      // But clear 'transition', as we still want to cancel any other pending transitions.
+      // TODO: We may not want to bump 'transition' if we're called from a location change that we've initiated ourselves,
+      // because we might accidentally abort a legitimate transition initiated from code?
+      if (shouldTriggerReload(to, from, locals, options) ) {
+        if ( to.self.reloadOnSearch !== false )
+          syncUrl();
+        $state.transition = null;
+        return $q.when($state.current);
+      }
+
+      // Normalize/filter parameters before we pass them to event handlers etc.
+      toParams = normalize(to.params, toParams || {});
+
+      // Broadcast start event and cancel the transition if requested
+      if (options.notify) {
+        evt = $rootScope.$broadcast('$stateChangeStart', to.self, toParams, from.self, fromParams);
+        if (evt.defaultPrevented) {
+          syncUrl();
+          return TransitionPrevented;
+        }
+      }
+
+      // Resolve locals for the remaining states, but don't update any global state just
+      // yet -- if anything fails to resolve the current state needs to remain untouched.
+      // We also set up an inheritance chain for the locals here. This allows the view directive
+      // to quickly look up the correct definition for each view in the current state. Even
+      // though we create the locals object itself outside resolveState(), it is initially
+      // empty and gets filled asynchronously. We need to keep track of the promise for the
+      // (fully resolved) current locals, and pass this down the chain.
+      var resolved = $q.when(locals);
+      for (var l=keep; l<toPath.length; l++, state=toPath[l]) {
+        locals = toLocals[l] = inherit(locals);
+        resolved = resolveState(state, toParams, state===to, resolved, locals);
+      }
+
+      // Once everything is resolved, we are ready to perform the actual transition
+      // and return a promise for the new state. We also keep track of what the
+      // current promise is, so that we can detect overlapping transitions and
+      // keep only the outcome of the last transition.
+      var transition = $state.transition = resolved.then(function () {
+        var l, entering, exiting;
+
+        if ($state.transition !== transition) return TransitionSuperseded;
+
+        // Exit 'from' states not kept
+        for (l=fromPath.length-1; l>=keep; l--) {
+          exiting = fromPath[l];
+          if (exiting.self.onExit) {
+            $injector.invoke(exiting.self.onExit, exiting.self, exiting.locals.globals);
+          }
+          exiting.locals = null;
+        }
+
+        // Enter 'to' states not kept
+        for (l=keep; l<toPath.length; l++) {
+          entering = toPath[l];
+          entering.locals = toLocals[l];
+          if (entering.self.onEnter) {
+            $injector.invoke(entering.self.onEnter, entering.self, entering.locals.globals);
+          }
+        }
+
+        // Run it again, to catch any transitions in callbacks
+        if ($state.transition !== transition) return TransitionSuperseded;
+
+        // Update globals in $state
+        $state.$current = to;
+        $state.current = to.self;
+        $state.params = toParams;
+        copy($state.params, $stateParams);
+        $state.transition = null;
+
+        // Update $location
+        var toNav = to.navigable;
+        if (options.location && toNav) {
+          $location.url(toNav.url.format(toNav.locals.globals.$stateParams));
+
+          if (options.location === 'replace') {
+            $location.replace();
+          }
+        }
+
+        if (options.notify) {
+          $rootScope.$broadcast('$stateChangeSuccess', to.self, toParams, from.self, fromParams);
+        }
+        currentLocation = $location.url();
+
+        return $state.current;
+      }, function (error) {
+        if ($state.transition !== transition) return TransitionSuperseded;
+
+        $state.transition = null;
+        $rootScope.$broadcast('$stateChangeError', to.self, toParams, from.self, fromParams, error);
+        syncUrl();
+
+        return $q.reject(error);
+      });
+
+      return transition;
+    };
+
+    /**
+     * @ngdoc function
+     * @name ui.router.state.$state#is
+     * @methodOf ui.router.state.$state
+     *
+     * @description
+     * Similar to {@link ui.router.state.$state#methods_includes $state.includes},
+     * but only checks for the full state name. If params is supplied then it will be 
+     * tested for strict equality against the current active params object, so all params 
+     * must match with none missing and no extras.
+     *
+     * @example
+     * <pre>
+     * $state.is('contact.details.item'); // returns true
+     * $state.is(contactDetailItemStateObject); // returns true
+     *
+     * // everything else would return false
+     * </pre>
+     *
+     * @param {string|object} stateName The state name or state object you'd like to check.
+     * @param {object} params A param object, e.g. `{sectionId: section.id}`, that you'd like 
+     * to test against the current active state.
+     * @returns {boolean} Returns true or false whether its the state or not.
+     */
+    $state.is = function is(stateOrName, params) {
+      var state = findState(stateOrName);
+
+      if (!isDefined(state)) {
+        return undefined;
+      }
+
+      if ($state.$current !== state) {
+        return false;
+      }
+
+      return isDefined(params) && params !== null ? angular.equals($stateParams, params) : true;
+    };
+
+    /**
+     * @ngdoc function
+     * @name ui.router.state.$state#includes
+     * @methodOf ui.router.state.$state
+     *
+     * @description
+     * A method to determine if the current active state is equal to or is the child of the 
+     * state stateName. If any params are passed then they will be tested for a match as well.
+     * Not all the parameters need to be passed, just the ones you'd like to test for equality.
+     *
+     * @example
+     * <pre>
+     * $state.includes("contacts"); // returns true
+     * $state.includes("contacts.details"); // returns true
+     * $state.includes("contacts.details.item"); // returns true
+     * $state.includes("contacts.list"); // returns false
+     * $state.includes("about"); // returns false
+     * </pre>
+     *
+     * @param {string} stateOrName A partial name to be searched for within the current state name.
+     * @param {object} params A param object, e.g. `{sectionId: section.id}`, 
+     * that you'd like to test against the current active state.
+     * @returns {boolean} True or false
+     */
+    $state.includes = function includes(stateOrName, params) {
+      var state = findState(stateOrName);
+      if (!isDefined(state)) {
+        return undefined;
+      }
+
+      if (!isDefined($state.$current.includes[state.name])) {
+        return false;
+      }
+
+      var validParams = true;
+      angular.forEach(params, function(value, key) {
+        if (!isDefined($stateParams[key]) || $stateParams[key] !== value) {
+          validParams = false;
+        }
+      });
+      return validParams;
+    };
+
+    /**
+     * @ngdoc function
+     * @name ui.router.state.$state#href
+     * @methodOf ui.router.state.$state
+     *
+     * @description
+     * A url generation method that returns the compiled url for the given state populated with the given params.
+     *
+     * @example
+     * <pre>
+     * expect($state.href("about.person", { person: "bob" })).toEqual("/about/bob");
+     * </pre>
+     *
+     * @param {string|object} stateOrName The state name or state object you'd like to generate a url from.
+     * @param {object} params An object of parameter values to fill the state's required parameters.
+     * @returns {string} url
+     */
+    $state.href = function href(stateOrName, params, options) {
+      options = extend({ lossy: true, inherit: false, absolute: false, relative: $state.$current }, options || {});
+      var state = findState(stateOrName, options.relative);
+      if (!isDefined(state)) return null;
+
+      params = inheritParams($stateParams, params || {}, $state.$current, state);
+      var nav = (state && options.lossy) ? state.navigable : state;
+      var url = (nav && nav.url) ? nav.url.format(normalize(state.params, params || {})) : null;
+      if (!$locationProvider.html5Mode() && url) {
+        url = "#" + $locationProvider.hashPrefix() + url;
+      }
+      if (options.absolute && url) {
+        url = $location.protocol() + '://' + 
+              $location.host() + 
+              ($location.port() == 80 || $location.port() == 443 ? '' : ':' + $location.port()) + 
+              (!$locationProvider.html5Mode() && url ? '/' : '') + 
+              url;
+      }
+      return url;
+    };
+
+    /**
+     * @ngdoc function
+     * @name ui.router.state.$state#get
+     * @methodOf ui.router.state.$state
+     *
+     * @description
+     * Returns the state configuration object for any state by passing the name
+     * as a string. Without any arguments it'll return a array of all configured
+     * state objects.
+     *
+     * @param {string|object} stateOrName The name of the state for which you'd like 
+     * to get the original state configuration object for.
+     * @returns {object} State configuration object or array of all objects.
+     */
+    $state.get = function (stateOrName, context) {
+      if (!isDefined(stateOrName)) {
+        var list = [];
+        forEach(states, function(state) { list.push(state.self); });
+        return list;
+      }
+      var state = findState(stateOrName, context);
+      return (state && state.self) ? state.self : null;
+    };
+
+    function resolveState(state, params, paramsAreFiltered, inherited, dst) {
+      // Make a restricted $stateParams with only the parameters that apply to this state if
+      // necessary. In addition to being available to the controller and onEnter/onExit callbacks,
+      // we also need $stateParams to be available for any $injector calls we make during the
+      // dependency resolution process.
+      var $stateParams = (paramsAreFiltered) ? params : filterByKeys(state.params, params);
+      var locals = { $stateParams: $stateParams };
+
+      // Resolve 'global' dependencies for the state, i.e. those not specific to a view.
+      // We're also including $stateParams in this; that way the parameters are restricted
+      // to the set that should be visible to the state, and are independent of when we update
+      // the global $state and $stateParams values.
+      dst.resolve = $resolve.resolve(state.resolve, locals, dst.resolve, state);
+      var promises = [ dst.resolve.then(function (globals) {
+        dst.globals = globals;
+      }) ];
+      if (inherited) promises.push(inherited);
+
+      // Resolve template and dependencies for all views.
+      forEach(state.views, function (view, name) {
+        var injectables = (view.resolve && view.resolve !== state.resolve ? view.resolve : {});
+        injectables.$template = [ function () {
+          return $view.load(name, { view: view, locals: locals, params: $stateParams, notify: false }) || '';
+        }];
+
+        promises.push($resolve.resolve(injectables, locals, dst.resolve, state).then(function (result) {
+          // References to the controller (only instantiated at link time)
+          if (isFunction(view.controllerProvider) || isArray(view.controllerProvider)) {
+            var injectLocals = angular.extend({}, injectables, locals);
+            result.$$controller = $injector.invoke(view.controllerProvider, null, injectLocals);
+          } else {
+            result.$$controller = view.controller;
+          }
+          // Provide access to the state itself for internal use
+          result.$$state = state;
+          dst[name] = result;
+        }));
+      });
+
+      // Wait for all the promises and then return the activation object
+      return $q.all(promises).then(function (values) {
+        return dst;
+      });
+    }
+
+    return $state;
+  }
+
+  function shouldTriggerReload(to, from, locals, options) {
+    if ( to === from && ((locals === from.locals && !options.reload) || (to.self.reloadOnSearch === false)) ) {
+      return true;
+    }
+  }
+}
+
+angular.module('ui.router.state')
+  .value('$stateParams', {})
+  .provider('$state', $StateProvider);
+
+
+$ViewProvider.$inject = [];
+function $ViewProvider() {
+
+  this.$get = $get;
+  /**
+   * @ngdoc object
+   * @name ui.router.state.$view
+   *
+   * @requires ui.router.util.$templateFactory
+   * @requires $rootScope
+   *
+   * @description
+   *
+   */
+  $get.$inject = ['$rootScope', '$templateFactory'];
+  function $get(   $rootScope,   $templateFactory) {
+    return {
+      // $view.load('full.viewName', { template: ..., controller: ..., resolve: ..., async: false, params: ... })
+      /**
+       * @ngdoc function
+       * @name ui.router.state.$view#load
+       * @methodOf ui.router.state.$view
+       *
+       * @description
+       *
+       * @param {string} name name
+       * @param {object} options option object.
+       */
+      load: function load(name, options) {
+        var result, defaults = {
+          template: null, controller: null, view: null, locals: null, notify: true, async: true, params: {}
+        };
+        options = extend(defaults, options);
+
+        if (options.view) {
+          result = $templateFactory.fromConfig(options.view, options.params, options.locals);
+        }
+        if (result && options.notify) {
+          $rootScope.$broadcast('$viewContentLoading', options);
+        }
+        return result;
+      }
+    };
+  }
+}
+
+angular.module('ui.router.state').provider('$view', $ViewProvider);
+
+/**
+ * @ngdoc object
+ * @name ui.router.state.$uiViewScroll
+ *
+ * @requires $anchorScroll
+ * @requires $timeout
+ *
+ * @description
+ * When called with a jqLite element, it scrolls the element into view (after a
+ * `$timeout` so the DOM has time to refresh).
+ *
+ * If you prefer to rely on `$anchorScroll` to scroll the view to the anchor,
+ * this can be enabled by calling `$uiViewScrollProvider.useAnchorScroll()`.
+ */
+function $ViewScrollProvider() {
+
+  var useAnchorScroll = false;
+
+  this.useAnchorScroll = function () {
+    useAnchorScroll = true;
+  };
+
+  this.$get = ['$anchorScroll', '$timeout', function ($anchorScroll, $timeout) {
+    if (useAnchorScroll) {
+      return $anchorScroll;
+    }
+
+    return function ($element) {
+      $timeout(function () {
+        $element[0].scrollIntoView();
+      }, 0, false);
+    };
+  }];
+}
+
+angular.module('ui.router.state').provider('$uiViewScroll', $ViewScrollProvider);
+
+/**
+ * @ngdoc directive
+ * @name ui.router.state.diretive.ui-view
+ *
+ * @requires ui.router.state.$state
+ * @requires $compile
+ * @requires $controller
+ * @requires $injector
+ *
+ * @restrict ECA
+ *
+ * @description
+ * The ui-view directive tells $state where to place your templates.
+ * A view can be unnamed or named.
+ *
+ * @param {string} ui-view A view name.
+ */
+$ViewDirective.$inject = ['$state', '$compile', '$controller', '$injector', '$uiViewScroll', '$document'];
+function $ViewDirective(   $state,   $compile,   $controller,   $injector,   $uiViewScroll,   $document) {
+
+  function getService() {
+    return ($injector.has) ? function(service) {
+      return $injector.has(service) ? $injector.get(service) : null;
+    } : function(service) {
+      try {
+        return $injector.get(service);
+      } catch (e) {
+        return null;
+      }
+    };
+  }
+
+  var viewIsUpdating = false,
+      service = getService(),
+      $animator = service('$animator'),
+      $animate = service('$animate');
+
+  // Returns a set of DOM manipulation functions based on whether animation
+  // should be performed
+  function getRenderer(element, attrs, scope) {
+    var statics = function() {
+      return {
+        leave: function (element) { element.remove(); },
+        enter: function (element, parent, anchor) { anchor.after(element); }
+      };
+    };
+
+    if ($animate) {
+      return function(shouldAnimate) {
+        return !shouldAnimate ? statics() : {
+          enter: function(element, parent, anchor) { $animate.enter(element, null, anchor); },
+          leave: function(element) { $animate.leave(element, function() { element.remove(); }); }
+        };
+      };
+    }
+
+    if ($animator) {
+      var animate = $animator && $animator(scope, attrs);
+
+      return function(shouldAnimate) {
+        return !shouldAnimate ? statics() : {
+          enter: function(element, parent, anchor) { animate.enter(element, parent); },
+          leave: function(element) { animate.leave(element.contents(), element); }
+        };
+      };
+    }
+
+    return statics;
+  }
+
+  var directive = {
+    restrict: 'ECA',
+    compile: function (element, attrs) {
+      var initial   = element.html(),
+          isDefault = true,
+          anchor    = angular.element($document[0].createComment(' ui-view-anchor ')),
+          parentEl  = element.parent();
+
+      element.prepend(anchor);
+
+      return function ($scope) {
+        var inherited = parentEl.inheritedData('$uiView');
+
+        var currentScope, currentEl, viewLocals,
+            name      = attrs[directive.name] || attrs.name || '',
+            onloadExp = attrs.onload || '',
+            autoscrollExp = attrs.autoscroll,
+            renderer  = getRenderer(element, attrs, $scope);
+
+        if (name.indexOf('@') < 0) name = name + '@' + (inherited ? inherited.state.name : '');
+        var view = { name: name, state: null };
+
+        var eventHook = function () {
+          if (viewIsUpdating) return;
+          viewIsUpdating = true;
+
+          try { updateView(true); } catch (e) {
+            viewIsUpdating = false;
+            throw e;
+          }
+          viewIsUpdating = false;
+        };
+
+        $scope.$on('$stateChangeSuccess', eventHook);
+        $scope.$on('$viewContentLoading', eventHook);
+
+        updateView(false);
+
+        function cleanupLastView() {
+          if (currentEl) {
+            renderer(true).leave(currentEl);
+            currentEl = null;
+          }
+
+          if (currentScope) {
+            currentScope.$destroy();
+            currentScope = null;
+          }
+        }
+
+        function updateView(shouldAnimate) {
+          var locals = $state.$current && $state.$current.locals[name];
+
+          if (isDefault) {
+            isDefault = false;
+            element.replaceWith(anchor);
+          }
+
+          if (!locals) {
+            cleanupLastView();
+            currentEl = element.clone();
+            currentEl.html(initial);
+            renderer(shouldAnimate).enter(currentEl, parentEl, anchor);
+
+            currentScope = $scope.$new();
+            $compile(currentEl.contents())(currentScope);
+            return;
+          }
+
+          if (locals === viewLocals) return; // nothing to do
+
+          cleanupLastView();
+
+          currentEl = element.clone();
+          currentEl.html(locals.$template ? locals.$template : initial);
+          renderer(true).enter(currentEl, parentEl, anchor);
+
+          currentEl.data('$uiView', view);
+
+          viewLocals = locals;
+          view.state = locals.$$state;
+
+          var link = $compile(currentEl.contents());
+
+          currentScope = $scope.$new();
+
+          if (locals.$$controller) {
+            locals.$scope = currentScope;
+            var controller = $controller(locals.$$controller, locals);
+            currentEl.children().data('$ngControllerController', controller);
+          }
+
+          link(currentScope);
+
+          currentScope.$emit('$viewContentLoaded');
+          if (onloadExp) currentScope.$eval(onloadExp);
+
+          if (!angular.isDefined(autoscrollExp) || !autoscrollExp || $scope.$eval(autoscrollExp)) {
+            $uiViewScroll(currentEl);
+          }
+        }
+      };
+    }
+  };
+
+  return directive;
+}
+
+angular.module('ui.router.state').directive('uiView', $ViewDirective);
+
+function parseStateRef(ref) {
+  var parsed = ref.replace(/\n/g, " ").match(/^([^(]+?)\s*(\((.*)\))?$/);
+  if (!parsed || parsed.length !== 4) throw new Error("Invalid state ref '" + ref + "'");
+  return { state: parsed[1], paramExpr: parsed[3] || null };
+}
+
+function stateContext(el) {
+  var stateData = el.parent().inheritedData('$uiView');
+
+  if (stateData && stateData.state && stateData.state.name) {
+    return stateData.state;
+  }
+}
+
+/**
+ * @ngdoc directive
+ * @name ui.router.state.directive:ui-sref
+ *
+ * @requires ui.router.state.$state
+ * @requires $timeout
+ *
+ * @restrict A
+ *
+ * @description
+ * A directive that binds a link (`<a>` tag) to a state. If the state has an associated 
+ * URL, the directive will automatically generate & update the `href` attribute via 
+ * the {@link ui.router.state.$state#methods_href $state.href()} method. Clicking 
+ * the link will trigger a state transition with optional parameters. 
+ *
+ * Also middle-clicking, right-clicking, and ctrl-clicking on the link will be 
+ * handled natively by the browser.
+ *
+ * You can also use relative state paths within ui-sref, just like the relative 
+ * paths passed to `$state.go()`. You just need to be aware that the path is relative
+ * to the state that the link lives in, in other words the state that loaded the 
+ * template containing the link.
+ *
+ * @example
+ * <pre>
+ * <a ui-sref="home">Home</a> | <a ui-sref="about">About</a>
+ *
+ * <ul>
+ *   <li ng-repeat="contact in contacts">
+ *     <a ui-sref="contacts.detail({ id: contact.id })">{{ contact.name }}</a>
+ *   </li>
+ * </ul>
+ * </pre>
+ *
+ * @param {string} ui-sref 'stateName' can be any valid absolute or relative state
+ */
+$StateRefDirective.$inject = ['$state', '$timeout'];
+function $StateRefDirective($state, $timeout) {
+  return {
+    restrict: 'A',
+    require: '?^uiSrefActive',
+    link: function(scope, element, attrs, uiSrefActive) {
+      var ref = parseStateRef(attrs.uiSref);
+      var params = null, url = null, base = stateContext(element) || $state.$current;
+      var isForm = element[0].nodeName === "FORM";
+      var attr = isForm ? "action" : "href", nav = true;
+
+      var update = function(newVal) {
+        if (newVal) params = newVal;
+        if (!nav) return;
+
+        var newHref = $state.href(ref.state, params, { relative: base });
+
+        if (uiSrefActive) {
+          uiSrefActive.$$setStateInfo(ref.state, params);
+        }
+        if (!newHref) {
+          nav = false;
+          return false;
+        }
+        element[0][attr] = newHref;
+      };
+
+      if (ref.paramExpr) {
+        scope.$watch(ref.paramExpr, function(newVal, oldVal) {
+          if (newVal !== params) update(newVal);
+        }, true);
+        params = scope.$eval(ref.paramExpr);
+      }
+      update();
+
+      if (isForm) return;
+
+      element.bind("click", function(e) {
+        var button = e.which || e.button;
+        if ((button === 0 || button == 1) && !e.ctrlKey && !e.metaKey && !e.shiftKey && !element.attr('target')) {
+          // HACK: This is to allow ng-clicks to be processed before the transition is initiated:
+          $timeout(function() {
+            $state.go(ref.state, params, { relative: base });
+          });
+          e.preventDefault();
+        }
+      });
+    }
+  };
+}
+
+/**
+ * @ngdoc directive
+ * @name ui.router.state.directive:ui-sref-active
+ *
+ * @requires ui.router.state.$state
+ * @requires ui.router.state.$stateParams
+ * @requires $interpolate
+ *
+ * @restrict A
+ *
+ * @description
+ * A directive working alongside ui-sref to add classes to an element when the 
+ * related ui-sref directive's state is active, and removing them when it is inactive.
+ * The primary use-case is to simplify the special appearance of navigation menus 
+ * relying on `ui-sref`, by having the "active" state's menu button appear different,
+ * distinguishing it from the inactive menu items.
+ *
+ * @example
+ * <pre>
+ * <ul>
+ *   <li ui-sref-active="active" class="item active">
+ *     <a ui-sref="app.user({user: 'bilbobaggins'})" href="/users/bilbobaggins">@bilbobaggins</a>
+ *   </li>
+ *   <!-- ... -->
+ * </ul>
+ * </pre>
+ */
+$StateActiveDirective.$inject = ['$state', '$stateParams', '$interpolate'];
+function $StateActiveDirective($state, $stateParams, $interpolate) {
+  return {
+    restrict: "A",
+    controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
+      var state, params, activeClass;
+
+      // There probably isn't much point in $observing this
+      activeClass = $interpolate($attrs.uiSrefActive || '', false)($scope);
+
+      // Allow uiSref to communicate with uiSrefActive
+      this.$$setStateInfo = function(newState, newParams) {
+        state = $state.get(newState, stateContext($element));
+        params = newParams;
+        update();
+      };
+
+      $scope.$on('$stateChangeSuccess', update);
+
+      // Update route state
+      function update() {
+        if ($state.$current.self === state && matchesParams()) {
+          $element.addClass(activeClass);
+        } else {
+          $element.removeClass(activeClass);
+        }
+      }
+
+      function matchesParams() {
+        return !params || equalForKeys(params, $stateParams);
+      }
+    }]
+  };
+}
+
+angular.module('ui.router.state')
+  .directive('uiSref', $StateRefDirective)
+  .directive('uiSrefActive', $StateActiveDirective);
+
+/**
+ * @ngdoc filter
+ * @name ui.router.state.filter:isState
+ *
+ * @requires ui.router.state.$state
+ *
+ * @description
+ * Translates to {@link ui.router.state.$state#is $state.is("stateName")}.
+ */
+$IsStateFilter.$inject = ['$state'];
+function $IsStateFilter($state) {
+  return function(state) {
+    return $state.is(state);
+  };
+}
+
+/**
+ * @ngdoc filter
+ * @name ui.router.state.filter:includeByState
+ *
+ * @requires ui.router.state.$state
+ *
+ * @description
+ * Translates to {@link ui.router.state.$state#includes $state.includes()}.
+ */
+$IncludedByStateFilter.$inject = ['$state'];
+function $IncludedByStateFilter($state) {
+  return function(state) {
+    return $state.includes(state);
+  };
+}
+
+angular.module('ui.router.state')
+  .filter('isState', $IsStateFilter)
+  .filter('includedByState', $IncludedByStateFilter);
+
+/**
+ * @ngdoc object
+ * @name ui.router.compat.$routeProvider
+ *
+ * @requires ui.router.state.$stateProvider
+ * @requires ui.router.router.$urlRouterProvider
+ *
+ * @description
+ * `$routeProvider` of the `ui.router.compat` module overwrites the existing
+ * `routeProvider` from the core. This is done to provide compatibility between
+ * the UI Router and the core router.
+ *
+ * It also provides a `when()` method to register routes that map to certain urls.
+ * Behind the scenes it actually delegates either to 
+ * {@link ui.router.router.$urlRouterProvider $urlRouterProvider} or to the 
+ * {@link ui.router.state.$stateProvider $stateProvider} to postprocess the given 
+ * router definition object.
+ */
+$RouteProvider.$inject = ['$stateProvider', '$urlRouterProvider'];
+function $RouteProvider(  $stateProvider,    $urlRouterProvider) {
+
+  var routes = [];
+
+  onEnterRoute.$inject = ['$$state'];
+  function onEnterRoute(   $$state) {
+    /*jshint validthis: true */
+    this.locals = $$state.locals.globals;
+    this.params = this.locals.$stateParams;
+  }
+
+  function onExitRoute() {
+    /*jshint validthis: true */
+    this.locals = null;
+    this.params = null;
+  }
+
+  this.when = when;
+  /**
+   * @ngdoc function
+   * @name ui.router.compat.$routeProvider#when
+   * @methodOf ui.router.compat.$routeProvider
+   *
+   * @description
+   * Registers a route with a given route definition object. The route definition
+   * object has the same interface the angular core route definition object has.
+   * 
+   * @example
+   * <pre>
+   * var app = angular.module('app', ['ui.router.compat']);
+   *
+   * app.config(function ($routeProvider) {
+   *   $routeProvider.when('home', {
+   *     controller: function () { ... },
+   *     templateUrl: 'path/to/template'
+   *   });
+   * });
+   * </pre>
+   *
+   * @param {string} url URL as string
+   * @param {object} route Route definition object
+   *
+   * @return {object} $routeProvider - $routeProvider instance
+   */
+  function when(url, route) {
+    /*jshint validthis: true */
+    if (route.redirectTo != null) {
+      // Redirect, configure directly on $urlRouterProvider
+      var redirect = route.redirectTo, handler;
+      if (isString(redirect)) {
+        handler = redirect; // leave $urlRouterProvider to handle
+      } else if (isFunction(redirect)) {
+        // Adapt to $urlRouterProvider API
+        handler = function (params, $location) {
+          return redirect(params, $location.path(), $location.search());
+        };
+      } else {
+        throw new Error("Invalid 'redirectTo' in when()");
+      }
+      $urlRouterProvider.when(url, handler);
+    } else {
+      // Regular route, configure as state
+      $stateProvider.state(inherit(route, {
+        parent: null,
+        name: 'route:' + encodeURIComponent(url),
+        url: url,
+        onEnter: onEnterRoute,
+        onExit: onExitRoute
+      }));
+    }
+    routes.push(route);
+    return this;
+  }
+
+  /**
+   * @ngdoc object
+   * @name ui.router.compat.$route
+   *
+   * @requires ui.router.state.$state
+   * @requires $rootScope
+   * @requires $routeParams
+   *
+   * @property {object} routes - Array of registered routes.
+   * @property {object} params - Current route params as object.
+   * @property {string} current - Name of the current route.
+   *
+   * @description
+   * The `$route` service provides interfaces to access defined routes. It also let's
+   * you access route params through `$routeParams` service, so you have fully
+   * control over all the stuff you would actually get from angular's core `$route`
+   * service.
+   */
+  this.$get = $get;
+  $get.$inject = ['$state', '$rootScope', '$routeParams'];
+  function $get(   $state,   $rootScope,   $routeParams) {
+
+    var $route = {
+      routes: routes,
+      params: $routeParams,
+      current: undefined
+    };
+
+    function stateAsRoute(state) {
+      return (state.name !== '') ? state : undefined;
+    }
+
+    $rootScope.$on('$stateChangeStart', function (ev, to, toParams, from, fromParams) {
+      $rootScope.$broadcast('$routeChangeStart', stateAsRoute(to), stateAsRoute(from));
+    });
+
+    $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+      $route.current = stateAsRoute(to);
+      $rootScope.$broadcast('$routeChangeSuccess', stateAsRoute(to), stateAsRoute(from));
+      copy(toParams, $route.params);
+    });
+
+    $rootScope.$on('$stateChangeError', function (ev, to, toParams, from, fromParams, error) {
+      $rootScope.$broadcast('$routeChangeError', stateAsRoute(to), stateAsRoute(from), error);
+    });
+
+    return $route;
+  }
+}
+
+angular.module('ui.router.compat')
+  .provider('$route', $RouteProvider)
+  .directive('ngView', $ViewDirective);
+})(window, window.angular);;/*!
+ * classie - class helper functions
+ * from bonzo https://github.com/ded/bonzo
+ * 
+ * classie.has( elem, 'my-class' ) -> true/false
+ * classie.add( elem, 'my-new-class' )
+ * classie.remove( elem, 'my-unwanted-class' )
+ * classie.toggle( elem, 'my-class' )
+ */
+
+/*jshint browser: true, strict: true, undef: true */
+/*global define: false */
+
+( function( window ) {
+
+'use strict';
+
+// class helper functions from bonzo https://github.com/ded/bonzo
+
+function classReg( className ) {
+  return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+}
+
+// classList support for class management
+// altho to be fair, the api sucks because it won't accept multiple classes at once
+var hasClass, addClass, removeClass;
+
+if ( 'classList' in document.documentElement ) {
+  hasClass = function( elem, c ) {
+    return elem.classList.contains( c );
+  };
+  addClass = function( elem, c ) {
+    elem.classList.add( c );
+  };
+  removeClass = function( elem, c ) {
+    elem.classList.remove( c );
+  };
+}
+else {
+  hasClass = function( elem, c ) {
+    return classReg( c ).test( elem.className );
+  };
+  addClass = function( elem, c ) {
+    if ( !hasClass( elem, c ) ) {
+      elem.className = elem.className + ' ' + c;
+    }
+  };
+  removeClass = function( elem, c ) {
+    elem.className = elem.className.replace( classReg( c ), ' ' );
+  };
+}
+
+function toggleClass( elem, c ) {
+  var fn = hasClass( elem, c ) ? removeClass : addClass;
+  fn( elem, c );
+}
+
+var classie = {
+  // full names
+  hasClass: hasClass,
+  addClass: addClass,
+  removeClass: removeClass,
+  toggleClass: toggleClass,
+  // short names
+  has: hasClass,
+  add: addClass,
+  remove: removeClass,
+  toggle: toggleClass
+};
+
+// transport
+if ( typeof define === 'function' && define.amd ) {
+  // AMD
+  define( classie );
+} else {
+  // browser global
+  window.classie = classie;
+}
+
+})( window );
+;/**
+ * cbpAnimatedHeader.js v1.0.0
+ * http://www.codrops.com
+ *
+ * Licensed under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ * 
+ * Copyright 2013, Codrops
+ * http://www.codrops.com
+ */
+var cbpAnimatedHeader = (function() {
+
+	var docElem = document.documentElement,
+		header = document.querySelector( '.navbar-default' ),
+		didScroll = false,
+		changeHeaderOn = 300;
+
+	function init() {
+		window.addEventListener( 'scroll', function( event ) {
+			if( !didScroll ) {
+				didScroll = true;
+				setTimeout( scrollPage, 250 );
+			}
+		}, false );
+	}
+
+	function scrollPage() {
+		var sy = scrollY();
+		if ( sy >= changeHeaderOn ) {
+			classie.add( header, 'navbar-shrink' );
+		}
+		else {
+			classie.remove( header, 'navbar-shrink' );
+		}
+		didScroll = false;
+	}
+
+	function scrollY() {
+		return window.pageYOffset || docElem.scrollTop;
+	}
+
+	init();
+
+})();;(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");
 for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="//cdn.mxpnl.com/libs/mixpanel-2.2.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
 mixpanel.init("e6f5b0f3965428de5997c8fbb9a3ad73");
 
-;angular.module('templates-dist', ['../../rapidocteur_web/app/views/confirmation-rendezvous.html', '../../rapidocteur_web/app/views/contact.html', '../../rapidocteur_web/app/views/index-mvp.html', '../../rapidocteur_web/app/views/fontenilles/dieteticien-tachier.html', '../../rapidocteur_web/app/views/seysses/medecin-generaliste.html', '../../rapidocteur_web/app/views/toulouse/osteopathe-bertucchi.html']);
+;angular.module('templates-dist', ['../../rapidocteur_web/app/partials/accueil.html', '../../rapidocteur_web/app/partials/confirmation-rendezvous.html', '../../rapidocteur_web/app/partials/header_index.html', '../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerri.html', '../../rapidocteur_web/app/partials/seysses/cabinet-medical.html', '../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html']);
 
-angular.module("../../rapidocteur_web/app/views/confirmation-rendezvous.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../../rapidocteur_web/app/views/confirmation-rendezvous.html",
+angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/accueil.html",
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-fixed-top nav-index\"></nav>\n" +
+    "    <header>\n" +
+    "        <div class=\"container\">\n" +
+    "            <div class=\"intro-text\">\n" +
+    "                <div class=\"intro-lead-in\"><h1>Des difficultés pour obtenir un rendez-vous médical ?<br /><span class=\"lead-small\">RapiDocteur, votre rendez-vous en 3 clics et 24h/24 !</span></h1></div>\n" +
+    "                               \n" +
+    "                <a href=\"#/#professionnels\" class=\"btn btn-lg btn-primary\">Je prends rendez-vous maintenant !</a>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </header>\n" +
+    "\n" +
+    "    <!-- Services Section -->\n" +
+    "    <section id=\"professionnels\">\n" +
+    "        <div class=\"container\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-lg-12 text-center\">\n" +
+    "                    <h2 class=\"section-heading\">Les professionnels disponibles à Fontenilles et Toulouse</h2>\n" +
+    "                    <span class=\"section-subheading text-muted\">Nous simplifions la <strong class=\"nobold\">prise de rendez-vous médicaux</strong>.<br />Avec RapiDocteur, choisissez votre professionnels et prenez rendez-vous en moins de cinq minutes, à n'importe quel moment de la journée, depuis votre ordinateur ou votre smartphone !</span>\n" +
+    "                    \n" +
+    "                </div>\n" +
+    "            </div>           \n" +
+    "        </div>\n" +
+    "    </section>\n" +
+    "    <section id=\"team\" class=\"bg-light-gray\">\n" +
+    "        <div class=\"container\">            \n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-6\">\n" +
+    "                    <div class=\"carte-pro\">\n" +
+    "                        <div class=\"col-md-3 col-xs-3\">\n" +
+    "                            <img src=\"img/pro/frederic-guerri-dieteticien.png\" class=\"img-responsive img-circle\" alt=\"Frédéric Guerri diététicien nutritionniste fontenilles\" />\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-md-9 col-xs-9\">\n" +
+    "                            <h3 class=\"title-smaller\">Nutritionniste diététicien</h3>\n" +
+    "                            <h4>Frédéric Guerri</h4>\n" +
+    "                            <p class=\"text-muted\">1 lot le village - 31470 <strong>Fontenilles</strong></p>\n" +
+    "                            <a href=\"#/fontenilles/dieteticien-guerri\" class=\"btn btn-lg btn-primary prendrerv \">Prendre rendez-vous</a>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-6\">\n" +
+    "                    <div class=\"carte-pro\">                        \n" +
+    "                        <div class=\"col-md-3 col-xs-3\">\n" +
+    "                            <img src=\"img/pro/youri-bertucchi_2.jpg\" class=\"img-responsive img-circle\" alt=\"Bertucchi ostéopathe toulouse\" />\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-md-9 col-xs-9\">\n" +
+    "                            <h3>Ostéopathe</h3>\n" +
+    "                            <h4>Youri Bertucchi</h4>\n" +
+    "                            <p class=\"text-muted\">11 place Lafourcade - 31400 Toulouse</p>\n" +
+    "                            <a href=\"#/toulouse/osteopathe-bertucchi\" class=\"btn btn-lg btn-primary prendrerv \" disabled>Disponible bientôt</a>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>                \n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </section>\n" +
+    "\n" +
+    "    <section id=\"landing-chiffres\">\n" +
+    "        <p>Déjà plus de {{rv}} rendez-vous réservés !</p>\n" +
+    "    </section>       \n" +
+    "\n" +
+    "    ");
+}]);
+
+angular.module("../../rapidocteur_web/app/partials/confirmation-rendezvous.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/confirmation-rendezvous.html",
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-static-top nav-index\"></nav>\n" +
+    "\n" +
     "<script type=\"text/ng-template\" id=\"confirmationModal.html\">\n" +
     "        <div class=\"modal-header\">\n" +
     "            <h3 class=\"modal-title\">Votre rendez-vous est confirmé !</h3>\n" +
     "        </div>\n" +
     "        <div class=\"modal-body\">\n" +
-    "        	<p class=\"lead\">Vous avez rendez-vous le {{appointment.dayDate}} à {{appointment.time.prettyTime}} avec le Docteur {{appointment.doctor.nom}}. </p> \n" +
+    "            <p class=\"lead\">Vous avez rendez-vous le {{appointment.dayDate}} à {{appointment.time.prettyTime}} avec {{practicianLabel}}. </p> \n" +
     "            <p class=\"lead\">Vous venez de recevoir un e-mail de confirmation. </p> \n" +
     "        </div>\n" +
     "        <div class=\"modal-footer\">\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"ok()\">OK</button>\n" +
     "        </div>\n" +
     "</script>\n" +
+    "<div id=\"page-confirmation\">\n" +
+    "    <p class=\"lead\" id=\"lastclic\">3ème et dernier clic : confirmez !</p>  \n" +
     "\n" +
-    "<p class=\"lead\">Dernier clic : confirmez !</p>  \n" +
+    "    <p id=\"recap-phrase\">Pour confirmer votre rendez-vous avec {{practicianLabel}} le {{appointment.dayDate}} à {{ appointment.time.prettyTime }} entrez vos coordonnées :</p>\n" +
     "\n" +
-    "Pour confirmer votre rendez-vous avec le Docteur {{appointment.doctor.nom}} le {{appointment.dayDate}} à {{ appointment.time.prettyTime }} entrez vos coordonnées :\n" +
-    "\n" +
-    "\n" +
-    "<form name=\"confirmation-rv\" id=\"confirmrv\" class=\"input-group\">\n" +
-    "	<input type=\"text\" name=\"lastName\" placeholder=\"votre nom\" class=\"form-control input-md\" ng-model=\"user.lastName\" />\n" +
-    "	<input type=\"text\" name=\"firstName\" placeholder=\"votre prénom\" class=\"form-control input-md\" ng-model=\"user.firstName\" />\n" +
-    "	<input type=\"email\" name=\"email\" placeholder=\"votre e-mail\" class=\"form-control input-md\" ng-model=\"user.email\" />\n" +
-    "	<input type=\"tel\" name=\"phone\" placeholder=\"votre numéro de téléphone\" class=\"form-control input-md\" ng-model=\"user.phone\" />\n" +
-    "\n" +
-    "	<button class=\"btn btn-lg btn-default\" ng-click=\"doBack()\" value=\"annuler\">Annuler</button>\n" +
-    "	<button class=\"btn btn-lg btn-default\" ng-click=\"saveAppointment()\">Confirmer le rendez-vous</button>\n" +
-    "</form>\n" +
-    "<alert ng-show=\"errorEmpty\" type=\"danger\" close=\"hideErrors(1)\">Veuillez renseigner tous les champs pour confirmer votre rendez-vous</alert>\n" +
-    "<alert ng-show=\"errorEmail\" type=\"danger\" close=\"hideErrors(2)\">Veuillez renseigner un e-mail valide pour confirmer votre rendez-vous</alert>\n" +
-    "<alert ng-show=\"errorPhone\" type=\"danger\" close=\"hideErrors(3)\">Veuillez renseigner un numéro de téléphone valide pour confirmer votre rendez-vous</alert>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "    <form name=\"confirmation-rv\" id=\"confirmrv\" class=\"input-group\">\n" +
+    "    	<input type=\"text\" name=\"lastName\" placeholder=\"votre nom\" class=\"form-control input-md\" ng-model=\"user.lastName\" />\n" +
+    "    	<input type=\"text\" name=\"firstName\" placeholder=\"votre prénom\" class=\"form-control input-md\" ng-model=\"user.firstName\" />\n" +
+    "    	<input type=\"email\" name=\"email\" placeholder=\"votre e-mail\" class=\"form-control input-md\" ng-model=\"user.email\" />\n" +
+    "    	<input type=\"tel\" name=\"phone\" placeholder=\"votre numéro de téléphone\" class=\"form-control input-md\" ng-model=\"user.phone\" />\n" +
+    "        <div id=\"button-div\">\n" +
+    "            <a ng-click=\"doBack()\" value=\"annuler\">Annuler</a>\n" +
+    "            <button class=\"btn btn-lg btn-default\" ng-click=\"saveAppointment()\">Confirmer le rendez-vous</button>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "    <alert ng-show=\"errorEmpty\" type=\"danger\" close=\"hideErrors(1)\">Veuillez renseigner tous les champs pour confirmer votre rendez-vous</alert>\n" +
+    "    <alert ng-show=\"errorEmail\" type=\"danger\" close=\"hideErrors(2)\">Veuillez renseigner un e-mail valide pour confirmer votre rendez-vous</alert>\n" +
+    "    <alert ng-show=\"errorPhone\" type=\"danger\" close=\"hideErrors(3)\">Veuillez renseigner un numéro de téléphone valide pour confirmer votre rendez-vous</alert>\n" +
+    "</div>\n" +
     "");
 }]);
 
-angular.module("../../rapidocteur_web/app/views/contact.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../../rapidocteur_web/app/views/contact.html",
-    "{{ message }}");
-}]);
-
-angular.module("../../rapidocteur_web/app/views/index-mvp.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../../rapidocteur_web/app/views/index-mvp.html",
-    "<div class=\"row\">\n" +
-    "    <h1 class=\"heading\">RapiDocteur</h1>\n" +
-    "    <p class=\"lead\">Prenez un rendez-vous avec votre médecin en trois clics !</p>    \n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "<div class=\"row\">\n" +
-    "    <div class=\"box\">\n" +
-    "        <div class=\"col-lg-12\">\n" +
-    "            <hr>\n" +
-    "            <h2 class=\"intro-text text-center\">Les \n" +
-    "            <strong>médecins disponibles à Fontenilles, Labège, Seysses et Toulouse</strong>\n" +
-    "            </h2>\n" +
-    "            <hr>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-4 text-center presentation-doctor\">\n" +
-    "            <img class=\"img-responsive\" src=\"img/cabinet1_o.jpg\" alt=\"médecin généraliste seysses\" />\n" +
-    "            <h3>Cabinet médical à Seysses<br />\n" +
-    "            <small>Dr BOUDOU-BATTISTI, Dr BOYES et Dr CALAS</small>\n" +
-    "            </h3><br />\n" +
-    "            <a href=\"#/seysses/cabinet-medical-seysses\" class=\"btn btn-lg btn-default\">Prendre rendez-vous</a>\n" +
-    "        </div>\n" +
-    "        <div class=\"box\">\n" +
-    "        <div class=\"col-sm-4 text-center presentation-doctor\">\n" +
-    "            <img class=\"img-responsive\" src=\"img/bertucchi_o.jpg\" alt=\"osteopathe toulouse bertucchi\" />\n" +
-    "            <h3>Y. BERTUCCHI, ostéopathe<br />à Toulouse</h3><br />\n" +
-    "            <a href=\"#/toulouse/osteopathe-bertucchi\" class=\"btn btn-lg btn-default\">Prendre rendez-vous</a>\n" +
-    "        </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-4 text-center presentation-doctor\">\n" +
-    "            <img class=\"img-responsive\" src=\"img/cabinet2_o.jpg\" alt=\"dentiste labège dr louw\" />\n" +
-    "            <h3>Cabinet de Dentistes à Labège<br />\n" +
-    "            <small>Dr LEONELLI et Dr LOUW</small>\n" +
-    "            </h3><br />\n" +
-    "            <a href=\"/\" class=\"btn btn-lg btn-default\" disabled>Prendre rendez-vous</a>\n" +
-    "        </div>               \n" +
-    "        <div class=\"clearfix\"></div>\n" +
-    "    </div>\n" +
-    "</div>\n" +
-    "<div class=\"row\">\n" +
-    "    <div class=\"col-lg-4 text-center presentation-doctor\">\n" +
-    "        <img class=\"img-responsive\" src=\"img/dieteticienne-tachier-fontenilles.jpg\" alt=\"diéteticienne fontenilles mélanie tachier\" />\n" +
-    "        <h3>M. TACHIER, diététicienne<br />à Fontenilles</h3>\n" +
-    "        <a href=\"#/fontenilles/dieteticien-tachier\" class=\"btn btn-lg btn-default\">Prendre rendez-vous</a>\n" +
-    "    </div>\n" +
-    "     \n" +
-    "</div>\n" +
-    "    \n" +
-    "<section id=\"landing-chiffres\" class=\"col-lg-12 text-center v-center\">\n" +
-    "    <span> Déjà <strong>{{ps}} professionnels de santé référencés sur RapiDocteur</strong></span><br />\n" +
-    "    <span>& <strong>{{rv}}</strong> rendez-vous réservés !</span>\n" +
-    "</section>\n" +
-    "");
-}]);
-
-angular.module("../../rapidocteur_web/app/views/fontenilles/dieteticien-tachier.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../../rapidocteur_web/app/views/fontenilles/dieteticien-tachier.html",
+angular.module("../../rapidocteur_web/app/partials/header_index.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/header_index.html",
     "<div class=\"container\">\n" +
+    "        <!-- Brand and toggle get grouped for better mobile display -->\n" +
+    "        <div class=\"navbar-header page-scroll\">\n" +
+    "            <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\n" +
+    "                <span class=\"sr-only\">Toggle navigation</span>\n" +
+    "                <span class=\"icon-bar\"></span>\n" +
+    "                <span class=\"icon-bar\"></span>\n" +
+    "                <span class=\"icon-bar\"></span>\n" +
+    "            </button>\n" +
+    "            <a class=\"navbar-brand\" href=\"#/\">RAPIDOCTEUR</a>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <!-- Collect the nav links, forms, and other content for toggling -->\n" +
+    "        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n" +
+    "            <ul class=\"nav navbar-nav navbar-right\">                    \n" +
+    "                <!-- <li>\n" +
+    "                    <a class=\"page-scroll\" href=\"#services\" class=\"btn btn-lg btn-primary\">Prendre rendez-vous</a>\n" +
+    "                </li>  -->                   \n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "");
+}]);
+
+angular.module("../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerri.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerri.html",
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-static-top nav-index\"></nav>\n" +
+    "<div class=\"container\" id=\"page-med\">\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-6 presentation-doc\">\n" +
-    "            <h1 class=\"heading\">Mélanie Tachier Montaut</h1>\n" +
-    "            <p class=\"lead\">Diététicienne nutritionniste</p>\n" +
+    "            <h1 class=\"heading\">Frédéric Guerri</h1>\n" +
+    "            <p class=\"lead\">Nutritionniste Diététicien</p>\n" +
     "            <!-- <img class=\"img-responsive\" src=\"img/dieteticienne-tachier-fontenilles.jpg\" width=\"400px\" alt=\"diéteticienne nutritionniste fontenilles\" /> -->\n" +
-    "            <h1 id=\"plus-medecin\">En savoir plus sur Mélanie Tachier</h1>\n" +
-    "            <p>Diététicienne Nutritionniste, je vous accueille dans mon cabinet, situé à Fontenilles, au sein d'une structure pluridisciplinaire familiale.<br /><br />\n" +
-    "            Vous cherchez à équilibrer votre alimentation ? <br />\n" +
-    "            Je vous propose une prise en charge nutritionnelleadaptée et personnalisée, en tenant compte de votre alimentation, votre santé (stress, fatigue, pathologies avérées) et de votre rythme de vie (travail, vie quotidienne, activité physique).<br /><br />\n" +
-    "            En tant que professionnelle de la santé mon objectif est d'équilibrer votre alimentation. Il ne s'agit pas de manger moins mais de manger mieux et de bien répartir l'apport énergétique quotidien. Vous consommez de tout, en quantités confortables et consciencieusement étudiées afin de perdre du poids progressivement.<br /><br />\n" +
-    "            Rapidement, vous sentirez une nette amélioration de votre tonus, du sommeil, de votre transit ainsi qu'une diminution des fringales et des envies de sucre en fin de journée.</p>\n" +
+    "            <h1 id=\"plus-medecin\">En savoir plus sur Frédéric Guerri</h1>\n" +
+    "            <p>Je vous propose un accompagnement personnalisé, dans le domaine de la nutrition. Je vous accueille dans mon cabinet situé à Fontenilles du lundi au samedi.\n" +
+    "                <br /><br />\n" +
+    "               Mes diplômes :\n" +
+    "                <ul>\n" +
+    "                    <li>Docteur en sciences</li>\n" +
+    "                    <li>DU Hypnose médicale</li>\n" +
+    "                    <li>DU de nutrition appliquées aux activités physiques et sportives</li>\n" +
+    "                    <li>Brevet d’état de culture physique </li>\n" +
+    "                </ul>\n" +
+    "            </p>\n" +
     "        </div>\n" +
-    "                \n" +
+    "            \n" +
     "        <div class=\"col-md-6 info-doc\">\n" +
-    "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2891.7191192049468!2d1.1933424!3d43.5498966!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a94b5e06f386e1%3A0xe762b34a6bfe6235!2s9+Chemin+de+la+Poumayre%2C+31470+Fontenilles!5e0!3m2!1sfr!2sfr!4v1413542934721\" width=\"350\" height=\"200\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
-    "            <p>9 Chemin de la Poumayre, 31470 Fontenilles</p>\n" +
+    "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11565.780336302016!2d1.193089!3d43.555608!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x1fc73e4f8b44eb73!2zR3VlcnJpIEZyw6lkw6lyaWM!5e0!3m2!1sfr!2sfr!4v1414408337956\" width=\"400\" height=\"300\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
+    "            <p>1 Lotissement Village, 31470 Fontenilles</p>\n" +
     "            <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
     "                <ul class=\"paymentway\">\n" +
     "                    <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
-    "                    <li><img src=\"img/check.png\" /> chèques acceptés</p></li>\n" +
+    "                    <li><img src=\"img/check.png\" /> chèques acceptés</li>\n" +
     "                </ul>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "    <p class=\"lead\">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>\n" +
+    "    <div ng-controller=\"CabinetCtrl\">\n" +
     "    <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
-    "            <div id=\"act-choice\" class=\"col-md-3\">\n" +
-    "                <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>\n" +
-    "                <p>Quel motif ?</p>\n" +
-    "                <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
-    "            </div>\n" +
-    "            <table id=\"agenda-med\">\n" +
-    "                <tr>\n" +
-    "                    <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
-    "                </tr>                \n" +
-    "                <tr>\n" +
-    "                    <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
-    "                        <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
-    "                            <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
-    "                        </div>                        \n" +
-    "                    </td>                \n" +
-    "                </tr>\n" +
-    "            </table>\n" +
-    "        \n" +
+    "        <div id=\"act-choice\" class=\"col-lg-3\">\n" +
+    "            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
+    "            <p>Quel est le motif de votre venue ?</p>\n" +
+    "\n" +
+    "            <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
+    "        </div>\n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
+    "        <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
+    "            <tr>\n" +
+    "                <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
+    "            </tr>                \n" +
+    "            <tr>\n" +
+    "                <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
+    "                    <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
+    "                        <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
+    "                    </div>                        \n" +
+    "                </td>                \n" +
+    "            </tr>\n" +
+    "        </table>       \n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button>\n" +
     "    </div>\n" +
-    "</div>\n" +
-    "");
+    "    <div>\n" +
+    "</div>   \n" +
+    "    \n" +
+    "    ");
 }]);
 
-angular.module("../../rapidocteur_web/app/views/seysses/medecin-generaliste.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../../rapidocteur_web/app/views/seysses/medecin-generaliste.html",
+angular.module("../../rapidocteur_web/app/partials/seysses/cabinet-medical.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/seysses/cabinet-medical.html",
+    "<!DOCTYPE html>\n" +
+    "<html lang=\"fr\">\n" +
+    "\n" +
+    "<head>\n" +
+    "\n" +
+    "    <meta charset=\"utf-8\">\n" +
+    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
+    "    <meta name=\"description\" content=\"\">\n" +
+    "    <meta name=\"author\" content=\"\">\n" +
+    "    <!-- <base href=\"http://localhost/RapiDocteur/rapidocteur_web/\"></base> -->\n" +
+    "\n" +
+    "    <title>Cabinet médical Seysses - médecins généralistes - RapiDocteur</title>\n" +
+    "\n" +
+    "    <!-- Bootstrap Core CSS -->\n" +
+    "    <link href=\"bower_components/bootstrap/dist/css/bootstrap.css\" rel=\"stylesheet\">\n" +
+    "    <link href=\"bower_components/components-font-awesome/css/font-awesome.css\" rel=\"stylesheet\">\n" +
+    "    <!-- Custom CSS -->\n" +
+    "    <link href=\"css/main.css\" rel=\"stylesheet\">\n" +
+    "\n" +
+    "    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->\n" +
+    "    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->\n" +
+    "    <!--[if lt IE 9]>\n" +
+    "        <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>\n" +
+    "        <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\"></script>\n" +
+    "    <![endif]-->\n" +
+    "\n" +
+    "</head>\n" +
+    "\n" +
+    "<body ng-app=\"app\">\n" +
+    "\n" +
+    "    <!-- Navigation -->\n" +
+    "    <nav class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\">\n" +
+    "        <div class=\"container\">\n" +
+    "            <!-- Brand and toggle get grouped for better mobile display -->\n" +
+    "            <div class=\"navbar-header\">\n" +
+    "                <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\n" +
+    "                    <span class=\"sr-only\">Toggle navigation</span>\n" +
+    "                    <span class=\"icon-bar\"></span>\n" +
+    "                    <span class=\"icon-bar\"></span>\n" +
+    "                    <span class=\"icon-bar\"></span>\n" +
+    "                </button>\n" +
+    "                <a class=\"navbar-brand\" href=\"http://localhost/RapiDocteur/rapidocteur_web/\">RapiDocteur</a>\n" +
+    "            </div>\n" +
+    "            <!-- Collect the nav links, forms, and other content for toggling -->\n" +
+    "            <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n" +
+    "                <ul class=\"nav navbar-nav\">\n" +
+    "                    <li><a href=\"/about\">En savoir +</a></li>\n" +
+    "                    <li><a href=\"/contact\">Contact</a></li>\n" +
+    "                    <li><a href=\"/\">Blog</a></li>\n" +
+    "                </ul>\n" +
+    "            </div> <!-- /.navbar-collapse -->\n" +
+    "        </div> <!-- /.container -->\n" +
+    "    </nav>\n" +
+    "\n" +
+    "    <div class=\"container\">\n" +
+    "        <div class=\"row\">               \n" +
+    "            <div class=\"col-md-6 presentation-doc\">\n" +
+    "                <h1 class=\"heading\">Cabinet médical de Seysses</h1>\n" +
+    "                <!-- <img class=\"img-responsive\" src=\"img/cabinet1_o.jpg\" width=\"300px\" alt=\"médecin généraliste seysses\" /> -->\n" +
+    "                <h1 id=\"plus-medecin\">En savoir plus sur cabinet de Seysses</h1>\n" +
+    "                <p>Ac ne quis a nobis hoc ita dici forte miretur, quod alia quaedam in hoc facultas sit ingeni, neque haec dicendi ratio aut disciplina, ne nos quidem huic uni studio penitus umquam dediti fuimus. Etenim omnes artes, quae ad humanitatem pertinent, habent quoddam commune vinculum, et quasi cognatione quadam inter se continentur.</p>\n" +
+    "\n" +
+    "            </div>\n" +
+    "            \n" +
+    "            <div class=\"col-md-6 info-doc\">\n" +
+    "                <iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2895.1763632183256!2d1.3042004000000038!3d43.47778970000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb61e6def9d9d%3A0xbc18a5c1581f4e3b!2s60+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1413365325879\" width=\"350\" height=\"200\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
+    "                <p>60 route d'Ox, 31600 Seysses</p>\n" +
+    "                <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
+    "                    <ul class=\"paymentway\">\n" +
+    "                        <li><img src=\"img/cardb.png\" />carte bleu acceptée</li>\n" +
+    "                        <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
+    "                        <li><img src=\"img/check.png\" /> chèques acceptés</li>\n" +
+    "                    </ul>\n" +
+    "            </div>        \n" +
+    "        </div>\n" +
+    "        <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
+    "                <div id=\"act-choice\" class=\"col-lg-3\">\n" +
+    "                    <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
+    "                    <p>Quel motif ?</p>\n" +
+    "\n" +
+    "                    <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
+    "                </div>\n" +
+    "                <button class=\"col-lg-1 navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
+    "                <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
+    "                    <tr>\n" +
+    "                        <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
+    "                    </tr>                \n" +
+    "                    <tr>\n" +
+    "                        <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
+    "                            <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
+    "                                <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
+    "                            </div>                        \n" +
+    "                        </td>                \n" +
+    "                    </tr>\n" +
+    "                </table>       \n" +
+    "                <button class=\"col-lg-1 navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button> \n" +
+    "        </div>\n" +
+    "    </div>   \n" +
+    "    \n" +
+    "    <footer>\n" +
+    "        <div class=\"container\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-md-4\">\n" +
+    "                    <span class=\"copyright\">&copy; RapiDocteur 2014 </span> made with <span id=\"heart\">♥</span> from Toulouse\n" +
+    "                </div>\n" +
+    "                <div class=\"col-md-4\">\n" +
+    "                    <ul class=\"list-inline social-buttons\">\n" +
+    "                        <li><a href=\"https://twitter.com/RapiDocteur\"><i class=\"fa fa-twitter\"></i></a>\n" +
+    "                        </li>\n" +
+    "                        <li><a href=\"https://www.facebook.com/RapiDocteur\"><i class=\"fa fa-facebook\"></i></a>\n" +
+    "                        </li>\n" +
+    "                        <li><a href=\"https://plus.google.com/b/114510223929114221539/+RapidocteurFr/posts\"><i class=\"fa fa-google\"></i></a>\n" +
+    "                        </li>\n" +
+    "                        <li><a href=\"mailto:hello@rapidocteur.fr\"><i class=\"fa fa-envelope\"></i></a>\n" +
+    "                        </li>\n" +
+    "                    </ul>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-md-4\">\n" +
+    "                    <ul class=\"list-inline quicklinks\">\n" +
+    "                        <li><a href=\"#\">Mentions légales</a></li>\n" +
+    "                    </ul>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </footer>\n" +
+    "\n" +
+    "     <!-- Bootstrap core JavaScript\n" +
+    "    ================================================== -->\n" +
+    "    <!-- Placed at the end of the document so the pages load faster -->\n" +
+    "    <script src=\"bower_components/angular/angular.js\" type=\"text/javascript\"></script>\n" +
+    "    <script src=\"bower_components/angular-route/angular-route.js\" type=\"text/javascript\"></script>\n" +
+    "    <script type=\"text/javascript\" src=\"bower_components/angular-bootstrap/ui-bootstrap-tpls.js\"></script>\n" +
+    "    <script src=\"bower_components/jquery/dist/jquery.js\"></script>\n" +
+    "    <script src=\"bower_components/bootstrap/dist/js/bootstrap.js\"></script>\n" +
+    "    <script src=\"bower_components/mixpanel/mixpanel-dev.js\"></script>\n" +
+    "    <script src=\"js/app.js\" type=\"text/javascript\"></script> <!-- personnalisé-->\n" +
+    "    <script src=\"js/controllers.js\" type=\"text/javascript\"></script> <!-- personnalisé-->\n" +
+    "    <script src=\"js/services.js\" type=\"text/javascript\"></script> <!-- personnalisé-->\n" +
+    "\n" +
+    "</body>\n" +
+    "\n" +
+    "</html>");
+}]);
+
+angular.module("../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html",
     "<div class=\"container\">\n" +
     "    <div class=\"row\">               \n" +
     "        <div class=\"col-md-6 presentation-doc\">\n" +
-    "            <h1 class=\"heading\">Cabinet médical de Seysses</h1>\n" +
+    "            <h1 class=\"heading\">Bertucchi yeah</h1>\n" +
     "            <!-- <img class=\"img-responsive\" src=\"img/cabinet1_o.jpg\" width=\"300px\" alt=\"médecin généraliste seysses\" /> -->\n" +
     "            <h1 id=\"plus-medecin\">En savoir plus sur cabinet de Seysses</h1>\n" +
     "            <p>Ac ne quis a nobis hoc ita dici forte miretur, quod alia quaedam in hoc facultas sit ingeni, neque haec dicendi ratio aut disciplina, ne nos quidem huic uni studio penitus umquam dediti fuimus. Etenim omnes artes, quae ad humanitatem pertinent, habent quoddam commune vinculum, et quasi cognatione quadam inter se continentur.</p>\n" +
@@ -38284,9 +45418,9 @@ angular.module("../../rapidocteur_web/app/views/seysses/medecin-generaliste.html
     "                <ul class=\"paymentway\">\n" +
     "                    <li><img src=\"img/cardb.png\" />carte bleu acceptée</li>\n" +
     "                    <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
-    "                    <li><img src=\"img/check.png\" /> chèques acceptés</p></li>\n" +
+    "                    <li><img src=\"img/check.png\" /> chèques acceptés</li>\n" +
     "                </ul>\n" +
-    "        </div>\n" +
+    "        </div>        \n" +
     "    </div>\n" +
     "    <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
     "            <div id=\"act-choice\" class=\"col-lg-3\">\n" +
@@ -38310,130 +45444,84 @@ angular.module("../../rapidocteur_web/app/views/seysses/medecin-generaliste.html
     "            </table>       \n" +
     "            <button class=\"col-lg-1 navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button> \n" +
     "    </div>\n" +
-    "</div>\n" +
+    "</div>   \n" +
+    "    \n" +
     "");
 }]);
-
-angular.module("../../rapidocteur_web/app/views/toulouse/osteopathe-bertucchi.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../../rapidocteur_web/app/views/toulouse/osteopathe-bertucchi.html",
-    "<div class=\"container\">\n" +
-    "    <div class=\"row\">        \n" +
-    "        \n" +
-    "        <div class=\"col-md-6 presentation-doc\">\n" +
-    "            <h1 class=\"heading-doc\">Ostéopathe</h1>\n" +
-    "            <p class=\"lead-doc\">M. Youri BERTUCCHI</p>\n" +
-    "            <!-- <img class=\"img-responsive\" src=\"img/enseigne_o.jpg\" width=\"300px\" alt=\"osteopathe toulouse\" /> -->\n" +
-    "            <h1 id=\"plus-medecin\">En savoir plus sur M. Youri Bertucchi</h1>\n" +
-    "            <p>Youri Bertucchi, ostéopathe D.O. vous accueille dans son cabinet du centre ville de Toulouse.<br />Suite à une formation de 6 ans à l’Institut Toulousain d’Ostéopathie (école agréée par le ministère de la santé et des sports), il obtient son diplôme \"Ostéopathe DO\" ainsi que quatre para-diplômes en pédiatrie, posturologie, sport et nutrition, et sport de haut niveau.<br />Il pratique une ostéopathie traditionnelle visant tous les publics.</p>\n" +
-    "            \n" +
-    "        </div>\n" +
-    "        \n" +
-    "        <div class=\"col-md-6 info-doc\">\n" +
-    "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2889.690158310985!2d1.4435274871042763!3d43.59216972174021!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aebc803654f409%3A0x1d77ca09b0f1664!2s11+Place+Lafourcade%2C+31400+Toulouse!5e0!3m2!1sfr!2sfr!4v1414069323921\" width=\"350\" height=\"200\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
-    "            <p>11 place Lafourcade, 31400 Toulouse</p>\n" +
-    "            <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
-    "                <ul class=\"paymentway\">\n" +
-    "                    <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
-    "                    <li><img src=\"img/check.png\" /> chèques acceptés</p></li>\n" +
-    "                </ul>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
-    "            <div id=\"act-choice\" class=\"col-md-3\">\n" +
-    "                <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
-    "                <p>Quel motif ?</p>\n" +
-    "\n" +
-    "                <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
-    "            </div>\n" +
-    "            <table id=\"agenda-med\">\n" +
-    "                <tr>\n" +
-    "                    <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
-    "                </tr>                \n" +
-    "                <tr>\n" +
-    "                    <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
-    "                        <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
-    "                            <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
-    "                        </div>                        \n" +
-    "                    </td>                \n" +
-    "                </tr>\n" +
-    "            </table>        \n" +
-    "    </div>\n" +
-    "</div>");
-}]);
-;	var app = angular.module('app', ['ngRoute',  'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
+;
+	var app = angular.module('app', ['ngRoute', 'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
 
 	var appServices = angular.module('appServices', []);
 	var appControllers = angular.module('appControllers', []);
 	var appConfig = angular.module('appConfig', []);
 
-	// configure our routes
+	
 	/*app.config(['$routeProvider', '$locationProvider',
-		function($routeProvider, $locationProvider) {*/
+		function($routeProvider,$locationProvider) {
+		$routeProvider
+			// route for the home
+			.when('/', { templateUrl: 'partials/accueil.html', controller: 'LandingController' })	
+			.when('/test', { templateUrl: 'test.html' })
+			.when('/fontenilles/dieteticien-guerri', { templateUrl: 'partials/fontenilles/dieteticien-guerri.html', controller: 'CabinetCtrl'})				
+			.otherwise({ redirectTo: '/' });
+        	$locationProvider.html5Mode(true);
+	}]);*/	
+
 	app.config(['$routeProvider',
 		function($routeProvider) {
 		$routeProvider
-
-			// route for the home page
-			.when('/', {
-				templateUrl : 'app/views/index-mvp.html',
-				controller  : 'LandingController'
+			.when('/', { 
+				templateUrl: 'app/partials/accueil.html',	
+				controller: 'LandingController' 
 			})
-
-			.when('/seysses/cabinet-medical-seysses', {
-				templateUrl : 'app/views/seysses/medecin-generaliste.html',
-				controller  : 'CabinetCtrl'
+			.when('/fontenilles/dieteticien-guerri', {	
+				templateUrl : 'app/partials/fontenilles/dieteticien-guerri.html', 
+				controller: 'CabinetCtrl'
 			})
-
-			.when('/fontenilles/dieteticien-tachier', {
-				templateUrl : 'app/views/fontenilles/dieteticien-tachier.html',
-				controller  : 'CabinetCtrl'
-			})
-
 			.when('/toulouse/osteopathe-bertucchi', {
-				templateUrl : 'app/views/toulouse/osteopathe-bertucchi.html',
-				controller  : 'CabinetCtrl'
-			})			
-
+				templateUrl : 'app/partials/toulouse/osteopathe-bertucchi.html', 
+				controller: 'CabinetCtrl'
+			})
 			.when('/confirmation-rendezvous', {
-				templateUrl : 'app/views/confirmation-rendezvous.html',
-				controller 	: 'ConfirmationRendezVous'
-			})
-
-			// route for the about page
-			.when('/about', {
-				templateUrl : 'app/views/about.html',
-				controller  : 'AboutController'
-			})
-
-			// route for the contact page
-			.when('/contact', {
-				templateUrl : 'app/views/contact.html',
-				controller  : 'ContactController'
-			})
-
-			.otherwise({
-            	redirectTo: '/'
-        	});
-        	/*$locationProvider.html5Mode(true);*/
-	}]);
-	;appControllers.controller('LandingController', 
+				templateUrl : 'app/partials/confirmation-rendezvous.html', 
+				controller: 'ConfirmationRendezVous'
+			});
+			/*$locationProvider.html5Mode(true);*/
+	}]);;appControllers.controller('LandingController', 
 	function($scope) {
 		$scope.ps = 8;
 		$scope.rv = 21;
+
+		$scope.guerriSelected = function(){
+			window.location.href = '#/fontenilles/dieteticien-guerri';
+			console.log("guerriSelected");
+		};
 	}
 );
 
 appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', 'AppointmentManager', 
 	function($scope, $location, GetService, AppointmentManager){
+		var cabinet ={
+			idCabinet:'',
+			adresse:''
+		};
 
-		var idCabinet;
 		switch ($location.path()) {
-			case '/seysses/cabinet-medical-seysses' : idCabinet = 2; mixpanel.track("View Seysses");
-			break;
-			case '/fontenilles/dieteticien-tachier' : idCabinet = 4;
-			break;
-			case '/toulouse/osteopathe-bertucchi' : idCabinet = 5; mixpanel.track("View Bertucchi");
-			break;
+			case '/seysses/cabinet-medical-seysses' : cabinet.idCabinet = 2; 
+				cabinet.adresse = '';
+				mixpanel.track("View Seysses");
+				break;
+			case '/fontenilles/dieteticien-guerri' : cabinet.idCabinet = 1; 
+				cabinet.adresse = '1 lot le village - 31470 Fontenilles';
+				mixpanel.track("View Guerri");
+				break;
+			case '/toulouse/osteopathe-bertucchi' : cabinet.idCabinet = 5; 
+				cabinet.adresse = '11 place Lafourcade - 31400 Toulouse';
+				mixpanel.track("View Bertucchi");
+				break;
+			case '/galaxie/galilee' : cabinet.idCabinet = 10; 
+				cabinet.adresse = '';
+				break;
 			default : window.location.href = '#/';
 		}
 		
@@ -38442,7 +45530,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 		console.log('Current route name: ' + $location.path());
 
-		GetService.getDoctorsByOffice(idCabinet).success(function(data) {
+		GetService.getDoctorsByOffice(cabinet.idCabinet).success(function(data) {
 			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
 
@@ -38455,7 +45543,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 				console.log("doctor", doctor.idPraticien);
 
-				GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 					console.log('getAvailableAppointements : ', data);
 					doctor.availabilities = data.output;
 				}).error(function(data, status) {
@@ -38471,7 +45559,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		});	
 
 		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -38489,7 +45577,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.currentWeek == (doctor.semaines_ouvertes - 1)) {
 				doctor.nextDisabled = true;
 			}
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -38507,7 +45595,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.nextDisabled) {
 				doctor.nextDisabled = false;
 			}
-			GetService.getAvailableAppointements(idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -38523,12 +45611,12 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			console.log("submitRV day: ", day);
 			console.log("submitRV app: ", id);
 			console.log("submitRV acte: ", labelActe);
-			console.log("submitRV idoff: ", idCabinet);
+			console.log("submitRV idoff: ", cabinet.idCabinet);
 
 			AppointmentManager.setSelectedAppointment(id);
 			AppointmentManager.setSelectedDay(day);
 			AppointmentManager.setSelectedDoctor(doctor);
-			AppointmentManager.setSelectedOffice(idCabinet);
+			AppointmentManager.setSelectedOffice(cabinet);
 			AppointmentManager.setSelectedActe(labelActe);
 
 			mixpanel.track("Selection RV");
@@ -38557,6 +45645,12 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	$scope.errorEmpty = false;
 	$scope.errorEmail = false;
 	$scope.errorPhone = false;
+
+	$scope.practicianLabel = "le Docteur " + $scope.appointment.doctor.nom;
+	if (isNotDoctor($scope.appointment.doctor.specialities)) {
+		$scope.practicianLabel = $scope.appointment.doctor.prenom + " " + $scope.appointment.doctor.nom;
+	}
+
 
 	console.log("recu appointment: ", $scope.appointment);
 
@@ -38622,14 +45716,8 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 		if ((!$scope.errorEmpty) && (!$scope.errorEmail) && (!$scope.errorPhone)) {
             console.log("saveRV appointment", $scope.appointment);
 
-            var appointment = {};
+            var appointment = $scope.appointment;
             appointment.user = $scope.user;
-            appointment.start = $scope.appointment.time.start;
-            appointment.end = $scope.appointment.time.end;
-            appointment.actLabel = $scope.appointment.acte;
-            appointment.idDoctor = $scope.appointment.doctor.idPraticien;
-            appointment.doctorName = $scope.appointment.doctor.nom;
-            appointment.idOffice = $scope.appointment.office;
 
             PostService.saveAppointment(appointment).success(function(data) {
 		        console.log(data);
@@ -38650,6 +45738,11 @@ appControllers.controller('ModalInstanceCtrl', function ($scope, $modalInstance,
 	console.log('appointment', appointment);
 	$scope.appointment = appointment;
 
+	$scope.practicianLabel = "le Docteur " + $scope.appointment.doctor.nom;
+	if (isNotDoctor($scope.appointment.doctor.specialities)) {
+		$scope.practicianLabel = $scope.appointment.doctor.prenom + " " + $scope.appointment.doctor.nom;
+	}
+
 	$scope.ok = function () {
 		$modalInstance.close();
 	};
@@ -38662,6 +45755,14 @@ function sendAppointment(PostService, appointment) {
         console.log(status);
         console.log(data);
     });
+}
+
+function isNotDoctor(specialities) {
+    for (var i = 0; i < specialities.length; i++) {
+        if (specialities[i].idSpecialite === 2 ||  specialities[i].idSpecialite === 7) {
+            return true;
+        }
+    }
 }
 
 function validateEmail(email) { 
@@ -38757,7 +45858,7 @@ function validatePhoneNumber(phoneNumber) {
         var appointment;
         var doctor;
         var day;
-        var idOffice;
+        var office;
         var acte;
 
         return {
@@ -38783,10 +45884,10 @@ function validatePhoneNumber(phoneNumber) {
                 day = value;
             },
             getSelectedOffice: function(){
-                return idOffice;
+                return office;
             },
             setSelectedOffice: function(value){
-                idOffice = value;
+                office = value;
             },
             getSelectedActe: function(){
                 return acte;
@@ -38797,5 +45898,5 @@ function validatePhoneNumber(phoneNumber) {
         };
     });;angular.module('appConfig')
 .constant('Config', {
-  'backend': 'http://localhost:8080'
+  'backend': 'http://apidev.rapidocteur.fr:9001'
 });
