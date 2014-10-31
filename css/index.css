@@ -1,9 +1,7 @@
 /* Navbar */
-.navbar-brand{  }
+.navbar-brand{ margin-bottom: 7px; }
 .nav-index{ padding: 5px 0;
         border: 0;
-        background-color: transparent;
-        opacity:0.8;
         -webkit-transition: padding .3s;
         -moz-transition: padding .3s;
         transition: padding .3s;
@@ -14,8 +12,7 @@
     .navbar-default {
         padding: 5px 0;
         border: 0;
-        background-color: #fff;
-        opacity: 0.8;
+        opacity: 0.8;            
         -webkit-transition: padding .3s;
         -moz-transition: padding .3s;
         transition: padding .3s;
