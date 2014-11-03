@@ -45059,7 +45059,7 @@ var cbpAnimatedHeader = (function() {
 for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="//cdn.mxpnl.com/libs/mixpanel-2.2.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
 mixpanel.init("e6f5b0f3965428de5997c8fbb9a3ad73");
 
-;angular.module('templates-dist', ['../../rapidocteur_web/app/partials/accueil.html', '../../rapidocteur_web/app/partials/confirmation-rendezvous.html', '../../rapidocteur_web/app/partials/header_index.html', '../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerri.html', '../../rapidocteur_web/app/partials/seysses/cabinet-medical.html', '../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html']);
+;angular.module('templates-dist', ['../../rapidocteur_web/app/partials/accueil.html', '../../rapidocteur_web/app/partials/confirmation-rendezvous.html', '../../rapidocteur_web/app/partials/header_index.html', '../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerri.html', '../../rapidocteur_web/app/partials/saint-alban/osteopathe-fragnier.html', '../../rapidocteur_web/app/partials/seysses/cabinet-medical.html', '../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html']);
 
 angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../../rapidocteur_web/app/partials/accueil.html",
@@ -45079,7 +45079,7 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "        <div class=\"container\">\n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"col-lg-12 text-center\">\n" +
-    "                    <h2 class=\"section-heading\">Les derniers professionnels disponibles à Fontenilles et Toulouse qui nous ont rejoint</h2>\n" +
+    "                    <h2 class=\"section-heading\">Les derniers professionnels disponibles à Fontenilles, Saint Alban et Toulouse qui nous ont rejoint</h2>\n" +
     "                    <!-- <span class=\"section-subheading text-muted\">RAPIDOCTEUR simplifie la <strong class=\"nobold\">prise de rendez-vous médicaux</strong>.<br />Choisissez votre professionnels et prenez rendez-vous en moins de cinq minutes, à n'importe quel moment de la journée, depuis votre ordinateur ou votre smartphone !</span> -->\n" +
     "                    <h3>Faites votre premier clic :</h3>                    \n" +
     "                </div>\n" +
@@ -45090,6 +45090,19 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "        <div class=\"container\">            \n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"col-sm-6\">\n" +
+    "                    <div class=\"carte-pro\">                        \n" +
+    "                        <div class=\"col-md-3 col-xs-3\">\n" +
+    "                            <img src=\"img/pro/youri-bertucchi_2.jpg\" class=\"img-responsive img-circle\" alt=\"Bertucchi ostéopathe toulouse\" />\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-md-9 col-xs-9\">\n" +
+    "                            <h3>Ostéopathe</h3>\n" +
+    "                            <h4>Youri Bertucchi</h4>\n" +
+    "                            <p class=\"text-muted\">11 place Lafourcade - 31400 <strong>Toulouse</strong></p>\n" +
+    "                            <a href=\"#/toulouse/osteopathe-bertucchi\" class=\"btn btn-lg btn-primary prendrerv \" disabled>Bientôt disponible</a>\n" +
+    "                        </div>\n" +
+    "                    </div>                    \n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-6\">\n" +
     "                    <div class=\"carte-pro\">\n" +
     "                        <div class=\"col-md-3 col-xs-3\">\n" +
     "                            <img src=\"img/pro/frederic-guerri-dieteticien.png\" class=\"img-responsive img-circle\" alt=\"Frédéric Guerri diététicien nutritionniste fontenilles\" />\n" +
@@ -45098,23 +45111,25 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "                            <h3 class=\"title-smaller\">Nutritionniste diététicien</h3>\n" +
     "                            <h4>Frédéric Guerri</h4>\n" +
     "                            <p class=\"text-muted\">1 lot le village - 31470 <strong>Fontenilles</strong></p>\n" +
-    "                            <a href=\"#/fontenilles/dieteticien-guerri\" class=\"btn btn-lg btn-primary prendrerv \" disabled>Bientôt disponible</a>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"col-sm-6\">\n" +
-    "                    <div class=\"carte-pro\">                        \n" +
-    "                        <div class=\"col-md-3 col-xs-3\">\n" +
-    "                            <img src=\"img/pro/youri-bertucchi_2.jpg\" class=\"img-responsive img-circle\" alt=\"Bertucchi ostéopathe toulouse\" />\n" +
-    "                        </div>\n" +
-    "                        <div class=\"col-md-9 col-xs-9\">\n" +
-    "                            <h3>Ostéopathe</h3>\n" +
-    "                            <h4>Youri Bertucchi</h4>\n" +
-    "                            <p class=\"text-muted\">11 place Lafourcade - 31400 Toulouse</p>\n" +
-    "                            <a href=\"#/toulouse/osteopathe-bertucchi\" class=\"btn btn-lg btn-primary prendrerv \" disabled>Bientôt disponible</a>\n" +
+    "                            <a href=\"#/fontenilles/dieteticien-guerri\" class=\"btn btn-lg btn-primary prendrerv \">Bientôt disponible</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>                \n" +
+    "            </div>\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-6\">\n" +
+    "                    <div class=\"carte-pro\">\n" +
+    "                        <div class=\"col-md-3 col-xs-3\">\n" +
+    "                            <img src=\"\" class=\"img-responsive img-circle\" alt=\"Nathalie Fragnier ostéopathe D.O T.O Saint Alban\" />\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-md-9 col-xs-9\">\n" +
+    "                            <h3 class=\"title-smaller\">Ostéopathe</h3>\n" +
+    "                            <h4>Nathalie Fragnier</h4>\n" +
+    "                            <p class=\"text-muted\">41, av. Léon Jouhaux - 31140 <strong>Saint Alban</strong></p>\n" +
+    "                            <a href=\"#/saint-alban/osteopathe-fragnier\" class=\"btn btn-lg btn-primary prendrerv\" disabled>Bientôt disponible</a>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </section>\n" +
@@ -45230,6 +45245,78 @@ angular.module("../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerr
     "            <p>Quel est le motif de votre venue ?</p>\n" +
     "\n" +
     "            <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
+    "        </div>\n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
+    "        <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
+    "            <tr>\n" +
+    "                <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
+    "            </tr>                \n" +
+    "            <tr>\n" +
+    "                <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
+    "                    <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
+    "                        <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
+    "                    </div>                        \n" +
+    "                </td>                \n" +
+    "            </tr>\n" +
+    "        </table>       \n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button>\n" +
+    "    </div>\n" +
+    "    <div>\n" +
+    "</div>   \n" +
+    "    \n" +
+    "    ");
+}]);
+
+angular.module("../../rapidocteur_web/app/partials/saint-alban/osteopathe-fragnier.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/saint-alban/osteopathe-fragnier.html",
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-static-top nav-index\"></nav>\n" +
+    "<div class=\"container\" id=\"page-med\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-6 presentation-doc\">\n" +
+    "            <h1 class=\"heading\">Nathalie Fragnier</h1>\n" +
+    "            <p class=\"lead\">Ostéopathe D.O. T.O.</p>\n" +
+    "            <!-- <img class=\"img-responsive\" src=\"img/dieteticienne-tachier-fontenilles.jpg\" width=\"400px\" alt=\"diéteticienne nutritionniste fontenilles\" /> -->\n" +
+    "            <h1 id=\"plus-medecin\">En savoir plus sur Nathalie Fragnier</h1>\n" +
+    "            <p>\n" +
+    "            J'ai obtenu un diplôme d'Ostéopathe D.O. T.O à l'issu d'une formation initiale en 6 ans à temps plein au sein de l'Institut Toulousain d'Ostéopathie (ITO), école agréée par le Ministère de la Santé, de la Jeunesse et des Sports.<br /><br />Je propose des consultations d'ostéopathie pour adultes, enfants, femmes enceintes et seniors dans mon cabinet. \n" +
+    "                <ul>\n" +
+    "                    <li>Titre d'Ostéopathe délivré à l'issu de :\n" +
+    "                        <ul>\n" +
+    "                            <li>Obtention du D.O.</li>\n" +
+    "                            <li>Formations post-graduées :</li>\n" +
+    "                            <ul>\n" +
+    "                                <li>certificat de posturologie</li>\n" +
+    "                                <li>attestation d'ostéopathie pédiatrique</li>\n" +
+    "                                <li>attestation d'ostéopathie du sport</li>\n" +
+    "                            </ul>\n" +
+    "                            <li>Élaboration et soutenance du mémoire : \"Intérêt d'un traitement ostéopathique chez les personnes atteintes du syndrome douloureux régional complexe (Algoneurodystrophie) de l'épaule et/ou de la main\"</li>\n" +
+    "                        </ul>\n" +
+    "                    </li>                    \n" +
+    "                </ul>\n" +
+    "            </p>\n" +
+    "        </div>\n" +
+    "            \n" +
+    "        <div class=\"col-md-6 info-doc\">\n" +
+    "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2883.939767048848!2d1.3958378000000002!3d43.711800800000006!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aea67a6d412939%3A0x82a49f2b75bbf121!2s41+Avenue+L%C3%A9on+Jouhaux%2C+31140+Saint-Alban!5e0!3m2!1sfr!2sfr!4v1415032925637\" width=\"400\" height=\"300\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
+    "            \n" +
+    "            <p>41, avenue Léon Jouhaux - 31 140 Saint Alban</p>\n" +
+    "            <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
+    "                <ul class=\"paymentway\">\n" +
+    "                    <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
+    "                    <li><img src=\"img/check.png\" /> chèques acceptés</li>\n" +
+    "                </ul>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <p class=\"lead\">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>\n" +
+    "    <div ng-controller=\"CabinetCtrl\">\n" +
+    "    <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
+    "        <div id=\"act-choice\" class=\"col-lg-3\">\n" +
+    "            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
+    "            <p>Quel est le motif de votre venue ?</p>            \n" +
+    "\n" +
+    "            <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
+    "\n" +
+    "            <p class=\"indication\">Pour les consultations pédiatriques des <span class=\"important\">bébés de moins de 6 mois</span> : pensez à apporter le <span class=\"important\">certificat de non contre-indication à l’ostéopathie</span>. Il est délivré par votre médécin généraliste ou pédiatre.</p>\n" +
     "        </div>\n" +
     "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
     "        <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
@@ -45482,6 +45569,10 @@ angular.module("../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi
 				templateUrl : 'app/partials/toulouse/osteopathe-bertucchi.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/saint-alban/osteopathe-fragnier', {
+				templateUrl : 'app/partials/saint-alban/osteopathe-fragnier.html', 
+				controller: 'CabinetCtrl'
+			})
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'
@@ -45507,7 +45598,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		};
 
 		switch ($location.path()) {
-			case '/seysses/cabinet-medical-seysses' : cabinet.idCabinet = 2; 
+			case '/seysses/cabinet-medical-seysses' : cabinet.idCabinet = 3; 
 				cabinet.adresse = '';
 				mixpanel.track("View Seysses");
 				break;
@@ -45515,13 +45606,14 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				cabinet.adresse = '1 lot le village - 31470 Fontenilles';
 				mixpanel.track("View Guerri");
 				break;
-			case '/toulouse/osteopathe-bertucchi' : cabinet.idCabinet = 5; 
+			case '/toulouse/osteopathe-bertucchi' : cabinet.idCabinet = 2; 
 				cabinet.adresse = '11 place Lafourcade - 31400 Toulouse';
 				mixpanel.track("View Bertucchi");
 				break;
-			case '/galaxie/galilee' : cabinet.idCabinet = 10; 
-				cabinet.adresse = '';
-				break;
+			case '/saint-alban/osteopathe-fragnier' : cabinet.idCabinet = 5; 
+				cabinet.adresse = '41 av, Leon Jouhaux';
+				mixpanel.track("View Fragnier");
+				break;			
 			default : window.location.href = '#/';
 		}
 		
@@ -45604,36 +45696,44 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			});
 		};
 
-		$scope.submitRV = function(doctor, day, id){
+		$scope.submitRV = function(doctor, day, appointmentTime){
 
-			var labelActe = doctor.acts[0].labelActe;
-			console.log("submitRV doc: ", doctor);
-			console.log("submitRV day: ", day);
-			console.log("submitRV app: ", id);
-			console.log("submitRV acte: ", labelActe);
-			console.log("submitRV idoff: ", cabinet.idCabinet);
+			var appointment = {
+				doctor: doctor,
+				time: appointmentTime,
+				dayDate: day,
+				office: cabinet,
+				acte: doctor.selectedAct.labelActe
+			};
 
-			AppointmentManager.setSelectedAppointment(id);
-			AppointmentManager.setSelectedDay(day);
-			AppointmentManager.setSelectedDoctor(doctor);
-			AppointmentManager.setSelectedOffice(cabinet);
-			AppointmentManager.setSelectedActe(labelActe);
+			console.log("submitRV : ", appointment);
+
+			GetService.getIsAppointmentAvailable(appointment).success(function(data) {
+				console.log('getIsAppointmentAvailable : ', data);
+				if (data.output.isAvailable) {
+					mixpanel.track("Selection RV available");
+					AppointmentManager.setAppointment(appointment);
+					window.location.href = '#/confirmation-rendezvous';
+				} 
+				else {
+					//TODO implement something more sexy (modal)
+					mixpanel.track("Selection RV not available");
+					alert("Le rendez-vous n'est plus disponible");
+					mixpanel.track("Selection RV not available");
+				}
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
 
 			mixpanel.track("Selection RV");
-			window.location.href = '#/confirmation-rendezvous';
 		};
 	}	
 ]);
 
 appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService',
 	function($scope, $modal, AppointmentManager, PostService) {
-	$scope.appointment = {
-		doctor: AppointmentManager.getSelectedDoctor(),
-		time: AppointmentManager.getSelectedAppointment(),
-		dayDate: AppointmentManager.getSelectedDay(),
-		office: AppointmentManager.getSelectedOffice(),
-		acte: AppointmentManager.getSelectedActe()
-	};
+	$scope.appointment = AppointmentManager.getAppointment();
 
 	$scope.user = {
 		firstName: '',
@@ -45667,7 +45767,8 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	    });
 
 	    modalInstance.result.then(function () {
-	    	window.location.href = '#/seysses/cabinet-medical-seysses';
+	    	//window.location.href = '#/seysses/cabinet-medical-seysses';
+	    	window.location.href = '#/';
 	    });
 	};
 
@@ -45719,16 +45820,33 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
             var appointment = $scope.appointment;
             appointment.user = $scope.user;
 
-            PostService.saveAppointment(appointment).success(function(data) {
-		        console.log(data);
-		        if (data.status == "success") {
-		        	mixpanel.track("Enregistre RV");
-		        	$scope.open();
-		        }
-		    }).error(function(data, status) {
-		        console.log(status);
-		        console.log(data);
-		    });
+            GetService.getIsAppointmentAvailable(appointment).success(function(data) {
+				console.log('getIsAppointmentAvailable : ', data);
+				if (data.output.isAvailable) {
+					mixpanel.track("Confirm RV available");
+
+					PostService.saveAppointment(appointment).success(function(data) {
+				        console.log(data);
+				        if (data.status == "success") {
+				        	mixpanel.track("Enregistre RV");
+				        	$scope.open();
+				        } else {
+				        	mixpanel.track("Erreur Enregistre RV");
+				        }
+				    }).error(function(data, status) {
+				        console.log(status);
+				        console.log(data);
+				    });
+				} 
+				else {
+					//TODO implement something more sexy (modal)
+					mixpanel.track("Confirm RV not available");
+					alert("Le rendez-vous n'est plus disponible");
+				}
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
     	}
     };
 }
@@ -45809,13 +45927,24 @@ function validatePhoneNumber(phoneNumber) {
                     params : {"idOffice" : idOffice}
                 });
             },
+
             getActs: function(idOffice, idDoctor) {
-            return $http({
-                url: Config.backend + '/doctor/acts',
-                method: "GET", 
-                params : {"idOffice" : idOffice, "idDoctor" : idDoctor}
-            });
-        },
+                return $http({
+                    url: Config.backend + '/doctor/acts',
+                    method: "GET", 
+                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor}
+                });
+            },
+
+            getIsAppointmentAvailable: function(appointment) {
+                var stringifyAppointment = JSON.stringify(appointment);
+                console.log('GetService getIsAppointmentAvailable', stringifyAppointment);
+                return $http({
+                    url: Config.backend + '/check/available/appointment',
+                    method: "GET", 
+                    params : {appointment : stringifyAppointment}
+                });
+            },
         };
     }]);
 
@@ -45856,44 +45985,14 @@ function validatePhoneNumber(phoneNumber) {
     appServices.factory('AppointmentManager', function() {
 
         var appointment;
-        var doctor;
-        var day;
-        var office;
-        var acte;
-
+        
         return {
-            getSelectedAppointment: function() {
+            getAppointment: function() {
                 return appointment;
             },
 
-            setSelectedAppointment: function(value) {
+            setAppointment: function(value) {
                 appointment = value;
-            },
-
-            getSelectedDoctor: function() {
-                return doctor;
-            },
-
-            setSelectedDoctor: function(value) {
-                doctor = value;
-            },
-            getSelectedDay: function(){
-                return day;
-            },
-            setSelectedDay: function(value){
-                day = value;
-            },
-            getSelectedOffice: function(){
-                return office;
-            },
-            setSelectedOffice: function(value){
-                office = value;
-            },
-            getSelectedActe: function(){
-                return acte;
-            },
-            setSelectedActe: function(value){
-                acte = value;
             }
         };
     });;angular.module('appConfig')

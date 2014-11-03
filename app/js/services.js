@@ -13,12 +13,13 @@
                 });
             },
 
-            getAvailableAppointements: function(idOffice, idDoctor, actDuration, currentWeek) {
-                console.log(idOffice, idDoctor, actDuration);
+            getAvailableAppointements: function(idOffice, idDoctor, act, currentWeek) {
+                console.log(idOffice, idDoctor, act);
+                var stringifyAct = JSON.stringify(act);
                 return $http({
                     url: Config.backend + '/office/doctors/appointments',
                     method: "GET", 
-                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor, "actDuration" : actDuration, "currentWeek" : currentWeek}
+                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor, "act" : stringifyAct, "currentWeek" : currentWeek}
                 });
             },
 

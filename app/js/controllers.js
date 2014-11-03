@@ -59,7 +59,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 				console.log("doctor", doctor.idPraticien);
 
-				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 					console.log('getAvailableAppointements : ', data);
 					doctor.availabilities = data.output;
 				}).error(function(data, status) {
@@ -75,7 +75,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		});	
 
 		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -93,7 +93,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.currentWeek == (doctor.semaines_ouvertes - 1)) {
 				doctor.nextDisabled = true;
 			}
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -111,7 +111,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.nextDisabled) {
 				doctor.nextDisabled = false;
 			}
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
