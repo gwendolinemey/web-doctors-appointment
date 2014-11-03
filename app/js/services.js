@@ -33,13 +33,24 @@
                     params : {"idOffice" : idOffice}
                 });
             },
+
             getActs: function(idOffice, idDoctor) {
-            return $http({
-                url: Config.backend + '/doctor/acts',
-                method: "GET", 
-                params : {"idOffice" : idOffice, "idDoctor" : idDoctor}
-            });
-        },
+                return $http({
+                    url: Config.backend + '/doctor/acts',
+                    method: "GET", 
+                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor}
+                });
+            },
+
+            getIsAppointmentAvailable: function(appointment) {
+                var stringifyAppointment = JSON.stringify(appointment);
+                console.log('GetService getIsAppointmentAvailable', stringifyAppointment);
+                return $http({
+                    url: Config.backend + '/check/available/appointment',
+                    method: "GET", 
+                    params : {appointment : stringifyAppointment}
+                });
+            },
         };
     }]);
 
@@ -80,44 +91,14 @@
     appServices.factory('AppointmentManager', function() {
 
         var appointment;
-        var doctor;
-        var day;
-        var office;
-        var acte;
-
+        
         return {
-            getSelectedAppointment: function() {
+            getAppointment: function() {
                 return appointment;
             },
 
-            setSelectedAppointment: function(value) {
+            setAppointment: function(value) {
                 appointment = value;
-            },
-
-            getSelectedDoctor: function() {
-                return doctor;
-            },
-
-            setSelectedDoctor: function(value) {
-                doctor = value;
-            },
-            getSelectedDay: function(){
-                return day;
-            },
-            setSelectedDay: function(value){
-                day = value;
-            },
-            getSelectedOffice: function(){
-                return office;
-            },
-            setSelectedOffice: function(value){
-                office = value;
-            },
-            getSelectedActe: function(){
-                return acte;
-            },
-            setSelectedActe: function(value){
-                acte = value;
             }
         };
     });

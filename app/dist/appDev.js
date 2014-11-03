@@ -45067,7 +45067,7 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "    <header>\n" +
     "        <div class=\"container\">\n" +
     "            <div class=\"intro-text\">\n" +
-    "                <div class=\"intro-lead-in\"><h1>Des difficultés pour obtenir un rendez-vous médical ?<br /><span class=\"lead-small\">RapiDocteur, votre rendez-vous en 3 clics et 24h/24 !</span></h1></div>\n" +
+    "                <div class=\"intro-lead-in\"><h1>Des difficultés pour obtenir un rendez-vous médical ?<br /><span class=\"lead-small\">RAPIDOCTEUR, votre rendez-vous en 3 clics et 24h/24 !</span></h1></div>\n" +
     "                               \n" +
     "                <a href=\"#/#professionnels\" class=\"btn btn-lg btn-primary\">Je prends rendez-vous maintenant !</a>\n" +
     "            </div>\n" +
@@ -45081,8 +45081,7 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "                <div class=\"col-lg-12 text-center\">\n" +
     "                    <h2 class=\"section-heading\">Les derniers professionnels disponibles à Fontenilles et Toulouse qui nous ont rejoint</h2>\n" +
     "                    <!-- <span class=\"section-subheading text-muted\">RAPIDOCTEUR simplifie la <strong class=\"nobold\">prise de rendez-vous médicaux</strong>.<br />Choisissez votre professionnels et prenez rendez-vous en moins de cinq minutes, à n'importe quel moment de la journée, depuis votre ordinateur ou votre smartphone !</span> -->\n" +
-    "                    <h3>Faites votre premier clic :</h3>\n" +
-    "                    \n" +
+    "                    <h3>Faites votre premier clic :</h3>                    \n" +
     "                </div>\n" +
     "            </div>           \n" +
     "        </div>\n" +
@@ -45099,7 +45098,7 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "                            <h3 class=\"title-smaller\">Nutritionniste diététicien</h3>\n" +
     "                            <h4>Frédéric Guerri</h4>\n" +
     "                            <p class=\"text-muted\">1 lot le village - 31470 <strong>Fontenilles</strong></p>\n" +
-    "                            <a href=\"#/fontenilles/dieteticien-guerri\" class=\"btn btn-lg btn-primary prendrerv \">Prendre rendez-vous</a>\n" +
+    "                            <a href=\"#/fontenilles/dieteticien-guerri\" class=\"btn btn-lg btn-primary prendrerv \" disabled>Bientôt disponible</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -45112,7 +45111,7 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "                            <h3>Ostéopathe</h3>\n" +
     "                            <h4>Youri Bertucchi</h4>\n" +
     "                            <p class=\"text-muted\">11 place Lafourcade - 31400 Toulouse</p>\n" +
-    "                            <a href=\"#/toulouse/osteopathe-bertucchi\" class=\"btn btn-lg btn-primary prendrerv \" disabled>Disponible bientôt</a>\n" +
+    "                            <a href=\"#/toulouse/osteopathe-bertucchi\" class=\"btn btn-lg btn-primary prendrerv \" disabled>Bientôt disponible</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>                \n" +
@@ -45176,7 +45175,7 @@ angular.module("../../rapidocteur_web/app/partials/header_index.html", []).run([
     "                <span class=\"icon-bar\"></span>\n" +
     "                <span class=\"icon-bar\"></span>\n" +
     "            </button>\n" +
-    "            <a class=\"navbar-brand\" href=\"#/\"><img src=\"img/logo_rapidocteur-01.png\" alt=\"logo rapidocteur\" /></a>\n" +
+    "            <a class=\"navbar-brand\" href=\"#/\"><img src=\"img/logo_rapidocteur-02.png\" alt=\"logo rapidocteur\" /></a>\n" +
     "        </div>\n" +
     "\n" +
     "        <!-- Collect the nav links, forms, and other content for toggling -->\n" +
@@ -45668,7 +45667,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	    });
 
 	    modalInstance.result.then(function () {
-	    	window.location.href = '#/';
+	    	window.location.href = '#/seysses/cabinet-medical-seysses';
 	    });
 	};
 
