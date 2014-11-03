@@ -36,6 +36,10 @@
 				templateUrl : 'app/partials/labege/dieteticienne-bec.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/saint-alban/osteopathe-fragnier', {
+				templateUrl : 'app/partials/saint-alban/osteopathe-fragnier.html', 
+				controller: 'CabinetCtrl'
+			})
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'

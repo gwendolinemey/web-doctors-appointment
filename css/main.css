@@ -54,6 +54,8 @@ ul.social-buttons li a:active {
 #page-med,
 #page-confirmation{ background-color: #ecf0f1; }
 #button-div{ float: right;}
+.indication{ font-size: x-small; text-align: justify;}
+.important{ font-weight: bold;}
 
 
 /*** Confirmation ***/
