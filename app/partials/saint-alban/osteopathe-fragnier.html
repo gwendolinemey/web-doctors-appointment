@@ -1,0 +1,66 @@
+<nav ng-include="'app/partials/header_index.html'" class="navbar-default navbar-static-top nav-index"></nav>
+<div class="container" id="page-med">
+    <div class="row">
+        <div class="col-md-6 presentation-doc">
+            <h1 class="heading">Nathalie Fragnier</h1>
+            <p class="lead">Ostéopathe D.O. T.O.</p>
+            <!-- <img class="img-responsive" src="img/dieteticienne-tachier-fontenilles.jpg" width="400px" alt="diéteticienne nutritionniste fontenilles" /> -->
+            <h1 id="plus-medecin">En savoir plus sur Nathalie Fragnier</h1>
+            <p>
+                <br /><br />
+               Mes diplômes :
+                <ul>
+                    <li>Diplôme d'Ostéopathe D.O. obtenu à l'issu d'une formation initiale en 5 ans à temps plein au sein de l'Institut Toulousain d'Ostéopathie (ITO), école agréée par le Ministère de la Santé, de la Jeunesse et des Sports.</li>
+                    <li>Titre d'Ostéopathe délivré à l'issu de :
+                        <ul>
+                            <li>Obtention du D.O.</li>
+                            <li>Formations post-graduées :</li>
+                            <li>. certificat de posturologie</li>
+                            <li>. certificat de micronutrition</li>
+                            <li>. attestation d'ostéopathie pédiatrique</li>
+                            <li>. attestation d'ostéopathie du sport</li>
+                            <li>- Élaboration et soutenance du mémoire : "Intérêt d'un traitement ostéopathique chez les personnes atteintes du syndrome douloureux régional complexe (Algoneurodystrophie) de l'épaule et/ou de la main"</li>
+                        </ul>
+                    </li>                    
+                </ul>
+            </p>
+        </div>
+            
+        <div class="col-md-6 info-doc">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11565.780336302016!2d1.193089!3d43.555608!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x1fc73e4f8b44eb73!2zR3VlcnJpIEZyw6lkw6lyaWM!5e0!3m2!1sfr!2sfr!4v1414408337956" width="400" height="300" frameborder="0" style="border:0"></iframe>
+            <p>1 Lotissement Village, 31470 Fontenilles</p>
+            <p><span class="listpaiyment">Moyens de paiement :<span></p>
+                <ul class="paymentway">
+                    <li><img src="img/cash.png" /> espèces acceptées</li>
+                    <li><img src="img/check.png" /> chèques acceptés</li>
+                </ul>
+        </div>
+    </div>
+    <p class="lead">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>
+    <div ng-controller="CabinetCtrl">
+    <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
+        <div id="act-choice" class="col-lg-3">
+            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
+            <p>Quel est le motif de votre venue ?</p>
+
+            <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
+        </div>
+        <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
+        <table class="col-lg-6" id="agenda-med">
+            <tr>
+                <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
+            </tr>                
+            <tr>
+                <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                    <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
+                        <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
+                    </div>                        
+                </td>                
+            </tr>
+        </table>       
+        <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button>
+    </div>
+    <div>
+</div>   
+    
+    
