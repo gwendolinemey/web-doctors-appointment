@@ -40,6 +40,10 @@
 				templateUrl : 'app/partials/saint-alban/osteopathe-fragnier.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/seysses/medecins-generalistes', {
+				templateUrl : 'app/partials/seysses/cabinet-medical.html', 
+				controller: 'CabinetCtrl'
+			})
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'

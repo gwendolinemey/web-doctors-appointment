@@ -1,45 +1,50 @@
-<div class="container">
-    <div class="row">               
+<nav ng-include="'app/partials/header_index.html'" class="navbar-default navbar-static-top nav-index"></nav>
+<div class="container" id="page-med">
+    <div class="row">
         <div class="col-md-6 presentation-doc">
-            <h1 class="heading">Bertucchi yeah</h1>
-            <!-- <img class="img-responsive" src="img/cabinet1_o.jpg" width="300px" alt="médecin généraliste seysses" /> -->
-            <h1 id="plus-medecin">En savoir plus sur cabinet de Seysses</h1>
-            <p>Ac ne quis a nobis hoc ita dici forte miretur, quod alia quaedam in hoc facultas sit ingeni, neque haec dicendi ratio aut disciplina, ne nos quidem huic uni studio penitus umquam dediti fuimus. Etenim omnes artes, quae ad humanitatem pertinent, habent quoddam commune vinculum, et quasi cognatione quadam inter se continentur.</p>
-
+            <h1 class="heading">Youri Bertucchi</h1>
+            <p class="lead">Ostéopathe D.O.</p>
+            <!-- <img class="img-responsive" src="img/dieteticienne-tachier-fontenilles.jpg" width="400px" alt="diéteticienne nutritionniste fontenilles" /> -->
+            <h1 id="plus-medecin">En savoir plus sur Youri Bertucchi</h1>
+            <p>Youri Bertucchi, ostéopathe D.O. vous accueille dans son cabinet du centre ville de Toulouse.<br />Suite à une formation de 6 ans à l’Institut Toulousain d’Ostéopathie (école agréée par le ministère de la santé et des sports), il obtient son diplôme "Ostéopathe DO" ainsi que quatre para-diplômes en pédiatrie, posturologie, sport et nutrition, et sport de haut niveau.<br /><br />Il pratique une ostéopathie traditionnelle visant tous les publics.
+                <br />Vous pouvez visiter son site internet : <a href="http://www.toulouseosteopathe.com">toulouseosteopathe.com</a></p>
         </div>
-        
+            
         <div class="col-md-6 info-doc">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2895.1763632183256!2d1.3042004000000038!3d43.47778970000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb61e6def9d9d%3A0xbc18a5c1581f4e3b!2s60+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1413365325879" width="350" height="200" frameborder="0" style="border:0"></iframe>
-            <p>60 route d'Ox, 31600 Seysses</p>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2889.695465016504!2d1.4446044000000002!3d43.59205920000001!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aebc803654f409%3A0x1d77ca09b0f1664!2s11+Place+Lafourcade%2C+31400+Toulouse!5e0!3m2!1sfr!2sfr!4v1415188115020" width="400" height="300" frameborder="0" style="border:0"></iframe>
+            <p>11 place Lafourcade, 31400 Toulouse</p>
             <p><span class="listpaiyment">Moyens de paiement :<span></p>
                 <ul class="paymentway">
-                    <li><img src="img/cardb.png" />carte bleu acceptée</li>
                     <li><img src="img/cash.png" /> espèces acceptées</li>
                     <li><img src="img/check.png" /> chèques acceptés</li>
                 </ul>
-        </div>        
+        </div>
     </div>
+    <p class="lead">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>
+    <div ng-controller="CabinetCtrl">
     <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
-            <div id="act-choice" class="col-lg-3">
-                <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
-                <p>Quel motif ?</p>
+        <div id="act-choice" class="col-lg-3">
+            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
+            <p>Quel est le motif de votre venue ?</p>
 
-                <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
-            </div>
-            <button class="col-lg-1 navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
-            <table class="col-lg-6" id="agenda-med">
-                <tr>
-                    <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
-                </tr>                
-                <tr>
-                    <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
-                        <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
-                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
-                        </div>                        
-                    </td>                
-                </tr>
-            </table>       
-            <button class="col-lg-1 navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button> 
+            <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
+        </div>
+        <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
+        <table class="col-lg-6" id="agenda-med">
+            <tr>
+                <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
+            </tr>                
+            <tr>
+                <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                    <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
+                        <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
+                    </div>                        
+                </td>                
+            </tr>
+        </table>       
+        <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button>
     </div>
+    <div>
 </div>   
+    
     
