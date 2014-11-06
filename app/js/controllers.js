@@ -155,8 +155,8 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 	}	
 ]);
 
-appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService',
-	function($scope, $modal, AppointmentManager, PostService) {
+appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService', 'GetService',
+	function($scope, $modal, AppointmentManager, PostService, GetService) {
 	$scope.appointment = AppointmentManager.getAppointment();
 
 	$scope.user = {
@@ -191,7 +191,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	    });
 
 	    modalInstance.result.then(function () {
-	    	//window.location.href = '#/seysses/cabinet-medical-seysses';
+	    	//window.location.href = '#/seysses/medecins-generalistes';
 	    	window.location.href = '#/';
 	    });
 	};
