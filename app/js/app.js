@@ -44,9 +44,16 @@
 				templateUrl : 'app/partials/seysses/cabinet-medical.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/labege/dieteticienne-bec', {
+				templateUrl : 'app/partials/labege/dieteticienne-bec.html', 
+				controller: 'CabinetCtrl'
+			})
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'
+			})
+			.when('/mentions-legales', {
+				templateUrl : 'app/partials/mentions-legales.html'
 			});
 			/*$locationProvider.html5Mode(true);*/
 	}]);
