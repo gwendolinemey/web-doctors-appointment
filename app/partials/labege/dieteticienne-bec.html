@@ -1,0 +1,57 @@
+<nav ng-include="'app/partials/header_index.html'" class="navbar-default navbar-static-top nav-index"></nav>
+<div class="container" id="page-med">
+    <div class="row">
+        <div class="col-md-6 presentation-doc">
+            <h1 class="heading">Marjorie Bec</h1>
+            <p class="lead">Diététicienne spécialisée en nutrition du sport</p>
+            
+            <h1 id="plus-medecin">En savoir plus sur Marjorie Bec</h1>
+            <p>Si vous souhaitez avoir des conseils pour rétablir votre alimentation, je vous accueille à mon cabinet le lundi, jeudi, vendredi et samedi matin.<br /><br />
+            Mes diplômes :
+                <ul>
+                    <li>BTS diététique</li>
+                    <li>DU de Nutrition appliquée aux activités physiques et sportives</li>
+                    <li>Master IPP Staps</li>
+                    <li>Brevet d'Etat HACUMESE</li>
+                </ul>
+            </p>
+        </div>
+            
+        <div class="col-md-6 info-doc">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1446.3271682790994!2d1.5348456197285518!3d43.53040042540521!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0000000000000000%3A0x15b7350799be064a!2sCentre+M%C3%A9dical+Lab%C3%A8ge!5e0!3m2!1sfr!2sfr!4v1415612409221" width="400" height="300" frameborder="0" style="border:0"></iframe>
+            <p>Centre médical, 6 rue de l'Autan, 31670 Labège</p>
+            <p><span class="listpaiyment">Moyens de paiement :<span></p>
+                <ul class="paymentway">
+                    <li><img src="img/cash.png" /> espèces acceptées</li>
+                    <li><img src="img/check.png" /> chèques acceptés</li>
+                </ul>
+        </div>
+    </div>
+    <p class="lead">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>
+    <div ng-controller="CabinetCtrl">
+    <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
+        <div id="act-choice" class="col-lg-3">
+            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
+            <p>Quel est le motif de votre venue ?</p>
+
+            <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
+        </div>
+        <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
+        <table class="col-lg-6" id="agenda-med">
+            <tr>
+                <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
+            </tr>                
+            <tr>
+                <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                    <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
+                        <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
+                    </div>                        
+                </td>                
+            </tr>
+        </table>       
+        <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button>
+    </div>
+    <div>
+</div>   
+    
+    

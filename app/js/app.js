@@ -32,6 +32,10 @@
 				templateUrl : 'app/partials/toulouse/osteopathe-bertucchi.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/labege/dieteticienne-bec', {
+				templateUrl : 'app/partials/labege/dieteticienne-bec.html', 
+				controller: 'CabinetCtrl'
+			})
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'
