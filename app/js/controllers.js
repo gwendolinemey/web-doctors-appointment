@@ -35,7 +35,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				mixpanel.track("View Fragnier");
 				break;
 			case '/labege/dieteticienne-bec' : cabinet.idCabinet = 11; 
-				cabinet.adresse = '6, rue de l''Autan - 31670 Labège';
+				cabinet.adresse = '6, rue de l\'Autan - 31670 Labège';
 				mixpanel.track("View Bec");
 				break;				
 			default : window.location.href = '#/';

@@ -45056,16 +45056,10 @@ var cbpAnimatedHeader = (function() {
 	init();
 
 })();;(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");
-<<<<<<< HEAD
-=======
-;(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");
->>>>>>> redirect to the office page:app/dist/app.js
-=======
->>>>>>> check if the appointment is still available before booking it
 for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="//cdn.mxpnl.com/libs/mixpanel-2.2.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
 mixpanel.init("e6f5b0f3965428de5997c8fbb9a3ad73");
 
-;angular.module('templates-dist', ['../../rapidocteur_web/app/partials/accueil.html', '../../rapidocteur_web/app/partials/confirmation-rendezvous.html', '../../rapidocteur_web/app/partials/header_index.html', '../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerri.html', '../../rapidocteur_web/app/partials/saint-alban/osteopathe-fragnier.html', '../../rapidocteur_web/app/partials/seysses/cabinet-medical.html', '../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html']);
+;angular.module('templates-dist', ['../../rapidocteur_web/app/partials/accueil.html', '../../rapidocteur_web/app/partials/confirmation-rendezvous.html', '../../rapidocteur_web/app/partials/header_index.html', '../../rapidocteur_web/app/partials/mentions-legales.html', '../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerri.html', '../../rapidocteur_web/app/partials/labege/dieteticienne-bec.html', '../../rapidocteur_web/app/partials/saint-alban/osteopathe-fragnier.html', '../../rapidocteur_web/app/partials/seysses/cabinet-medical.html', '../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html']);
 
 angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../../rapidocteur_web/app/partials/accueil.html",
@@ -45104,7 +45098,7 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "                            <h3>Ostéopathe</h3>\n" +
     "                            <h4>Youri Bertucchi</h4>\n" +
     "                            <p class=\"text-muted\">11 place Lafourcade - 31400 <strong>Toulouse</strong></p>\n" +
-    "                            <a href=\"#/toulouse/osteopathe-bertucchi\" class=\"btn btn-lg btn-primary prendrerv \" disabled>Bientôt disponible</a>\n" +
+    "                            <a href=\"#/toulouse/osteopathe-bertucchi\" class=\"btn btn-lg btn-primary prendrerv \">Prendre rendez-vous</a>\n" +
     "                        </div>\n" +
     "                    </div>                    \n" +
     "                </div>\n" +
@@ -45117,7 +45111,7 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "                            <h3 class=\"title-smaller\">Nutritionniste diététicien</h3>\n" +
     "                            <h4>Frédéric Guerri</h4>\n" +
     "                            <p class=\"text-muted\">1 lot le village - 31470 <strong>Fontenilles</strong></p>\n" +
-    "                            <a href=\"#/fontenilles/dieteticien-guerri\" class=\"btn btn-lg btn-primary prendrerv \">Bientôt disponible</a>\n" +
+    "                            <a href=\"#/fontenilles/dieteticien-guerri\" class=\"btn btn-lg btn-primary prendrerv \">Prendre rendez-vous</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>                \n" +
@@ -45132,7 +45126,44 @@ angular.module("../../rapidocteur_web/app/partials/accueil.html", []).run(["$tem
     "                            <h3 class=\"title-smaller\">Ostéopathe</h3>\n" +
     "                            <h4>Nathalie Fragnier</h4>\n" +
     "                            <p class=\"text-muted\">41, av. Léon Jouhaux - 31140 <strong>Saint Alban</strong></p>\n" +
-    "                            <a href=\"#/saint-alban/osteopathe-fragnier\" class=\"btn btn-lg btn-primary prendrerv\" disabled>Bientôt disponible</a>\n" +
+    "                            <a href=\"#/saint-alban/osteopathe-fragnier\" class=\"btn btn-lg btn-primary prendrerv\">Prendre rendez-vous</a>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-6\">\n" +
+    "                    <div class=\"carte-pro\">\n" +
+    "                        <div class=\"col-md-3 col-xs-3\">\n" +
+    "                            <img src=\"\" class=\"img-responsive img-circle\" alt=\"médecin généraliste seysses\" />\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-md-9 col-xs-9\">\n" +
+    "                            <h3 class=\"title-smaller\">Médecin généraliste</h3>\n" +
+    "                            <h4>Cabinet médical</h4>\n" +
+    "                            <p class=\"text-muted\">60 route d'Ox - 31600 <strong>Seysses</strong></p>\n" +
+    "                            <a href=\"#/seysses/medecins-generalistes\" class=\"btn btn-lg btn-primary prendrerv\">Prendre rendez-vous</a>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"carte-pro\">\n" +
+    "                        <div class=\"col-md-3 col-xs-3\">\n" +
+    "                            <img src=\"img/pro/bec_1.jpg\" class=\"img-responsive img-circle\" alt=\"diéteticienne sport labège\" />\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-md-9 col-xs-9\">\n" +
+    "                            <h3 class=\"title-smaller\">Diététicienne du sport</h3>\n" +
+    "                            <h4>Marjorie Bec</h4>\n" +
+    "                            <p class=\"text-muted\">6 rue Autan - 31670 <strong>Labège</strong></p>\n" +
+    "                            <a href=\"#/labege/dieteticienne-bec\" class=\"btn btn-lg btn-primary prendrerv\">Prendre rendez-vous</a>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-6\">\n" +
+    "                    <div class=\"carte-pro\">\n" +
+    "                        <div class=\"col-md-3 col-xs-3\">\n" +
+    "                            <img src=\"img/pro/bec_circle.png\" class=\"img-responsive img-circle\" alt=\"diéteticienne sport labège\" />\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-md-9 col-xs-9\">\n" +
+    "                            <h3 class=\"title-smaller\">Diététicienne du sport</h3>\n" +
+    "                            <h4>Marjorie Bec</h4>\n" +
+    "                            <p class=\"text-muted\">6 rue Autan - 31670 <strong>Labège</strong></p>\n" +
+    "                            <a href=\"#/labege/dieteticienne-bec\" class=\"btn btn-lg btn-primary prendrerv\">Prendre rendez-vous</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -45200,15 +45231,43 @@ angular.module("../../rapidocteur_web/app/partials/header_index.html", []).run([
     "        </div>\n" +
     "\n" +
     "        <!-- Collect the nav links, forms, and other content for toggling -->\n" +
-    "        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n" +
-    "            <ul class=\"nav navbar-nav navbar-right\">                    \n" +
-    "                <!-- <li>\n" +
-    "                    <a class=\"page-scroll\" href=\"#services\" class=\"btn btn-lg btn-primary\">Prendre rendez-vous</a>\n" +
-    "                </li>  -->                   \n" +
+    "        <div class=\"collapse navbar-collapse\" id=\"idSocial\">\n" +
+    "            <ul class=\"nav navbar-nav navbar-right list-inline \">\n" +
+    "                <li><a href=\"https://twitter.com/RapiDocteur\" target=\"_blank\"><i class=\"fa fa-twitter\"></i></a></li>\n" +
+    "                <li><a href=\"https://www.facebook.com/RapiDocteur\" target=\"_blank\"><i class=\"fa fa-facebook\"></i></a></li>\n" +
+    "                <li><a href=\"https://plus.google.com/b/114510223929114221539/+RapidocteurFr/posts\" target=\"_blank\"><i class=\"fa fa-google\"></i></a></li>\n" +
+    "                <li><a href=\"mailto:hello@rapidocteur.fr\"><i class=\"fa fa-envelope\"></i></a>\n" +
+    "                </li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "");
+}]);
+
+angular.module("../../rapidocteur_web/app/partials/mentions-legales.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/mentions-legales.html",
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-static-top nav-index\"></nav>\n" +
+    "<div class=\"container mentions\">\n" +
+    "	<p>Propriétaire, responsable du contenu et webmaster : Gwendoline MEYER – Villa 9 le Pré aux Chênes Deux, 31470 Fontenilles pour la société en cours d'immatriculation : RAPIDOCTEUR.\n" +
+    "\n" +
+    "	<br /><br />\n" +
+    "	Ce site est hébergé par : <br />\n" +
+    "	<br />\n" +
+    "	SARL OVH Siège social : 140, quai du Sartel – 59100 Roubaix<br />\n" +
+    "	Tél : 0 899 701 761 – Fax : 03 20 20 09 58<br />\n" +
+    "	<br />\n" +
+    "	Mail :support@ovh.com<br />\n" +
+    "	Site internet : www.ovh.com</p>\n" +
+    "\n" +
+    "	<p>\n" +
+    "	Informations recueillies<br /><br />\n" +
+    "\n" +
+    "	Les informations recueillies font l’objet d’un traitement informatique destiné à vous contacter. Le destinataire des données est : Gwendoline MEYER.<br /><br />\n" +
+    "\n" +
+    "	Conformément à la loi « informatique et libertés » du 6 janvier 1978 modifiée en 2004, vous bénéficiez d’un droit d’accès et de rectification aux informations qui vous concernent, que vous pouvez exercer en vous adressant à : hello[at]rapidocteur.fr<br /><br />\n" +
+    "\n" +
+    "	Vous pouvez également, pour des motifs légitimes, vous opposer au traitement des données vous concernant.</p>\n" +
+    "</div>");
 }]);
 
 angular.module("../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerri.html", []).run(["$templateCache", function($templateCache) {
@@ -45236,6 +45295,67 @@ angular.module("../../rapidocteur_web/app/partials/fontenilles/dieteticien-guerr
     "        <div class=\"col-md-6 info-doc\">\n" +
     "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11565.780336302016!2d1.193089!3d43.555608!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x1fc73e4f8b44eb73!2zR3VlcnJpIEZyw6lkw6lyaWM!5e0!3m2!1sfr!2sfr!4v1414408337956\" width=\"400\" height=\"300\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
     "            <p>1 Lotissement Village, 31470 Fontenilles</p>\n" +
+    "            <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
+    "                <ul class=\"paymentway\">\n" +
+    "                    <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
+    "                    <li><img src=\"img/check.png\" /> chèques acceptés</li>\n" +
+    "                </ul>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <p class=\"lead\">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>\n" +
+    "    <div ng-controller=\"CabinetCtrl\">\n" +
+    "    <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
+    "        <div id=\"act-choice\" class=\"col-lg-3\">\n" +
+    "            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
+    "            <p>Quel est le motif de votre venue ?</p>\n" +
+    "\n" +
+    "            <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
+    "        </div>\n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
+    "        <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
+    "            <tr>\n" +
+    "                <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
+    "            </tr>                \n" +
+    "            <tr>\n" +
+    "                <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
+    "                    <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
+    "                        <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
+    "                    </div>                        \n" +
+    "                </td>                \n" +
+    "            </tr>\n" +
+    "        </table>       \n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button>\n" +
+    "    </div>\n" +
+    "    <div>\n" +
+    "</div>   \n" +
+    "    \n" +
+    "    ");
+}]);
+
+angular.module("../../rapidocteur_web/app/partials/labege/dieteticienne-bec.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../../rapidocteur_web/app/partials/labege/dieteticienne-bec.html",
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-static-top nav-index\"></nav>\n" +
+    "<div class=\"container\" id=\"page-med\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-6 presentation-doc\">\n" +
+    "            <h1 class=\"heading\">Marjorie Bec</h1>\n" +
+    "            <p class=\"lead\">Diététicienne spécialisée en nutrition du sport</p>\n" +
+    "            \n" +
+    "            <h1 id=\"plus-medecin\">En savoir plus sur Marjorie Bec</h1>\n" +
+    "            <p>Si vous souhaitez avoir des conseils pour rétablir votre alimentation, je vous accueille à mon cabinet le lundi, jeudi, vendredi et samedi matin.<br /><br />\n" +
+    "            Mes diplômes :\n" +
+    "                <ul>\n" +
+    "                    <li>BTS diététique</li>\n" +
+    "                    <li>DU de Nutrition appliquée aux activités physiques et sportives</li>\n" +
+    "                    <li>Master IPP Staps</li>\n" +
+    "                    <li>Brevet d'Etat HACUMESE</li>\n" +
+    "                </ul>\n" +
+    "            </p>\n" +
+    "        </div>\n" +
+    "            \n" +
+    "        <div class=\"col-md-6 info-doc\">\n" +
+    "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1446.3271682790994!2d1.5348456197285518!3d43.53040042540521!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0000000000000000%3A0x15b7350799be064a!2sCentre+M%C3%A9dical+Lab%C3%A8ge!5e0!3m2!1sfr!2sfr!4v1415612409221\" width=\"400\" height=\"300\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
+    "            <p>Centre médical, 6 rue de l'Autan, 31670 Labège</p>\n" +
     "            <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
     "                <ul class=\"paymentway\">\n" +
     "                    <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
@@ -45347,199 +45467,109 @@ angular.module("../../rapidocteur_web/app/partials/saint-alban/osteopathe-fragni
 
 angular.module("../../rapidocteur_web/app/partials/seysses/cabinet-medical.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../../rapidocteur_web/app/partials/seysses/cabinet-medical.html",
-    "<!DOCTYPE html>\n" +
-    "<html lang=\"fr\">\n" +
-    "\n" +
-    "<head>\n" +
-    "\n" +
-    "    <meta charset=\"utf-8\">\n" +
-    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-    "    <meta name=\"description\" content=\"\">\n" +
-    "    <meta name=\"author\" content=\"\">\n" +
-    "    <!-- <base href=\"http://localhost/RapiDocteur/rapidocteur_web/\"></base> -->\n" +
-    "\n" +
-    "    <title>Cabinet médical Seysses - médecins généralistes - RapiDocteur</title>\n" +
-    "\n" +
-    "    <!-- Bootstrap Core CSS -->\n" +
-    "    <link href=\"bower_components/bootstrap/dist/css/bootstrap.css\" rel=\"stylesheet\">\n" +
-    "    <link href=\"bower_components/components-font-awesome/css/font-awesome.css\" rel=\"stylesheet\">\n" +
-    "    <!-- Custom CSS -->\n" +
-    "    <link href=\"css/main.css\" rel=\"stylesheet\">\n" +
-    "\n" +
-    "    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->\n" +
-    "    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->\n" +
-    "    <!--[if lt IE 9]>\n" +
-    "        <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>\n" +
-    "        <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\"></script>\n" +
-    "    <![endif]-->\n" +
-    "\n" +
-    "</head>\n" +
-    "\n" +
-    "<body ng-app=\"app\">\n" +
-    "\n" +
-    "    <!-- Navigation -->\n" +
-    "    <nav class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\">\n" +
-    "        <div class=\"container\">\n" +
-    "            <!-- Brand and toggle get grouped for better mobile display -->\n" +
-    "            <div class=\"navbar-header\">\n" +
-    "                <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\n" +
-    "                    <span class=\"sr-only\">Toggle navigation</span>\n" +
-    "                    <span class=\"icon-bar\"></span>\n" +
-    "                    <span class=\"icon-bar\"></span>\n" +
-    "                    <span class=\"icon-bar\"></span>\n" +
-    "                </button>\n" +
-    "                <a class=\"navbar-brand\" href=\"http://localhost/RapiDocteur/rapidocteur_web/\">RapiDocteur</a>\n" +
-    "            </div>\n" +
-    "            <!-- Collect the nav links, forms, and other content for toggling -->\n" +
-    "            <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n" +
-    "                <ul class=\"nav navbar-nav\">\n" +
-    "                    <li><a href=\"/about\">En savoir +</a></li>\n" +
-    "                    <li><a href=\"/contact\">Contact</a></li>\n" +
-    "                    <li><a href=\"/\">Blog</a></li>\n" +
-    "                </ul>\n" +
-    "            </div> <!-- /.navbar-collapse -->\n" +
-    "        </div> <!-- /.container -->\n" +
-    "    </nav>\n" +
-    "\n" +
-    "    <div class=\"container\">\n" +
-    "        <div class=\"row\">               \n" +
-    "            <div class=\"col-md-6 presentation-doc\">\n" +
-    "                <h1 class=\"heading\">Cabinet médical de Seysses</h1>\n" +
-    "                <!-- <img class=\"img-responsive\" src=\"img/cabinet1_o.jpg\" width=\"300px\" alt=\"médecin généraliste seysses\" /> -->\n" +
-    "                <h1 id=\"plus-medecin\">En savoir plus sur cabinet de Seysses</h1>\n" +
-    "                <p>Ac ne quis a nobis hoc ita dici forte miretur, quod alia quaedam in hoc facultas sit ingeni, neque haec dicendi ratio aut disciplina, ne nos quidem huic uni studio penitus umquam dediti fuimus. Etenim omnes artes, quae ad humanitatem pertinent, habent quoddam commune vinculum, et quasi cognatione quadam inter se continentur.</p>\n" +
-    "\n" +
-    "            </div>\n" +
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-static-top nav-index\"></nav>\n" +
+    "<div class=\"container\" id=\"page-med\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-6 presentation-doc\">\n" +
+    "            <h1 class=\"heading\">Cabinet médical</h1>\n" +
+    "            <p class=\"lead\">Médecins généralistes</p>\n" +
+    "            <!-- <img class=\"img-responsive\" src=\"img/dieteticienne-tachier-fontenilles.jpg\" width=\"400px\" alt=\"diéteticienne nutritionniste fontenilles\" /> -->\n" +
+    "            <h1 id=\"plus-medecin\">En savoir plus sur le cabinet médical de Seysses</h1>\n" +
+    "            <p>Le docteur Boyes, Monticelli, Calas, Boudou-Battisti et Coder vous accueillent dans leur cabinet situé au 60 route d'Ox à Seysses du lundi au vendredi.<br /></p>\n" +
+    "        </div>\n" +
     "            \n" +
-    "            <div class=\"col-md-6 info-doc\">\n" +
-    "                <iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2895.1763632183256!2d1.3042004000000038!3d43.47778970000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb61e6def9d9d%3A0xbc18a5c1581f4e3b!2s60+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1413365325879\" width=\"350\" height=\"200\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
-    "                <p>60 route d'Ox, 31600 Seysses</p>\n" +
-    "                <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
-    "                    <ul class=\"paymentway\">\n" +
-    "                        <li><img src=\"img/cardb.png\" />carte bleu acceptée</li>\n" +
-    "                        <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
-    "                        <li><img src=\"img/check.png\" /> chèques acceptés</li>\n" +
-    "                    </ul>\n" +
-    "            </div>        \n" +
+    "        <div class=\"col-md-6 info-doc\">\n" +
+    "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2895.1763632183256!2d1.3042004000000038!3d43.47778970000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb61e6def9d9d%3A0xbc18a5c1581f4e3b!2s60+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1415207839341\" width=\"400\" height=\"300\" frameborder=\"0\" style=\"border:0\"></iframe>            \n" +
+    "            <p>60 route d'Ox, 31600 Seysses</p>\n" +
+    "            <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
+    "                <ul class=\"paymentway\">\n" +
+    "                    <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
+    "                    <li><img src=\"img/check.png\" /> chèques acceptés</li>\n" +
+    "                </ul>\n" +
     "        </div>\n" +
-    "        <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
-    "                <div id=\"act-choice\" class=\"col-lg-3\">\n" +
-    "                    <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
-    "                    <p>Quel motif ?</p>\n" +
+    "    </div>\n" +
+    "    <p class=\"lead\">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>\n" +
+    "    <div ng-controller=\"CabinetCtrl\">\n" +
+    "    <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
+    "        <div id=\"act-choice\" class=\"col-lg-3\">\n" +
+    "            <p><strong>Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
+    "            <p>Quel est le motif de votre venue ?</p>\n" +
     "\n" +
-    "                    <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
-    "                </div>\n" +
-    "                <button class=\"col-lg-1 navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
-    "                <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
-    "                    <tr>\n" +
-    "                        <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
-    "                    </tr>                \n" +
-    "                    <tr>\n" +
-    "                        <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
-    "                            <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
-    "                                <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
-    "                            </div>                        \n" +
-    "                        </td>                \n" +
-    "                    </tr>\n" +
-    "                </table>       \n" +
-    "                <button class=\"col-lg-1 navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button> \n" +
+    "            <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
     "        </div>\n" +
-    "    </div>   \n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
+    "        <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
+    "            <tr>\n" +
+    "                <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
+    "            </tr>                \n" +
+    "            <tr>\n" +
+    "                <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
+    "                    <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
+    "                        <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
+    "                    </div>                        \n" +
+    "                </td>                \n" +
+    "            </tr>\n" +
+    "        </table>       \n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button>\n" +
+    "    </div>\n" +
+    "    <div>\n" +
+    "</div>   \n" +
     "    \n" +
-    "    <footer>\n" +
-    "        <div class=\"container\">\n" +
-    "            <div class=\"row\">\n" +
-    "                <div class=\"col-md-4\">\n" +
-    "                    <span class=\"copyright\">&copy; RapiDocteur 2014 </span> made with <span id=\"heart\">♥</span> from Toulouse\n" +
-    "                </div>\n" +
-    "                <div class=\"col-md-4\">\n" +
-    "                    <ul class=\"list-inline social-buttons\">\n" +
-    "                        <li><a href=\"https://twitter.com/RapiDocteur\"><i class=\"fa fa-twitter\"></i></a>\n" +
-    "                        </li>\n" +
-    "                        <li><a href=\"https://www.facebook.com/RapiDocteur\"><i class=\"fa fa-facebook\"></i></a>\n" +
-    "                        </li>\n" +
-    "                        <li><a href=\"https://plus.google.com/b/114510223929114221539/+RapidocteurFr/posts\"><i class=\"fa fa-google\"></i></a>\n" +
-    "                        </li>\n" +
-    "                        <li><a href=\"mailto:hello@rapidocteur.fr\"><i class=\"fa fa-envelope\"></i></a>\n" +
-    "                        </li>\n" +
-    "                    </ul>\n" +
-    "                </div>\n" +
-    "                <div class=\"col-md-4\">\n" +
-    "                    <ul class=\"list-inline quicklinks\">\n" +
-    "                        <li><a href=\"#\">Mentions légales</a></li>\n" +
-    "                    </ul>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </footer>\n" +
-    "\n" +
-    "     <!-- Bootstrap core JavaScript\n" +
-    "    ================================================== -->\n" +
-    "    <!-- Placed at the end of the document so the pages load faster -->\n" +
-    "    <script src=\"bower_components/angular/angular.js\" type=\"text/javascript\"></script>\n" +
-    "    <script src=\"bower_components/angular-route/angular-route.js\" type=\"text/javascript\"></script>\n" +
-    "    <script type=\"text/javascript\" src=\"bower_components/angular-bootstrap/ui-bootstrap-tpls.js\"></script>\n" +
-    "    <script src=\"bower_components/jquery/dist/jquery.js\"></script>\n" +
-    "    <script src=\"bower_components/bootstrap/dist/js/bootstrap.js\"></script>\n" +
-    "    <script src=\"bower_components/mixpanel/mixpanel-dev.js\"></script>\n" +
-    "    <script src=\"js/app.js\" type=\"text/javascript\"></script> <!-- personnalisé-->\n" +
-    "    <script src=\"js/controllers.js\" type=\"text/javascript\"></script> <!-- personnalisé-->\n" +
-    "    <script src=\"js/services.js\" type=\"text/javascript\"></script> <!-- personnalisé-->\n" +
-    "\n" +
-    "</body>\n" +
-    "\n" +
-    "</html>");
+    "    ");
 }]);
 
 angular.module("../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi.html",
-    "<div class=\"container\">\n" +
-    "    <div class=\"row\">               \n" +
+    "<nav ng-include=\"'app/partials/header_index.html'\" class=\"navbar-default navbar-static-top nav-index\"></nav>\n" +
+    "<div class=\"container\" id=\"page-med\">\n" +
+    "    <div class=\"row\">\n" +
     "        <div class=\"col-md-6 presentation-doc\">\n" +
-    "            <h1 class=\"heading\">Bertucchi yeah</h1>\n" +
-    "            <!-- <img class=\"img-responsive\" src=\"img/cabinet1_o.jpg\" width=\"300px\" alt=\"médecin généraliste seysses\" /> -->\n" +
-    "            <h1 id=\"plus-medecin\">En savoir plus sur cabinet de Seysses</h1>\n" +
-    "            <p>Ac ne quis a nobis hoc ita dici forte miretur, quod alia quaedam in hoc facultas sit ingeni, neque haec dicendi ratio aut disciplina, ne nos quidem huic uni studio penitus umquam dediti fuimus. Etenim omnes artes, quae ad humanitatem pertinent, habent quoddam commune vinculum, et quasi cognatione quadam inter se continentur.</p>\n" +
-    "\n" +
+    "            <h1 class=\"heading\">Youri Bertucchi</h1>\n" +
+    "            <p class=\"lead\">Ostéopathe D.O.</p>\n" +
+    "            <!-- <img class=\"img-responsive\" src=\"img/dieteticienne-tachier-fontenilles.jpg\" width=\"400px\" alt=\"diéteticienne nutritionniste fontenilles\" /> -->\n" +
+    "            <h1 id=\"plus-medecin\">En savoir plus sur Youri Bertucchi</h1>\n" +
+    "            <p>Youri Bertucchi, ostéopathe D.O. vous accueille dans son cabinet du centre ville de Toulouse.<br />Suite à une formation de 6 ans à l’Institut Toulousain d’Ostéopathie (école agréée par le ministère de la santé et des sports), il obtient son diplôme \"Ostéopathe DO\" ainsi que quatre para-diplômes en pédiatrie, posturologie, sport et nutrition, et sport de haut niveau.<br /><br />Il pratique une ostéopathie traditionnelle visant tous les publics.\n" +
+    "                <br />Vous pouvez visiter son site internet : <a href=\"http://www.toulouseosteopathe.com\">toulouseosteopathe.com</a></p>\n" +
     "        </div>\n" +
-    "        \n" +
+    "            \n" +
     "        <div class=\"col-md-6 info-doc\">\n" +
-    "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2895.1763632183256!2d1.3042004000000038!3d43.47778970000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb61e6def9d9d%3A0xbc18a5c1581f4e3b!2s60+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1413365325879\" width=\"350\" height=\"200\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
-    "            <p>60 route d'Ox, 31600 Seysses</p>\n" +
+    "            <iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2889.695465016504!2d1.4446044000000002!3d43.59205920000001!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aebc803654f409%3A0x1d77ca09b0f1664!2s11+Place+Lafourcade%2C+31400+Toulouse!5e0!3m2!1sfr!2sfr!4v1415188115020\" width=\"400\" height=\"300\" frameborder=\"0\" style=\"border:0\"></iframe>\n" +
+    "            <p>11 place Lafourcade, 31400 Toulouse</p>\n" +
     "            <p><span class=\"listpaiyment\">Moyens de paiement :<span></p>\n" +
     "                <ul class=\"paymentway\">\n" +
-    "                    <li><img src=\"img/cardb.png\" />carte bleu acceptée</li>\n" +
     "                    <li><img src=\"img/cash.png\" /> espèces acceptées</li>\n" +
     "                    <li><img src=\"img/check.png\" /> chèques acceptés</li>\n" +
     "                </ul>\n" +
-    "        </div>        \n" +
+    "        </div>\n" +
     "    </div>\n" +
+    "    <p class=\"lead\">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>\n" +
+    "    <div ng-controller=\"CabinetCtrl\">\n" +
     "    <div id=\"disponibilites\" class=\"row\" ng-repeat=\"doctor in doctors\">        \n" +
-    "            <div id=\"act-choice\" class=\"col-lg-3\">\n" +
-    "                <p><strong> Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
-    "                <p>Quel motif ?</p>\n" +
+    "        <div id=\"act-choice\" class=\"col-lg-3\">\n" +
+    "            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                \n" +
+    "            <p>Quel est le motif de votre venue ?</p>\n" +
     "\n" +
-    "                <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
-    "            </div>\n" +
-    "            <button class=\"col-lg-1 navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
-    "            <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
-    "                <tr>\n" +
-    "                    <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
-    "                </tr>                \n" +
-    "                <tr>\n" +
-    "                    <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
-    "                        <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
-    "                            <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
-    "                        </div>                        \n" +
-    "                    </td>                \n" +
-    "                </tr>\n" +
-    "            </table>       \n" +
-    "            <button class=\"col-lg-1 navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button> \n" +
+    "            <select class=\"motif-consult\" ng-change=\"updateAvailableAppointments(doctor)\" ng-model=\"doctor.selectedAct\" ng-options=\"act.labelActe for act in doctor.acts\"></select>\n" +
+    "        </div>\n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seePrevious(doctor)\" ng-disabled=\"doctor.previousDisabled\"> < </button>\n" +
+    "        <table class=\"col-lg-6\" id=\"agenda-med\">\n" +
+    "            <tr>\n" +
+    "                <th ng-repeat=\"day in doctor.availabilities| limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">{{ day.date }}</th>\n" +
+    "            </tr>                \n" +
+    "            <tr>\n" +
+    "                <td ng-repeat=\"day in doctor.availabilities | limitTo:quantityWeek\" ng-class=\"{ disabled: day.appointments.length == 0}\">\n" +
+    "                    <div ng-repeat=\"c in day.appointments | limitTo:quantityApp\" ng-class=\"{ disabled: c.length == 0}\">\n" +
+    "                        <a href=\"\" class=\"availableAppoint\" ng-click=\"submitRV(doctor, day.date, c)\">{{ c.prettyTime }}</a>\n" +
+    "                    </div>                        \n" +
+    "                </td>                \n" +
+    "            </tr>\n" +
+    "        </table>       \n" +
+    "        <button class=\"col-lg-1 btn btn-lg btn-primary navigationArrow\" ng-click=\"seeNext(doctor)\" ng-disabled=\"doctor.nextDisabled\"> > </button>\n" +
     "    </div>\n" +
+    "    <div>\n" +
     "</div>   \n" +
     "    \n" +
-    "");
+    "    ");
 }]);
 ;
 	var app = angular.module('app', ['ngRoute', 'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
@@ -45575,13 +45605,28 @@ angular.module("../../rapidocteur_web/app/partials/toulouse/osteopathe-bertucchi
 				templateUrl : 'app/partials/toulouse/osteopathe-bertucchi.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/labege/dieteticienne-bec', {
+				templateUrl : 'app/partials/labege/dieteticienne-bec.html', 
+				controller: 'CabinetCtrl'
+			})
 			.when('/saint-alban/osteopathe-fragnier', {
 				templateUrl : 'app/partials/saint-alban/osteopathe-fragnier.html', 
+				controller: 'CabinetCtrl'
+			})
+			.when('/seysses/medecins-generalistes', {
+				templateUrl : 'app/partials/seysses/cabinet-medical.html', 
+				controller: 'CabinetCtrl'
+			})
+			.when('/labege/dieteticienne-bec', {
+				templateUrl : 'app/partials/labege/dieteticienne-bec.html', 
 				controller: 'CabinetCtrl'
 			})
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'
+			})
+			.when('/mentions-legales', {
+				templateUrl : 'app/partials/mentions-legales.html'
 			});
 			/*$locationProvider.html5Mode(true);*/
 	}]);;appControllers.controller('LandingController', 
@@ -45604,8 +45649,8 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		};
 
 		switch ($location.path()) {
-			case '/seysses/cabinet-medical-seysses' : cabinet.idCabinet = 3; 
-				cabinet.adresse = '';
+			case '/seysses/medecins-generalistes' : cabinet.idCabinet = 3; 
+				cabinet.adresse = '60 route ox - 31600 Seysses';
 				mixpanel.track("View Seysses");
 				break;
 			case '/fontenilles/dieteticien-guerri' : cabinet.idCabinet = 1; 
@@ -45619,7 +45664,11 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			case '/saint-alban/osteopathe-fragnier' : cabinet.idCabinet = 5; 
 				cabinet.adresse = '41 av, Leon Jouhaux';
 				mixpanel.track("View Fragnier");
-				break;			
+				break;
+			case '/labege/dieteticienne-bec' : cabinet.idCabinet = 11; 
+				cabinet.adresse = '6, rue de l\'Autan - 31670 Labège';
+				mixpanel.track("View Bec");
+				break;				
 			default : window.location.href = '#/';
 		}
 		
@@ -45641,7 +45690,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 				console.log("doctor", doctor.idPraticien);
 
-				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 					console.log('getAvailableAppointements : ', data);
 					doctor.availabilities = data.output;
 				}).error(function(data, status) {
@@ -45657,7 +45706,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		});	
 
 		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -45675,7 +45724,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.currentWeek == (doctor.semaines_ouvertes - 1)) {
 				doctor.nextDisabled = true;
 			}
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -45693,7 +45742,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.nextDisabled) {
 				doctor.nextDisabled = false;
 			}
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -45737,8 +45786,8 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 	}	
 ]);
 
-appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService',
-	function($scope, $modal, AppointmentManager, PostService) {
+appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService', 'GetService',
+	function($scope, $modal, AppointmentManager, PostService, GetService) {
 	$scope.appointment = AppointmentManager.getAppointment();
 
 	$scope.user = {
@@ -45773,7 +45822,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	    });
 
 	    modalInstance.result.then(function () {
-	    	//window.location.href = '#/seysses/cabinet-medical-seysses';
+	    	//window.location.href = '#/seysses/medecins-generalistes';
 	    	window.location.href = '#/';
 	    });
 	};
@@ -45913,12 +45962,13 @@ function validatePhoneNumber(phoneNumber) {
                 });
             },
 
-            getAvailableAppointements: function(idOffice, idDoctor, actDuration, currentWeek) {
-                console.log(idOffice, idDoctor, actDuration);
+            getAvailableAppointements: function(idOffice, idDoctor, act, currentWeek) {
+                console.log(idOffice, idDoctor, act);
+                var stringifyAct = JSON.stringify(act);
                 return $http({
                     url: Config.backend + '/office/doctors/appointments',
                     method: "GET", 
-                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor, "actDuration" : actDuration, "currentWeek" : currentWeek}
+                    params : {"idOffice" : idOffice, "idDoctor" : idDoctor, "act" : stringifyAct, "currentWeek" : currentWeek}
                 });
             },
 
