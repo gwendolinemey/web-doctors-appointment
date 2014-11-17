@@ -37,6 +37,10 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			case '/labege/dieteticienne-bec' : cabinet.idCabinet = 11; 
 				cabinet.adresse = '6, rue de Autan - 31670 Labège';
 				mixpanel.track("View Bec");
+				break;
+			case '/toulouse/osteopathe-augusseau' : cabinet.idCabinet = 12; 
+				cabinet.adresse = '3 rue Carlos Gardel - 31300 Toulouse';
+				mixpanel.track("View Augusseau");
 				break;				
 			default : window.location.href = '#/';
 		}

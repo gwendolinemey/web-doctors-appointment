@@ -36,6 +36,10 @@
 				templateUrl : 'app/partials/labege/dieteticienne-bec.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/toulouse/osteopathe-augusseau', {
+				templateUrl : 'app/partials/toulouse/osteopathe-augusseau.html', 
+				controller: 'CabinetCtrl'
+			})
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'
