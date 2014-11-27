@@ -27,22 +27,29 @@
 			.when('/fontenilles/dieteticien-guerri', {	
 				templateUrl : 'app/partials/fontenilles/dieteticien-guerri.html', 
 				controller: 'CabinetCtrl'
-			})
-			.when('/toulouse/osteopathe-bertucchi', {
-				templateUrl : 'app/partials/toulouse/osteopathe-bertucchi.html', 
-				controller: 'CabinetCtrl'
-			})
+			})			
 			.when('/labege/dieteticienne-bec', {
 				templateUrl : 'app/partials/labege/dieteticienne-bec.html', 
 				controller: 'CabinetCtrl'
 			})
 			.when('/toulouse/osteopathe-augusseau', {
-				templateUrl : 'app/partials/toulouse/osteopathe-augusseau.html', 
+				templateUrl : 'app/partials/toulouse/osteopathe-augusseau.html',
+				controller: 'CabinetCtrl' 
+			})
+			.when('/saint-alban/osteopathe-fragnier', {
+				templateUrl : 'app/partials/saint-alban/osteopathe-fragnier.html', 
 				controller: 'CabinetCtrl'
 			})
+			.when('/seysses/medecins-generalistes', {
+				templateUrl : 'app/partials/seysses/cabinet-medical.html', 
+				controller: 'CabinetCtrl'
+			})			
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
 				controller: 'ConfirmationRendezVous'
+			})
+			.when('/mentions-legales', {
+				templateUrl : 'app/partials/mentions-legales.html'
 			});
 			/*$locationProvider.html5Mode(true);*/
 	}]);

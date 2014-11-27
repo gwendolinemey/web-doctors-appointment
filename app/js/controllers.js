@@ -35,7 +35,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				mixpanel.track("View Fragnier");
 				break;
 			case '/labege/dieteticienne-bec' : cabinet.idCabinet = 11; 
-				cabinet.adresse = '6, rue de Autan - 31670 Labège';
+				cabinet.adresse = '6, rue de l\'Autan - 31670 Labège';
 				mixpanel.track("View Bec");
 				break;
 			case '/toulouse/osteopathe-augusseau' : cabinet.idCabinet = 12; 
@@ -63,7 +63,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 				console.log("doctor", doctor.idPraticien);
 
-				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 					console.log('getAvailableAppointements : ', data);
 					doctor.availabilities = data.output;
 				}).error(function(data, status) {
@@ -79,7 +79,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		});	
 
 		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -97,7 +97,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.currentWeek == (doctor.semaines_ouvertes - 1)) {
 				doctor.nextDisabled = true;
 			}
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -115,7 +115,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.nextDisabled) {
 				doctor.nextDisabled = false;
 			}
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct.duree, doctor.currentWeek).success(function(data) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output;
 			}).error(function(data, status) {
@@ -124,36 +124,44 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			});
 		};
 
-		$scope.submitRV = function(doctor, day, id){
+		$scope.submitRV = function(doctor, day, appointmentTime){
 
-			var labelActe = doctor.acts[0].labelActe;
-			console.log("submitRV doc: ", doctor);
-			console.log("submitRV day: ", day);
-			console.log("submitRV app: ", id);
-			console.log("submitRV acte: ", labelActe);
-			console.log("submitRV idoff: ", cabinet.idCabinet);
+			var appointment = {
+				doctor: doctor,
+				time: appointmentTime,
+				dayDate: day,
+				office: cabinet,
+				acte: doctor.selectedAct.labelActe
+			};
 
-			AppointmentManager.setSelectedAppointment(id);
-			AppointmentManager.setSelectedDay(day);
-			AppointmentManager.setSelectedDoctor(doctor);
-			AppointmentManager.setSelectedOffice(cabinet);
-			AppointmentManager.setSelectedActe(labelActe);
+			console.log("submitRV : ", appointment);
+
+			GetService.getIsAppointmentAvailable(appointment).success(function(data) {
+				console.log('getIsAppointmentAvailable : ', data);
+				if (data.output.isAvailable) {
+					mixpanel.track("Selection RV available");
+					AppointmentManager.setAppointment(appointment);
+					window.location.href = '#/confirmation-rendezvous';
+				} 
+				else {
+					//TODO implement something more sexy (modal)
+					mixpanel.track("Selection RV not available");
+					alert("Le rendez-vous n'est plus disponible");
+					mixpanel.track("Selection RV not available");
+				}
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
 
 			mixpanel.track("Selection RV");
-			window.location.href = '#/confirmation-rendezvous';
 		};
 	}	
 ]);
 
-appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService',
-	function($scope, $modal, AppointmentManager, PostService) {
-	$scope.appointment = {
-		doctor: AppointmentManager.getSelectedDoctor(),
-		time: AppointmentManager.getSelectedAppointment(),
-		dayDate: AppointmentManager.getSelectedDay(),
-		office: AppointmentManager.getSelectedOffice(),
-		acte: AppointmentManager.getSelectedActe()
-	};
+appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService', 'GetService',
+	function($scope, $modal, AppointmentManager, PostService, GetService) {
+	$scope.appointment = AppointmentManager.getAppointment();
 
 	$scope.user = {
 		firstName: '',
@@ -187,6 +195,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	    });
 
 	    modalInstance.result.then(function () {
+	    	//window.location.href = '#/seysses/medecins-generalistes';
 	    	window.location.href = '#/';
 	    });
 	};
@@ -239,16 +248,33 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
             var appointment = $scope.appointment;
             appointment.user = $scope.user;
 
-            PostService.saveAppointment(appointment).success(function(data) {
-		        console.log(data);
-		        if (data.status == "success") {
-		        	mixpanel.track("Enregistre RV");
-		        	$scope.open();
-		        }
-		    }).error(function(data, status) {
-		        console.log(status);
-		        console.log(data);
-		    });
+            GetService.getIsAppointmentAvailable(appointment).success(function(data) {
+				console.log('getIsAppointmentAvailable : ', data);
+				if (data.output.isAvailable) {
+					mixpanel.track("Confirm RV available");
+
+					PostService.saveAppointment(appointment).success(function(data) {
+				        console.log(data);
+				        if (data.status == "success") {
+				        	mixpanel.track("Enregistre RV");
+				        	$scope.open();
+				        } else {
+				        	mixpanel.track("Erreur Enregistre RV");
+				        }
+				    }).error(function(data, status) {
+				        console.log(status);
+				        console.log(data);
+				    });
+				} 
+				else {
+					//TODO implement something more sexy (modal)
+					mixpanel.track("Confirm RV not available");
+					alert("Le rendez-vous n'est plus disponible");
+				}
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
     	}
     };
 }
