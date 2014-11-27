@@ -2,23 +2,18 @@
 <div class="container" id="page-med">
     <div class="row">
         <div class="col-md-6 presentation-doc">
-            <div class="col-md-3 col-xs-3">
-                <img src="img/pro/seysses_cabinet.png" class="img-responsive img-circle" alt="médecin généraliste seysses" />
-            </div>
-            <div class="col-md-9 col-xs-9">
-                <h1 class="heading">Cabinet médical</h1>
-                <p class="lead">Médecins généralistes</p>
-            </div>
-            <!-- <img class="img-responsive" src="img/dieteticienne-tachier-fontenilles.jpg" width="400px" alt="diéteticienne nutritionniste fontenilles" /> -->
-            <h1 id="plus-medecin">En savoir plus sur le cabinet médical</h1>
-            <p>Les docteurs Anne-Laure Boudou-Battisti, Jean-Paul Boyes, Elisabeth Calas, Floriane Coder et Caroline Monticelli vous accueillent dans leur cabinet situé au 60 route d'Ox à Seysses. Le cabinet est ouvert du lundi au samedi.<br /></p>
+            <h1 class="heading">Dominique Louw & Denis Marty</h1>
+            <p class="lead">Chirurgien dentiste</p>
             
+            <h1 id="plus-medecin">En savoir plus sur Dominique Louw et Denis Marty</h1>
+            <p>Led docteurs Marty et Louw sont dentistes à Labège. Leur cabinet se situe rue Pierre et Marie Curie.
+            </p>
         </div>
             
         <div class="col-md-6 info-doc">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d723.6155963197172!2d1.3123452999999987!3d43.49268879999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aeb63edbb9bb07%3A0x45e791b33c607824!2s77+Route+d&#39;Ox%2C+31600+Seysses!5e0!3m2!1sfr!2sfr!4v1417105466225" width="400" height="300" frameborder="0" style="border:0"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2891.9336482073463!2d1.5135447288360464!3d43.54542499999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aebe05d2610f3f%3A0x9d2a2da3566d31a1!2sLeonelli+Antoine!5e0!3m2!1sfr!2sfr!4v1417111371505" width="400" height="300" frameborder="0" style="border:0"></iframe>
 
-            <p>60 route d'Ox, 31600 Seysses</p>
+            <p>Rue Pierre et Marie Curie, 31670 Labège</p>
             <p><span class="listpaiyment">Moyens de paiement :<span></p>
                 <ul class="paymentway">
                     <li><img src="img/cash.png" /> espèces acceptées</li>
@@ -31,13 +26,10 @@
     <div ng-controller="CabinetCtrl">
     <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
         <div id="act-choice" class="col-lg-3">
-            <p><strong>Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
+            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
             <p>Quel est le motif de votre venue ?</p>
 
             <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
-
-            <p class="indication">Info : prenez un rendez-vous par personne venant à la consultation.</p>
-
         </div>
         <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
         <table class="col-lg-6" id="agenda-med">
