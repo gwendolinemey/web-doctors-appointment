@@ -17,7 +17,7 @@
                 console.log(idOffice, idDoctor, act);
                 var stringifyAct = JSON.stringify(act);
                 return $http({
-                    url: Config.backend + '/office/doctors/appointments',
+                    url: Config.backend + '/patients/side/doctors/availabilities',
                     method: "GET", 
                     params : {"idOffice" : idOffice, "idDoctor" : idDoctor, "act" : stringifyAct, "currentWeek" : currentWeek}
                 });
