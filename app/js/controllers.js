@@ -26,10 +26,6 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				cabinet.adresse = '1 lot le village - 31470 Fontenilles';
 				mixpanel.track("View Guerri");
 				break;
-			case '/toulouse/osteopathe-bertucchi' : cabinet.idCabinet = 2; 
-				cabinet.adresse = '11 place Lafourcade - 31400 Toulouse';
-				mixpanel.track("View Bertucchi");
-				break;
 			case '/saint-alban/osteopathe-fragnier' : cabinet.idCabinet = 5; 
 				cabinet.adresse = '41 av, Leon Jouhaux';
 				mixpanel.track("View Fragnier");
@@ -46,7 +42,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		}
 		
 		$scope.quantityWeek=7;
-		$scope.quantityApp=5;
+		var showLimitAppointments = 5;
 
 		console.log('Current route name: ' + $location.path());
 
@@ -54,6 +50,14 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
 				doctor.availabilities = data.output.availabilities;
+				doctor.showLimit = showLimitAppointments;
+				doctor.showMoreVisible = false;
+				for (var i = 0; i < doctor.availabilities.length; i++) {
+					if (doctor.availabilities[i].appointments.length > doctor.showLimit) {
+						doctor.showMoreVisible = true;
+					}
+				};
+				doctor.showLessVisible = false;
 				doctor.absences = data.output.absences;
 			}).error(function(data, status) {
 				console.log(status);
@@ -108,6 +112,18 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				doctor.nextDisabled = false;
 			}
 			getAvailabilities(cabinet, doctor);
+		};
+
+		$scope.showMore = function(doctor){
+			doctor.showLimit = 200;
+			doctor.showMoreVisible = false;
+			doctor.showLessVisible = true;
+		};
+
+		$scope.showLess = function(doctor){
+			doctor.showLimit = showLimitAppointments;
+			doctor.showMoreVisible = true;
+			doctor.showLessVisible = false;
 		};
 
 		$scope.submitRV = function(doctor, day, appointmentTime){

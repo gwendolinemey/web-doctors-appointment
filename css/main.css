@@ -44,7 +44,7 @@ footer ul.quicklinks {
 .info-doc{ text-align: left; margin-top: 25px; padding-left: 55px; }
 #plus-medecin{ font-size: large; line-height: 50px; }
 #disponibilites{ background-color: #bdc3c7; padding: 2%; margin-top:3%;}
-#agenda-med td { border:1px solid #fff; padding:15px; }
+#agenda-med td.appointments { border:1px solid #fff; padding:15px; text-align: center; }
 #agenda-med th { border:1px solid #fff; padding:5px; text-align: center; background-color: #39c5da; color:#fff;}
 .motif-consult{ color:#000; }
 .description-pro{ text-align: left; margin-top: 2%; margin-bottom: 2%;}
@@ -61,6 +61,7 @@ footer ul.quicklinks {
 .indication{ font-size: x-small; text-align: justify;}
 .important{ font-weight: bold;}
 #absences{margin-top: 5%; padding-left: 5%;}
+.showMoreLess{padding-top: 1%; text-align: center;}
 
 
 /*** Confirmation ***/

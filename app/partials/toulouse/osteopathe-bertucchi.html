@@ -39,11 +39,17 @@
                 <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
             </tr>                
             <tr>
-                <td ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
-                    <div ng-repeat="c in day.appointments | limitTo:quantityApp" ng-class="{ disabled: c.length == 0}">
+                <td class="appointments" ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                    <div ng-repeat="c in day.appointments | limitTo:doctor.showLimit" ng-class="{ disabled: c.length == 0}">
                         <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
                     </div>                        
                 </td>                
+            </tr>
+            <tr ng-show="doctor.showMoreVisible">
+                <td colspan="7" class="showMoreLess"><a href="" ng-click="showMore(doctor)">Voir plus</a></td>
+            </tr>
+            <tr ng-show="doctor.showLessVisible">
+                <td colspan="7" class="showMoreLess"><a href="" ng-click="showLess(doctor)">Réduire</a></td>
             </tr>
         </table>       
         <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button>
