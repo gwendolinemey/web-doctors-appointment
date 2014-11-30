@@ -69,3 +69,9 @@ footer ul.quicklinks {
 #confirmrv{ max-width: 500px; margin:auto;}
 #confirmrv input{ margin-top:1%; margin-bottom: 1%; }
 .modal{ color: #000;} 
+
+/*** Seysses ***/
+.thumbnail-seysses {
+    display : block;
+    margin : auto;
+}
