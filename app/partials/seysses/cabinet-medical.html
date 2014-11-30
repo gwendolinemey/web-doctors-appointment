@@ -34,6 +34,9 @@
 
             <p class="indication">Info : prenez un rendez-vous par personne venant à la consultation.</p>
 
+            <div id="absences" class="row" ng-repeat="abs in doctor.absences">
+                <p><strong>Remplacé par {{ abs.nomRemplacant }} du {{ abs.dateDebut }} au {{ abs.dateFin }}</strong></p>
+            </div>
         </div>
         <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
         <table class="col-lg-6" id="agenda-med">

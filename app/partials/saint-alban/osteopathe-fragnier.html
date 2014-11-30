@@ -46,6 +46,10 @@
             <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
 
             <p class="indication">Pour les consultations pédiatriques des <span class="important">bébés de moins de 6 mois</span> : pensez à apporter le <span class="important">certificat de non contre-indication à l’ostéopathie</span>. Il est délivré par votre médécin généraliste ou pédiatre.</p>
+
+            <div id="absences" class="row" ng-repeat="abs in doctor.absences">
+                <p><strong>Remplacé par {{ abs.nomRemplacant }} du {{ abs.dateDebut }} au {{ abs.dateFin }}</strong></p>
+            </div>
         </div>
         <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
         <table class="col-lg-6" id="agenda-med">

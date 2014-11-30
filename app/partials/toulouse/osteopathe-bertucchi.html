@@ -28,6 +28,10 @@
             <p>Quel est le motif de votre venue ?</p>
 
             <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
+
+            <div id="absences" class="row" ng-repeat="abs in doctor.absences">
+                <p><strong>Remplacé par {{ abs.nomRemplacant }} du {{ abs.dateDebut }} au {{ abs.dateFin }}</strong></p>
+            </div>
         </div>
         <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
         <table class="col-lg-6" id="agenda-med">

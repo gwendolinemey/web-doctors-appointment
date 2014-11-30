@@ -50,6 +50,17 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 		console.log('Current route name: ' + $location.path());
 
+		function getAvailabilities(cabinet, doctor) {
+			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
+				console.log('getAvailableAppointements : ', data);
+				doctor.availabilities = data.output.availabilities;
+				doctor.absences = data.output.absences;
+			}).error(function(data, status) {
+				console.log(status);
+				console.log(data);
+			});
+		}
+
 		GetService.getDoctorsByOffice(cabinet.idCabinet).success(function(data) {
 			console.log('getDoctorsByOffice : ', data);
 			$scope.doctors = data.output;
@@ -63,14 +74,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 
 				console.log("doctor", doctor.idPraticien);
 
-				GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
-					console.log('getAvailableAppointements : ', data);
-					doctor.availabilities = data.output;
-				}).error(function(data, status) {
-					console.log(status);
-					console.log(data);
-				});
-
+				getAvailabilities(cabinet, doctor);
 			});
 		}).error(function(data, status) {
 
@@ -79,13 +83,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		});	
 
 		$scope.updateAvailableAppointments = function(doctor){
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
-				console.log('getAvailableAppointements : ', data);
-				doctor.availabilities = data.output;
-			}).error(function(data, status) {
-				console.log(status);
-				console.log(data);
-			});
+			getAvailabilities(cabinet, doctor);
 		};
 
 		$scope.seeNext = function(doctor){
@@ -97,13 +95,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.currentWeek == (doctor.semaines_ouvertes - 1)) {
 				doctor.nextDisabled = true;
 			}
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
-				console.log('getAvailableAppointements : ', data);
-				doctor.availabilities = data.output;
-			}).error(function(data, status) {
-				console.log(status);
-				console.log(data);
-			});
+			getAvailabilities(cabinet, doctor);
 		};
 
 		$scope.seePrevious = function(doctor){
@@ -115,13 +107,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 			if (doctor.nextDisabled) {
 				doctor.nextDisabled = false;
 			}
-			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
-				console.log('getAvailableAppointements : ', data);
-				doctor.availabilities = data.output;
-			}).error(function(data, status) {
-				console.log(status);
-				console.log(data);
-			});
+			getAvailabilities(cabinet, doctor);
 		};
 
 		$scope.submitRV = function(doctor, day, appointmentTime){
