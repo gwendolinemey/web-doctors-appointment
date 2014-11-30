@@ -6,7 +6,7 @@
         </div>
         <div class="modal-body">
             <p class="lead">Vous avez rendez-vous le {{appointment.dayDate}} à {{appointment.time.prettyTime}} avec {{practicianLabel}}. </p> 
-            <p class="lead">Vous venez de recevoir un e-mail de confirmation. </p> 
+            <p class="lead">{{confirmationMethod}}</p> 
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>

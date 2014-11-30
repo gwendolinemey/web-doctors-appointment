@@ -18,7 +18,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		};
 
 		switch ($location.path()) {
-			case '/seysses/medecins-generalistes' : cabinet.idCabinet = 3; 
+			case '/seysses/medecins-generalistes' : cabinet.idCabinet = 3; //2 Dev fallas
 				cabinet.adresse = '60 route ox - 31600 Seysses';
 				mixpanel.track("View Seysses");
 				break;
@@ -184,11 +184,11 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 
 	console.log("recu appointment: ", $scope.appointment);
 
-	$scope.open = function (size) {
+	$scope.open = function (appointment) {
 	    var modalInstance = $modal.open({
 	      templateUrl: 'confirmationModal.html',
 	      controller: 'ModalInstanceCtrl',
-	      size: size,
+	      size: 'md',
 	      resolve: {
 	        appointment: function () {
 	          return $scope.appointment;
@@ -235,7 +235,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 				}
 			}
 
-			if (! validatePhoneNumber($scope.user.phone)) {
+			if (! validatePhoneNumber($scope.user.phone) || ($scope.user.phone.substring(0,1) != '0')) {
 				$scope.errorPhone = true;
 			} else {
 				if ($scope.errorPhone) {
@@ -259,7 +259,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 				        console.log(data);
 				        if (data.status == "success") {
 				        	mixpanel.track("Enregistre RV");
-				        	$scope.open();
+				        	$scope.open(appointment);
 				        } else {
 				        	mixpanel.track("Erreur Enregistre RV");
 				        }
@@ -269,7 +269,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 				    });
 				} 
 				else {
-					//TODO implement something more sexy (modal)
+					//TODO implement something sexier (modal)
 					mixpanel.track("Confirm RV not available");
 					alert("Le rendez-vous n'est plus disponible");
 				}
@@ -285,6 +285,12 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 appControllers.controller('ModalInstanceCtrl', function ($scope, $modalInstance, appointment) {
 	console.log('appointment', appointment);
 	$scope.appointment = appointment;
+
+	$scope.confirmationMethod = 'Vous allez de recevoir un e-mail de confirmation.'
+	if (appointment.office.idCabinet == 3 && 
+            (appointment.user.phone.substr(1,1) == '6' || appointment.user.phone.substr(1,1) == '7')) {
+		$scope.confirmationMethod = 'Vous allez de recevoir un SMS de confirmation.'
+	} 
 
 	$scope.practicianLabel = "le Docteur " + $scope.appointment.doctor.nom;
 	if (isNotDoctor($scope.appointment.doctor.specialities)) {
@@ -319,6 +325,6 @@ function validateEmail(email) {
 }
 
 function validatePhoneNumber(phoneNumber) { 
-	var re = /^\d{10,12}$/;
+	var re = /^\d{10}$/;
 	return re.test(phoneNumber);
 }
