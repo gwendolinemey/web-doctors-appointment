@@ -197,8 +197,11 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	    });
 
 	    modalInstance.result.then(function () {
-	    	//window.location.href = '#/seysses/medecins-generalistes';
-	    	window.location.href = '#/';
+	    	if (appointment.office.idCabinet == 3) {
+	    		window.location.href = '/seysses';
+	    	} else {
+	    		window.location.href = '/';
+	    	}
 	    });
 	};
 
