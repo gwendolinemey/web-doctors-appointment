@@ -1,15 +1,3 @@
-appControllers.controller('LandingController', 
-	function($scope) {
-		$scope.ps = 8;
-		$scope.rv = 21;
-
-		$scope.guerriSelected = function(){
-			window.location.href = '#/fontenilles/dieteticien-guerri';
-			console.log("guerriSelected");
-		};
-	}
-);
-
 appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', 'AppointmentManager', 
 	function($scope, $location, GetService, AppointmentManager){
 		var cabinet ={
@@ -42,7 +30,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				cabinet.adresse = '3 rue Carlos Gardel - 31300 Toulouse';
 				mixpanel.track("View Augusseau");
 				break;				
-			default : window.location.href = '#/';
+			default : window.location.href = '/';
 		}
 		
 		$scope.quantityWeek=7;
@@ -147,7 +135,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				if (data.output.isAvailable) {
 					mixpanel.track("Selection RV available");
 					AppointmentManager.setAppointment(appointment);
-					window.location.href = '#/confirmation-rendezvous';
+					window.location.href = '/confirmation-rendezvous';
 				} 
 				else {
 					//TODO implement something more sexy (modal)
@@ -168,6 +156,10 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'AppointmentManager', 'PostService', 'GetService',
 	function($scope, $modal, AppointmentManager, PostService, GetService) {
 	$scope.appointment = AppointmentManager.getAppointment();
+	// redirection if no data on start, means that the user shouldn't be here
+	if (! $scope.appointment) {
+		window.location.href = '/';
+	}
 
 	$scope.user = {
 		firstName: '',
