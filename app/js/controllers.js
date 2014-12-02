@@ -30,7 +30,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				cabinet.adresse = '3 rue Carlos Gardel - 31300 Toulouse';
 				mixpanel.track("View Augusseau");
 				break;				
-			default : window.location.href = '/';
+			default : window.location.href = '#/';
 		}
 		
 		$scope.quantityWeek=7;
@@ -135,7 +135,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				if (data.output.isAvailable) {
 					mixpanel.track("Selection RV available");
 					AppointmentManager.setAppointment(appointment);
-					window.location.href = '/confirmation-rendezvous';
+					window.location.href = '#/confirmation-rendezvous';
 				} 
 				else {
 					//TODO implement something more sexy (modal)
@@ -158,7 +158,7 @@ appControllers.controller('ConfirmationRendezVous', ['$scope', '$modal', 'Appoin
 	$scope.appointment = AppointmentManager.getAppointment();
 	// redirection if no data on start, means that the user shouldn't be here
 	if (! $scope.appointment) {
-		window.location.href = '/';
+		window.location.href = '#/';
 	}
 
 	$scope.user = {
