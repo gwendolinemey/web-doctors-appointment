@@ -22,7 +22,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				cabinet.adresse = '6, rue de l\'Autan - 31670 Labège';
 				mixpanel.track("View Bec");
 				break;
-			case '/labege/dentiste' : cabinet.idCabinet = 1; 
+			case '/labege/dentistes' : cabinet.idCabinet = 1; 
 				//cabinet.adresse = '6, rue de l\'Autan - 31670 Labège';
 				mixpanel.track("View Dentistes labège");
 				break;

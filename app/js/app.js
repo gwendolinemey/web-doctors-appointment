@@ -32,8 +32,8 @@
 				templateUrl : 'app/partials/labege/dieteticienne-bec.html', 
 				controller: 'CabinetCtrl'
 			})
-			.when('/labege/dentiste', {
-				templateUrl : 'app/partials/labege/dentiste-louw-leonelli.html', 
+			.when('/labege/dentistes', {
+				templateUrl : 'app/partials/labege/dentistes-louw-leonelli.html', 
 				controller: 'CabinetCtrl'
 			})
 			.when('/toulouse/osteopathe-augusseau', {

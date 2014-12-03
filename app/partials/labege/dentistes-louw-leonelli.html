@@ -26,7 +26,7 @@
     <div ng-controller="CabinetCtrl">
     <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
         <div id="act-choice" class="col-lg-3">
-            <p><strong>{{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
+            <p><strong>Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
             <p>Quel est le motif de votre venue ?</p>
 
             <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
