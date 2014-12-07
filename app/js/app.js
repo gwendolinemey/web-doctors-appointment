@@ -9,8 +9,7 @@
 		function($routeProvider) {
 		$routeProvider
 			.when('/', { 
-				templateUrl: 'app/partials/accueil.html',	
-				controller: 'LandingController' 
+				templateUrl: 'app/partials/accueil.html'	
 			})
 			.when('/confirmation-rendezvous', {
 				templateUrl : 'app/partials/confirmation-rendezvous.html', 
