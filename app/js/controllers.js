@@ -6,30 +6,36 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		};
 
 		switch ($location.path()) {
-			case '/seysses/medecins-generalistes' : cabinet.idCabinet = 3; //2 Dev fallas
-				cabinet.adresse = '60 route ox - 31600 Seysses';
-				mixpanel.track("View Seysses");
-				break;
-			case '/fontenilles/dieteticien-guerri' : cabinet.idCabinet = 1; 
+			case '/fontenilles/dieteticien/guerri' : cabinet.idCabinet = 1; 
 				cabinet.adresse = '1 lot le village - 31470 Fontenilles';
 				mixpanel.track("View Guerri");
 				break;
-			case '/saint-alban/osteopathe-fragnier' : cabinet.idCabinet = 5; 
-				cabinet.adresse = '41 av, Leon Jouhaux';
-				mixpanel.track("View Fragnier");
-				break;
-			case '/labege/dieteticienne-bec' : cabinet.idCabinet = 11; 
+			case '/labege/dieteticien/bec' : cabinet.idCabinet = 11; 
 				cabinet.adresse = '6, rue de l\'Autan - 31670 Labège';
 				mixpanel.track("View Bec");
 				break;
-			case '/labege/dentistes' : cabinet.idCabinet = 1; 
-				//cabinet.adresse = '6, rue de l\'Autan - 31670 Labège';
+			case '/labege/dentiste/louw' : cabinet.idCabinet = 1; 
+				cabinet.adresse = 'rue Pierre et Marie Curie - 31670 Labège';
 				mixpanel.track("View Dentistes labège");
 				break;
-			case '/toulouse/osteopathe-augusseau' : cabinet.idCabinet = 12; 
+			case '/saint-alban/osteopathe/fragnier' : cabinet.idCabinet = 5; 
+				cabinet.adresse = '41 av, Leon Jouhaux';
+				mixpanel.track("View Fragnier");
+				break;
+			case '/seysses/medecin-generaliste/tucol' : 
+			case '/seysses' : 
+				cabinet.idCabinet = 3; //2 Dev fallas
+				cabinet.adresse = '60 route ox - 31600 Seysses';
+				mixpanel.track("View Seysses");
+				break;
+			case '/toulouse/osteopathe/augusseau' : cabinet.idCabinet = 12; 
 				cabinet.adresse = '3 rue Carlos Gardel - 31300 Toulouse';
 				mixpanel.track("View Augusseau");
-				break;				
+				break;	
+			case '/toulouse/osteopathe/joulia' : cabinet.idCabinet = 12; 
+				cabinet.adresse = '44 rue Gambetta - 31000 Toulouse';
+				mixpanel.track("View Joulia");
+				break;			
 			default : window.location.href = '#/';
 		}
 		

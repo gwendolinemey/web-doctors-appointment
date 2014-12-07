@@ -1,0 +1,71 @@
+<nav ng-include="'app/partials/header_index.html'" class="navbar-default navbar-static-top nav-index"></nav>
+<div class="container" id="page-med">
+    <div class="row">
+        <div class="col-md-6 presentation-doc">
+            <h1 class="heading">Vincent Joulia</h1>
+            <p class="lead">Osteopathe</p>
+            
+            <h1 id="plus-medecin">En savoir plus sur Vincent Joulia</h1>
+            <p>Vincent Joulia vous accueille dans son cabinet situé rue Gambetta à Toulouse du Lundi au Vendredi.
+            </p>
+        </div>
+            
+        <div class="col-md-6 info-doc">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2889.1640244279088!2d1.4421593999999909!3d43.6031263!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aebb62404cf827%3A0xbeba9c0b2acb3df0!2s44+Rue+L%C3%A9on+Gambetta%2C+31000+Toulouse!5e0!3m2!1sfr!2sfr!4v1417967188557" width="400" height="300" frameborder="0" style="border:0"></iframe>
+
+            <p>44 rue Gambetta, 31000 Toulouse</p>
+            <p><span class="listpaiyment">Moyens de paiement :<span></p>
+                <ul class="paymentway">
+                    <li><img src="img/cash.png" /> espèces acceptées</li>
+                    <li><img src="img/check.png" /> chèques acceptés</li>
+                </ul>
+        </div>
+    </div>
+    <p class="lead">2ème clic : choisissez le motif et l'horaire du rendez-vous</p>
+    <div ng-controller="CabinetCtrl">
+    <div id="disponibilites" class="row" ng-repeat="doctor in doctors">        
+        <div id="act-choice" class="col-lg-3">
+            <p><strong>Dr {{ doctor.nom }} {{ doctor.prenom}} </strong></p>                
+            <p>Quel est le motif de votre venue ?</p>
+
+            <select class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
+
+            <div id="absences" class="row" ng-repeat="abs in doctor.absences">
+                <p><strong>Remplacé par {{ abs.nomRemplacant }} du {{ abs.dateDebut }} au {{ abs.dateFin }}</strong></p>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <table id="agenda-med">
+                <tr>
+                    <th class="arrow"> <button class="btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button></th>
+                    <th class="day" ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
+                    <th class="arrow">
+                        <button class="btn btn-lg btn-primary navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button>
+                    </th>
+                </tr>                
+                <tr>
+                    <td></td>
+                    <td class="appointments" ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                        <div ng-repeat="c in day.appointments | limitTo:doctor.showLimit" ng-class="{ disabled: c.length == 0}">
+                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
+                        </div>                        
+                    </td>  
+                    <td></td>              
+                </tr>
+                <tr ng-show="doctor.showMoreVisible">
+                    <td></td>
+                    <td colspan="7" class="showMoreLess"><a href="" ng-click="showMore(doctor)">Voir tous les horaires disponibles</a></td>
+                    <td></td>
+                </tr>
+                <tr ng-show="doctor.showLessVisible">
+                    <td></td>
+                    <td colspan="7" class="showMoreLess"><a href="" ng-click="showLess(doctor)">Réduire</a></td>
+                    <td></td>
+                </tr>
+            </table>        
+        </div>
+    </div>
+    <div>
+</div>   
+    
+    
