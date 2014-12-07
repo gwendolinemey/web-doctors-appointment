@@ -33,26 +33,36 @@
                 <p><strong>Remplacé par {{ abs.nomRemplacant }} du {{ abs.dateDebut }} au {{ abs.dateFin }}</strong></p>
             </div>
         </div>
-        <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button>
-        <table class="col-lg-6" id="agenda-med">
-            <tr>
-                <th ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
-            </tr>                
-            <tr>
-                <td class="appointments" ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
-                    <div ng-repeat="c in day.appointments | limitTo:doctor.showLimit" ng-class="{ disabled: c.length == 0}">
-                        <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
-                    </div>                        
-                </td>                
-            </tr>
-            <tr ng-show="doctor.showMoreVisible">
-                <td colspan="7" class="showMoreLess"><a href="" ng-click="showMore(doctor)">Voir plus</a></td>
-            </tr>
-            <tr ng-show="doctor.showLessVisible">
-                <td colspan="7" class="showMoreLess"><a href="" ng-click="showLess(doctor)">Réduire</a></td>
-            </tr>
-        </table>       
-        <button class="col-lg-1 btn btn-lg btn-primary navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button>
+        <div class="col-lg-8">
+            <table id="agenda-med">
+                <tr>
+                    <th class="arrow"> <button class="btn btn-lg btn-primary navigationArrow" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> < </button></th>
+                    <th class="day" ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
+                    <th class="arrow">
+                        <button class="btn btn-lg btn-primary navigationArrow" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled"> > </button>
+                    </th>
+                </tr>                
+                <tr>
+                    <td></td>
+                    <td class="appointments" ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                        <div ng-repeat="c in day.appointments | limitTo:doctor.showLimit" ng-class="{ disabled: c.length == 0}">
+                            <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
+                        </div>                        
+                    </td>  
+                    <td></td>              
+                </tr>
+                <tr ng-show="doctor.showMoreVisible">
+                    <td></td>
+                    <td colspan="7" class="showMoreLess"><a href="" ng-click="showMore(doctor)">Voir tous les horaires disponibles</a></td>
+                    <td></td>
+                </tr>
+                <tr ng-show="doctor.showLessVisible">
+                    <td></td>
+                    <td colspan="7" class="showMoreLess"><a href="" ng-click="showLess(doctor)">Réduire</a></td>
+                    <td></td>
+                </tr>
+            </table>        
+        </div>
     </div>
     <div>
 </div>   

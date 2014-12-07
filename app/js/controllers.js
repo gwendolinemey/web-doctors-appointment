@@ -24,7 +24,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				break;
 			case '/seysses/medecin-generaliste/tucol' : 
 			case '/seysses' : 
-				cabinet.idCabinet = 3; //2 Dev fallas
+				cabinet.idCabinet = 3; //2 Dev 
 				cabinet.adresse = '60 route ox - 31600 Seysses';
 				mixpanel.track("View Seysses");
 				break;
@@ -32,7 +32,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				cabinet.adresse = '3 rue Carlos Gardel - 31300 Toulouse';
 				mixpanel.track("View Augusseau");
 				break;	
-			case '/toulouse/osteopathe/joulia' : cabinet.idCabinet = 12; 
+			case '/toulouse/osteopathe/joulia' : cabinet.idCabinet = 8; 
 				cabinet.adresse = '44 rue Gambetta - 31000 Toulouse';
 				mixpanel.track("View Joulia");
 				break;			
