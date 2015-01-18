@@ -63,6 +63,16 @@
                     <td colspan="7" class="showMoreLess"><a href="" ng-click="showLess(doctor)">Réduire</a></td>
                     <td></td>
                 </tr>
+                <tr ng-show="doctor.currentWeekEmpty">
+                    <td></td>
+                    <td colspan="7" class="showMoreLess">Aucune disponibilité pour cette semaine.</td>
+                    <td></td>
+                </tr>
+                <tr ng-show="doctor.currentWeekEmpty">
+                    <td></td>
+                    <td colspan="7" class="showMoreLess">Utilisez les flèches de navigation pour trouver des créneaux disponibles.</td>
+                    <td></td>
+                </tr>
             </table>        
         </div>
     </div>

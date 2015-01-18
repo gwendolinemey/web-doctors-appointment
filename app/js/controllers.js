@@ -47,6 +47,7 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 		function getAvailabilities(cabinet, doctor) {
 			GetService.getAvailableAppointements(cabinet.idCabinet, doctor.idPraticien, doctor.selectedAct, doctor.currentWeek).success(function(data) {
 				console.log('getAvailableAppointements : ', data);
+
 				doctor.availabilities = data.output.availabilities;
 				doctor.showLimit = showLimitAppointments;
 				doctor.showMoreVisible = false;
@@ -57,6 +58,14 @@ appControllers.controller('CabinetCtrl', ['$scope', '$location', 'GetService', '
 				};
 				doctor.showLessVisible = false;
 				doctor.absences = data.output.absences;
+
+				// check to see if landing week is empty
+				if (JSON.stringify(data.output.firstAppointment) === '{}') {
+					doctor.currentWeekEmpty = true;
+				} else {
+					doctor.currentWeekEmpty = false;
+				}
+
 			}).error(function(data, status) {
 				console.log(status);
 				console.log(data);
