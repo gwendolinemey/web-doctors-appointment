@@ -1,67 +1,309 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>RapiDocteur, prise de rendez-vous médicaux en ligne</title>
+    <title>Rapidocteur - Prenez votre RDV médical en 3 click !</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Boogaloo' rel='stylesheet' type='text/css'>
-    <link href="bower_components/components-font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/index.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="css/agency.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+    
+    <script src="js/jquery.elegantcarousel.min.js"></script>
+    <!-- <script src="js/jquery-1.7.2.min.js"></script> -->
+    <script src="js/jquery.easing.1.3.js"></script>
+
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			
+			jQuery('.carousel').elegantcarousel({
+					delay:150,
+					fade:300,
+					slide:500,
+					effect:'fade',		  			//  fade, slide			  
+					orientation:'horizontal',		//	horizontal, vertical
+					captionFade: 150,
+					loop: false,					//	false, true
+					autoplay: true,					// 	false, true
+					time: 4000,
+					stopAutoplay: false
+			});
+			
+			
+			// horizontal center of the main  
+			function center_main() {
+				var window_height = jQuery(window).height();
+				var main_height = parseInt(jQuery('#main').css('height'));
+				var main_height_margin = (window_height - main_height) / 2;
+				jQuery('#main').css('top',Math.floor(main_height_margin));
+			}
+			center_main();
+	
+		});
+		
+		
+	</script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
 
-<body id="page-top" class="index" ng-app="app">
+<body id="page-top" class="index">
 
-    <div ng-view></div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">
+                	<img src="img/logos/logo.png" class="img-responsive" alt="">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#services">Partenaires</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#portfolio">Patients</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="http://blog.rapidocteur.fr">Blog</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="https://twitter.com/RapiDocteur">Twitter</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="https://www.facebook.com/RapiDocteur">Facebook</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="https://plus.google.com/b/114510223929114221539/+RapidocteurFr/posts">Google+</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="intro-text">
+            <div class="intro-lead-in">Recherchez un specialiste sur toulouse et ses environs</div>
+            <div class="intro-heading">Rapidocteur, votre rendez-vous en 3 clics et 24h/24 !</div>
+        </div>
+        <div class="container">
+        	<div class="row">
+        		<div class="col-lg-12">
+        			<div class="row">
+        				<div class="col-md-3">
+        				</div>
+		        		<div class="col-md-4">
+		        		  <div class="form-group">
+					        <input type="text" class="form-control" placeholder="Entrez le nom d'un spécialiste" id="name" required data-validation-required-message="Please enter your name.">
+					        <p class="help-block text-danger"></p>
+					      </div>
+		        		</div>
+		        		<div class="col-md-2">
+		        			<button type="submit" class="btn btn-l">Ok</button>
+		        		</div>
+		        		<div class="col-md-3">
+		        		</div>
+	        		</div>
+	        	</div>
+        	</div>
+        </div>
+        <div class="counter">
+            <div class="intro-heading">Déjà plus de 947 rendez-vous réservés !</div>
+        </div>
+    </header>
+
+    <!-- Carousel -->
+    <section id="carousel">
+        <div class="inner">
+        	<div class="example horizontal">
+            	<div id="carousel-1" class="carousel">
+                	<a class="carousel_prev carousel_left" href="" rel="carousel-1">prev</a>
+                	<div class="carousel_container">
+                        <ul class="portfolio_items">
+                            <li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="files/images/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                            <li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="files/images/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                        	<li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="files/images/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                        	<li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="files/images/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                            <li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="files/images/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                        	<li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="files/images/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                           	<li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="files/images/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                           	<li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="files/images/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                           	<li><div class="inner"><a href=""><img src="files/images/thumb.jpg" width="220" height="140" /></a>
+                            		<div class="caption"><a href=""><img src="img/img_hover.jpg" alt="hover image"/></a></div></div></li>
+                        </ul>
+                	</div>
+                    <a class="carousel_next carousel_right" href="" rel="carousel-1">next</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Clients Aside -->
+    <aside class="clients">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <a href="#">
+                        <img src="img/logos/envato.jpg" class="img-responsive img-centered" alt="">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="#">
+                        <img src="img/logos/designmodo.jpg" class="img-responsive img-centered" alt="">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="#">
+                        <img src="img/logos/themeforest.jpg" class="img-responsive img-centered" alt="">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="#">
+                        <img src="img/logos/creative-market.jpg" class="img-responsive img-centered" alt="">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Contact section -->
+
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Contactez-nous</h2>
+                    <h3 class="section-subheading text-muted">Une question ? Un petit mot à nous laisser ? N'hésitez pas à nous écrire.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form name="sentMessage" id="contactForm" novalidate>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Votre nom *" id="name" required data-validation-required-message="Entrez votre nom.">
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control" placeholder="Votre email *" id="email" required data-validation-required-message="Entrez votre adresse e-mail.">
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                                <div class="form-group">
+                                    <input type="tel" class="form-control" placeholder="Votre numéro de téléphone *" id="phone" data-validation-required-message="Entrez un numéro de téléphone.">
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <textarea class="form-control" placeholder="Votre message *" id="message" required data-validation-required-message="Entrez un message."></textarea>
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-lg-12 text-center">
+                                <div id="success"></div>
+                                <button type="submit" class="btn btn-xl">Envoyer</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <footer>
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <span class="copyright">&copy; RapiDocteur 2014 </span> made with <span id="heart">♥</span> from Toulouse
+                    <span class="copyright">Copyright &copy; RapiDocteur 2015</span>
                 </div>
                 <div class="col-md-4">
-                    <!-- <ul class="list-inline social-buttons">
-                        <li><a href="https://twitter.com/RapiDocteur"><i class="fa fa-twitter"></i></a>
+                    <ul class="list-inline social-buttons">
+                        <li><a href="#"><i class="fa fa-twitter"></i></a>
                         </li>
-                        <li><a href="https://www.facebook.com/RapiDocteur"><i class="fa fa-facebook"></i></a>
+                        <li><a href="#"><i class="fa fa-facebook"></i></a>
                         </li>
-                        <li><a href="https://plus.google.com/b/114510223929114221539/+RapidocteurFr/posts"><i class="fa fa-google"></i></a>
+                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
                         </li>
-                        <li><a href="mailto:hello@rapidocteur.fr"><i class="fa fa-envelope"></i></a>
-                        </li>
-                    </ul> -->
+                    </ul>
                 </div>
                 <div class="col-md-4">
                     <ul class="list-inline quicklinks">
-                        <li><a href="#/mentions-legales">Mentions légales</a></li>
+                        <li><a href="#">Mentions légales</a>
+                        </li>
+                        <li><a href="#">Conditions d'utilisation</a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
-    </footer>
-</body>
+    </footer>    
 
-<!-- Placed at the end of the document so the pages load faster -->  
-<script src="bower_components/angular/angular.js" type="text/javascript"></script>
-<script src="bower_components/angular-route/angular-route.js" type="text/javascript"></script>
-<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js" type="text/javascript"></script>
-<script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
-<script src="bower_components/mixpanel/mixpanel-dev.js" type="text/javascript"></script>
-<script src="app/js/app.js" type="text/javascript"></script> <!-- personnalisé-->
-<script src="app/js/controllers.js" type="text/javascript"></script> <!-- personnalisé-->
-<script src="app/js/services.js" type="text/javascript"></script> <!-- personnalisé-->
-<script src="app/config/local.js" type="text/javascript"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="js/classie.js"></script>
+    <script src="js/cbpAnimatedHeader.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/agency.js"></script>
+
+</body>
 
 </html>
