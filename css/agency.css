@@ -994,3 +994,6 @@ body {
 .search-doctor-area .search-doctor-result .name{
     font-weight: bold;
 }
+.search-doctor-area .search-doctor-result .name strong{
+    color: #02526f;
+}
