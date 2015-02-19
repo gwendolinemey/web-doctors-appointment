@@ -1,10 +1,10 @@
 
-	var app = angular.module('app', ['ngRoute', 'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
+	var app = angular.module('app', [/*'ngRoute',*/ 'appControllers', 'appServices', 'appConfig', 'ui.bootstrap']);
 
 	var appServices = angular.module('appServices', []);
 	var appControllers = angular.module('appControllers', []);
 	var appConfig = angular.module('appConfig', []);
-
+/*
 	app.config(['$routeProvider',
 		function($routeProvider) {
 		$routeProvider
@@ -53,5 +53,5 @@
 				templateUrl : 'app/partials/praticiens/toulouse/osteopathe/joulia.html',
 				controller: 'CabinetCtrl' 
 			});
-			/*$locationProvider.html5Mode(true);*/
-	}]);
+			//$locationProvider.html5Mode(true);
+	}]);*/

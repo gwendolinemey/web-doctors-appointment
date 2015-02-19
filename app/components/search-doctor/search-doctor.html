@@ -1,0 +1,5 @@
+<div class="search-doctor-area">
+    <h4>Custom templates for results</h4>
+    <input type="text" typeahead-min-length="2" ng-model="selectedDoctor" placeholder="Entrez le nom d'un spécialiste" typeahead="praticien as getLabel(praticien) for praticien in searchPraticiens($viewValue)" typeahead-template-url="app/components/search-doctor/search-doctor-result.html" class="form-control">
+
+</div>

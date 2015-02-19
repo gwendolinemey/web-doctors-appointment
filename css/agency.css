@@ -980,3 +980,17 @@ img::-moz-selection {
 body {
     webkit-tap-highlight-color: #32c1d8;
 }
+
+.search-doctor-area{
+    color: #333;
+}
+.search-doctor-area .search-doctor-result{
+    padding: 5px;
+    cursor: pointer;
+}
+.search-doctor-area .search-doctor-result:hover{
+    background: #eee;
+}
+.search-doctor-area .search-doctor-result .name{
+    font-weight: bold;
+}
