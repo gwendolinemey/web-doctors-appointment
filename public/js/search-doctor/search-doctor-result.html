@@ -1,0 +1,14 @@
+<div class="search-doctor-result">
+    <div class="main">
+        <span class="prenom">{{ match.model.prenom }}</span>
+        <span class="nom" bind-html-unsafe="match.model.nom | typeaheadHighlight:query"></span>
+        <span class="specialite" ng-repeat="specialite in match.model.Specialites">
+            - {{ specialite.labelSpecialite }}
+        </span>
+    </div>
+    <div class="cabinets">
+        <div class="cabinet" ng-repeat="cabinet in match.model.Cabinets">
+            {{ cabinet.adresse }} - {{ cabinet.code_postal }} {{ cabinet.ville }}
+        </div>
+    </div>
+</div
