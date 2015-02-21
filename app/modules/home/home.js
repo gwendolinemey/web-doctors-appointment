@@ -1,25 +1,17 @@
 (function () {
     "use strict";
 
+    var viewRenderer = require('../../view-renderer');
+
     var express = require('express');
     var router = express.Router();
-    var swig = require('swig');
 
     module.exports = function (app) {
-        app.use('/', router);
+        app.use('/', router.get('/', render));
     };
 
-    router.get('/', function (req, res, next) {
-
-        swig.renderFile('./app/modules/home/home.html', {}, function (err, output) {
-            if (err) {
-                throw err;
-            } else {
-                res.write(output);
-                res.end();
-            }
-        });
-
-    });
+    function render(req, res) {
+        viewRenderer.render('home', {}, res);
+    }
 
 })();

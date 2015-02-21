@@ -1,22 +1,17 @@
-'use strict';
+(function () {
+    "use strict";
 
-var swig = require('swig');
-var express = require('express');
-var router = express.Router();
+    var viewRenderer = require('../../view-renderer');
 
-function load(app) {
-    app.use('/mentions-legales', router.get('/', renderTemplate));
-};
+    var express = require('express');
+    var router = express.Router();
 
-function renderTemplate(req, res) {
-    swig.renderFile('./app/modules/mentions-legales/mentions-legales.html', {}, function (err, output) {
-        if (err) {
-            throw err;
-        } else {
-            res.write(output);
-            res.end();
-        }
-    });
-}
+    module.exports = function (app) {
+        app.use('/mentions-legales', router.get('/', render));
+    };
 
-module.exports = load;
+    function render(req, res) {
+        viewRenderer.render('mentions-legales', {}, res);
+    }
+
+})();
