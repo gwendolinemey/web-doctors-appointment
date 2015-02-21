@@ -11,7 +11,7 @@
 
     function render(name, parameters, res) {
 
-        swig.renderFile(__dirname + '/modules/' + name + '/' + name + '.html', parameters, function (err, output) {
+        swig.renderFile(__dirname + '/../app/modules/' + name + '/' + name + '.html', parameters, function (err, output) {
             if (err) {
                 throw err;
             } else {

@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var viewRenderer = require('../../view-renderer');
+    var viewRenderer = require('../../../config/view-renderer');
 
     var express = require('express');
     var router = express.Router();

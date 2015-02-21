@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 var swig = require('swig');
+require('./js-data');
 
 module.exports = function (app, config) {
     app.engine('html', swig.renderFile)
@@ -25,12 +26,6 @@ module.exports = function (app, config) {
     app.use(express.static(config.root + '/public'));
     app.use(methodOverride());
 
-/*    var controllers = glob.sync(config.root + '/app/controllers/*.js');
-    controllers.forEach(function (controller) {
-        console.log('Load "%s"', controller);
-        require(controller)(app);
-    });*/
-    
     var controllers = glob.sync(config.root + '/app/modules/**/*.js');
     controllers.forEach(function (controller) {
         console.log('Load "%s"', controller);
