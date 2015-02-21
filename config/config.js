@@ -8,7 +8,7 @@ var config = {
     app: {
       name: 'rapidocteur-client-less'
     },
-    port: 3000,
+    port: 8082,
   },
 
   test: {
@@ -16,7 +16,7 @@ var config = {
     app: {
       name: 'rapidocteur-client-less'
     },
-    port: 3000,
+    port: 9002,
   },
 
   production: {
@@ -24,7 +24,7 @@ var config = {
     app: {
       name: 'rapidocteur-client-less'
     },
-    port: 3000,
+    port: 9002,
   }
 };
 
