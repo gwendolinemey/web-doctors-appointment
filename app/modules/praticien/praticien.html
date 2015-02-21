@@ -1,0 +1,9 @@
+<h1>Praticien</h1>
+
+<ul>
+{% for praticien in praticiens %}
+  <li{% if loop.first %} class="first"{% endif %}>
+    {{ praticien.nom }}
+  </li>
+{% endfor %}
+</ul>
