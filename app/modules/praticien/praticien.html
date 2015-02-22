@@ -1,9 +1,32 @@
-<h1>Praticien</h1>
+{% extends '../../views/layout.html' %} {% block content %}
 
-<ul>
-{% for praticien in praticiens %}
-  <li{% if loop.first %} class="first"{% endif %}>
-    {{ praticien.nom }}
-  </li>
-{% endfor %}
-</ul>
+<div class="container page-content">
+    <div class="row">
+        <div class="col-md-6 presentation-doc">
+            <h1 class="heading">{{ praticien.prenom }} {{ praticien.nom }}</h1>
+            <p class="lead">
+                {% for specialite in praticien.Specialites %}
+                <span{% if loop.first %} class="first" {% endif %}>
+                    {{ specialite.labelSpecialite }}
+                    </span>
+                    {% endfor %}
+            </p>
+            <h1 id="plus-medecin">En savoir plus sur {{ praticien.prenom }} {{ praticien.nom }}</h1>
+        </div>
+
+        <div class="col-md-6 info-doc">
+            {% for cabinet in praticien.Cabinets %}
+            <div{% if loop.first %} class="first" {% endif %}>
+                <p>{{ cabinet.adresse }}</p>
+                <p><span class="listpaiyment">Moyens de paiement :<span></p>
+                <ul class="paymentway">
+                    <li>espèces acceptées</li>
+                    <li>chèques acceptés</li>
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -860,3 +860,6 @@ body {
   color: #999;
   font-size: 0.9em;
 }
+.page-content {
+  margin-top: 120px;
+}

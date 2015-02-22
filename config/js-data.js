@@ -17,7 +17,9 @@
     DSProvider.defaults.idAttribute = '_id';
 
     // models configuration
-    DSProvider.defineResource('praticiens');
+    DSProvider.defineResource('praticiens', {
+        idAttribute: 'reference'
+    });
 
     module.exports = {
         DSProvider: DSProvider
