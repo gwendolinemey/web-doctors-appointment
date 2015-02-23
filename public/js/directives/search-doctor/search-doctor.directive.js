@@ -6,10 +6,10 @@
 
     function searchDoctor($http) {
         return {
-            templateUrl: '/js/search-doctor/search-doctor.html',
+            templateUrl: '/js/directives/search-doctor/search-doctor.html',
             restrict: 'EA',
             scope: {
-                current: '@'
+                praticien: '='
             },
             link: {
                 pre: function preLink($scope, $element, $attrs) {

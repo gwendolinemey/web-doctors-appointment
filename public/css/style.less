@@ -1,6 +1,5 @@
 @import "variables.less";
 @import "mixins.less";
-
 /*!
  * Start Bootstrap - Agency Bootstrap Theme (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
@@ -9,7 +8,7 @@
 
 body {
     overflow-x: hidden;
-    font-family: "Roboto Slab","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .text-muted {
@@ -55,7 +54,7 @@ h4,
 h5,
 h6 {
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 700;
 }
 
@@ -74,7 +73,7 @@ h6 {
 .btn-primary {
     border-color: #32c1d8;
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 700;
     color: #fff;
     background-color: #32c1d8;
@@ -125,7 +124,7 @@ fieldset[disabled] .btn-primary.active {
     border-color: #32c1d8;
     border-radius: 3px;
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 18px;
     font-weight: 700;
     color: #fff;
@@ -137,12 +136,13 @@ fieldset[disabled] .btn-primary.active {
     border-color: #32c1d8;
     border-radius: 3px;
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 18px;
     font-weight: 700;
     color: #fff;
     background-color: #32c1d8;
 }
+
 .btn-l:hover,
 .btn-l:focus,
 .btn-l:active,
@@ -194,16 +194,17 @@ fieldset[disabled] .btn-xl.active {
 }
 
 .navbar-default .navbar-brand {
-    font-family: "Kaushan Script","Helvetica Neue",Helvetica,Arial,cursive;
+    font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial, cursive;
     color: #32c1d8;
     padding: 0px 5px;
     /*background: url(../img/logos/logo.png) 0 0 no-repeat;*/
 }
 
-.navbar-default .navbar-brand img{
+.navbar-default .navbar-brand img {
     max-width: 100%;
     max-height: 50px;
 }
+
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus,
 .navbar-default .navbar-brand:active,
@@ -212,7 +213,7 @@ fieldset[disabled] .btn-xl.active {
 }
 
 .navbar-default .navbar-collapse {
-    border-color: rgba(255,255,255,.02);
+    border-color: rgba(255, 255, 255, .02);
 }
 
 .navbar-default .navbar-toggle {
@@ -231,7 +232,7 @@ fieldset[disabled] .btn-xl.active {
 
 .navbar-default .nav li a {
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 400;
     letter-spacing: 1px;
     color: #fff;
@@ -254,36 +255,39 @@ fieldset[disabled] .btn-xl.active {
     color: #fff;
     background-color: #fb7753;
 }
-
 /* horizontal ##############################*/
+
 .horizontal {
     background: #f1f1f1;
     width: 100%;
     margin: 0 auto;
     height: 140px;
-    }
-    
+}
+
 .horizontal .carousel {
     width: 960px;
     height: 140px;
     margin: 0 auto;
     position: relative;
-    }
-    
+}
+
 .horizontal .carousel_container {
-    width: 663px; /* 3x220 + 3x1px margin */
+    width: 663px;
+    /* 3x220 + 3x1px margin */
+    
     height: 140px;
     margin: 0 auto;
     overflow: hidden;
     padding: 0 50px;
     position: relative;
-    }
-    
-.horizontal ul  { 
-    height: 140px;
-    width: 1980px; /* will be overwritten by javascript*/
 }
-    
+
+.horizontal ul {
+    height: 140px;
+    width: 1980px;
+    /* will be overwritten by javascript*/
+}
+
 .horizontal ul li {
     width: 220px;
     height: 140px;
@@ -292,46 +296,52 @@ fieldset[disabled] .btn-xl.active {
     margin-right: 1px;
     margin-bottom: 1px;
     position: relative
-    }
-    
+}
+
 .horizontal ul li a {
     width: 220px;
     height: 140px;
     background: #CCC;
     display: block;
     color: #fff;
-    }
-    
+}
+
 .horizontal ul li .caption {
     position: absolute;
     top: 0;
     left: 0;
     display: none;
-    }
-    
-    
-.carousel_right, .carousel_left {
+}
+
+.carousel_right,
+.carousel_left {
     position: absolute;
     width: 26px;
     height: 51px;
     display: block;
     text-indent: -9999px;
-    }
-    
-.carousel_left { 
-    top: 45px; left:0px;
-    background: url(../img/carousel/prev.png) top left;
-    }
-.carousel_right { 
-    top: 45px; right:0px;
-    background: url(../img/carousel/next.png) top left;
-    }
-.carousel_right:hover, .carousel_left:hover {
-    background-position: bottom left;
-    }
-    
-.disable { display: none; }
+}
 
+.carousel_left {
+    top: 45px;
+    left: 0px;
+    background: url(../img/carousel/prev.png) top left;
+}
+
+.carousel_right {
+    top: 45px;
+    right: 0px;
+    background: url(../img/carousel/next.png) top left;
+}
+
+.carousel_right:hover,
+.carousel_left:hover {
+    background-position: bottom left;
+}
+
+.disable {
+    display: none;
+}
 
 @media(min-width:768px) {
     .navbar-default {
@@ -342,23 +352,19 @@ fieldset[disabled] .btn-xl.active {
         -moz-transition: padding .3s;
         transition: padding .3s;
     }
-
     .navbar-default .navbar-brand {
         font-size: 2em;
         -webkit-transition: all .3s;
         -moz-transition: all .3s;
         transition: all .3s;
     }
-
     .navbar-default .navbar-nav>.active>a {
         border-radius: 3px;
     }
-
     .navbar-default.navbar-shrink {
         padding: 10px 0;
         background: rgba( 0, 0, 0, 0.5);
     }
-
     .navbar-default.navbar-shrink .navbar-brand {
         font-size: 1.5em;
     }
@@ -390,7 +396,7 @@ header .intro-text {
 
 header .intro-text .intro-lead-in {
     margin-bottom: 25px;
-    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 22px;
     font-style: italic;
     line-height: 16px;
@@ -399,7 +405,7 @@ header .intro-text .intro-lead-in {
 header .intro-text .intro-heading {
     margin-bottom: 25px;
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 20px;
     font-weight: 700;
     line-height: 50px;
@@ -410,19 +416,17 @@ header .intro-text .intro-heading {
         padding-top: 170px;
         padding-bottom: 20px;
     }
-
     header .intro-text .intro-lead-in {
         margin-bottom: 5px;
-        font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: 18px;
         font-style: italic;
         line-height: 40px;
     }
-
     header .intro-text .intro-heading {
         margin-bottom: 15px;
         text-transform: uppercase;
-        font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: 24px;
         font-weight: 700;
         line-height: 40px;
@@ -430,7 +434,7 @@ header .intro-text .intro-heading {
     header .counter {
         padding-top: 50px;
         padding-bottom: 20px;
-        font-family: 'Roboto Slab',"Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-family: 'Roboto Slab', "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: 24px;
         font-weight: 100;
         font-style: italic;
@@ -450,7 +454,7 @@ section h2.section-heading {
 section h3.section-subheading {
     margin-bottom: 75px;
     text-transform: none;
-    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-style: italic;
     font-weight: 400;
@@ -484,7 +488,7 @@ section h3.section-subheading {
     width: 100%;
     height: 100%;
     opacity: 0;
-    background: rgba(254,209,54,.9);
+    background: rgba(254, 209, 54, .9);
     -webkit-transition: all ease .5s;
     -moz-transition: all ease .5s;
     transition: all ease .5s;
@@ -529,7 +533,7 @@ section h3.section-subheading {
 
 #portfolio .portfolio-item .portfolio-caption p {
     margin: 0;
-    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-style: italic;
 }
@@ -661,32 +665,27 @@ section h3.section-subheading {
     .timeline:before {
         left: 50%;
     }
-
     .timeline>li {
         margin-bottom: 100px;
         min-height: 100px;
     }
-
     .timeline>li .timeline-panel {
         float: left;
         width: 41%;
         padding: 0 20px 20px 30px;
         text-align: right;
     }
-
     .timeline>li .timeline-image {
         left: 50%;
         width: 100px;
         height: 100px;
         margin-left: -50px;
     }
-
     .timeline>li .timeline-image h4 {
         margin-top: 16px;
         font-size: 13px;
         line-height: 18px;
     }
-
     .timeline>li.timeline-inverted>.timeline-panel {
         float: right;
         padding: 0 30px 20px 20px;
@@ -698,23 +697,19 @@ section h3.section-subheading {
     .timeline>li {
         min-height: 150px;
     }
-
     .timeline>li .timeline-panel {
         padding: 0 20px 20px;
     }
-
     .timeline>li .timeline-image {
         width: 150px;
         height: 150px;
         margin-left: -75px;
     }
-
     .timeline>li .timeline-image h4 {
         margin-top: 30px;
         font-size: 18px;
         line-height: 26px;
     }
-
     .timeline>li.timeline-inverted>.timeline-panel {
         padding: 0 20px 20px;
     }
@@ -724,21 +719,17 @@ section h3.section-subheading {
     .timeline>li {
         min-height: 170px;
     }
-
     .timeline>li .timeline-panel {
         padding: 0 20px 20px 100px;
     }
-
     .timeline>li .timeline-image {
         width: 170px;
         height: 170px;
         margin-left: -85px;
     }
-
     .timeline>li .timeline-image h4 {
         margin-top: 40px;
     }
-
     .timeline>li.timeline-inverted>.timeline-panel {
         padding: 0 100px 20px 20px;
     }
@@ -788,7 +779,7 @@ section#contact .form-group textarea {
     padding: 20px;
 }
 
-section#contact .form-group input.form-control, 
+section#contact .form-group input.form-control,
 header .form-group input.form-control {
     height: auto;
 }
@@ -804,28 +795,28 @@ section#contact .form-control:focus {
 
 section#contact::-webkit-input-placeholder {
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 700;
     color: #bbb;
 }
 
 section#contact:-moz-placeholder {
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 700;
     color: #bbb;
 }
 
 section#contact::-moz-placeholder {
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 700;
     color: #bbb;
 }
 
 section#contact:-ms-input-placeholder {
     text-transform: uppercase;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 700;
     color: #bbb;
 }
@@ -842,7 +833,7 @@ footer {
 footer span.copyright {
     text-transform: uppercase;
     text-transform: none;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height: 40px;
 }
 
@@ -850,7 +841,7 @@ footer ul.quicklinks {
     margin-bottom: 0;
     text-transform: uppercase;
     text-transform: none;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height: 40px;
 }
 
@@ -908,7 +899,7 @@ ul.social-buttons li a:active {
 
 .portfolio-modal .modal-content p.item-intro {
     margin: 20px 0 30px;
-    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-style: italic;
 }
@@ -984,28 +975,40 @@ body {
     webkit-tap-highlight-color: #32c1d8;
 }
 
-.search-doctor-area{
+.search-doctor-area {
     color: #333;
+    position: relative;
+    .search-doctor-progress {
+        color: #999;
+        font-size: 1.2em;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
 }
-.search-doctor-area .search-doctor-result{
+
+.search-doctor-area .search-doctor-result {
     padding: 5px;
     cursor: pointer;
 }
-.search-doctor-area .search-doctor-result:hover{
+
+.search-doctor-area .search-doctor-result:hover {
     background: #eee;
 }
-.search-doctor-area .search-doctor-result .main{
+
+.search-doctor-area .search-doctor-result .main {
     color: #5f7698;
 }
-.search-doctor-area .search-doctor-result .name strong{
+
+.search-doctor-area .search-doctor-result .name strong {
     color: #02526f;
-    
 }
-.search-doctor-area .search-doctor-result .cabinets{
+
+.search-doctor-area .search-doctor-result .cabinets {
     color: #999;
     font-size: 0.9em;
 }
 
-.page-content{
+.page-content {
     margin-top: 120px;
 }

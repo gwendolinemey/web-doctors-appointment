@@ -1,0 +1,4 @@
+<div class="search-doctor-area">
+    <input type="text" typeahead-min-length="1" ng-model="praticien" placeholder="Entrez le nom d'un spécialiste" typeahead="praticien as getLabel(praticien) for praticien in searchPraticiens($viewValue)" typeahead-template-url="/js/directives/search-doctor/search-doctor-result.html" class="form-control" typeahead-loading="loadingInProgress">
+    <i ng-show="loadingInProgress" class="search-doctor-progress fa fa-spinner fa-spin"></i>
+</div>

@@ -1,7 +1,7 @@
 {% extends '../../views/layout.html' %} {% block content %}
 
 <!-- Header -->
-<header>
+<header ng-controller="homeCtrl">
     <div class="intro-text">
         <div class="intro-lead-in">Recherchez un specialiste sur toulouse et ses environs</div>
         <div class="intro-heading">Rapidocteur, votre rendez-vous en 3 clics et 24h/24 !</div>
@@ -14,7 +14,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <div search-doctor></div>
+                            <div search-doctor praticien="praticien"></div>
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
