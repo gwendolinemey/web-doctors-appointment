@@ -5,5 +5,6 @@ var app = express();
 
 require('./config/express')(app, config);
 
-app.listen(config.port);
-
+app.listen(config.port, function () {
+    console.log('Rapidocteur client - express server listening on port %d', config.port);
+});
