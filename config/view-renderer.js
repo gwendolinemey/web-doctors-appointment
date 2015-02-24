@@ -9,9 +9,9 @@
         render: render
     };
 
-    function render(name, parameters, res) {
+    function render(template, parameters, res) {
 
-        swig.renderFile(__dirname + '/../app/modules/' + name + '/' + name + '.html', parameters, function (err, output) {
+        swig.renderFile(__dirname + '/../app/modules/' + template, parameters, function (err, output) {
             if (err) {
                 throw err;
             } else {

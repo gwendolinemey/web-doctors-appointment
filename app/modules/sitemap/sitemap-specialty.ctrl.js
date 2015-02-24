@@ -9,19 +9,19 @@
     var DSProvider = require('../../../config/js-data.conf').DSProvider;
 
     module.exports = function (app) {
-        app.use('/praticien', router.get('/:reference', render));
+        app.use('/sitemap', router.get('/specialty_:id.xml', render));
     };
 
     function render(req, res) {
 
-        var reference = req.params.reference;
-        
-        DSProvider.find('praticiens', reference, {
-            cacheResponse: false
-        }).then(function (praticien) {
+        var id = req.params.id;
 
-            viewRenderer.render('praticien/praticien.html', {
-                praticien: praticien
+        DSProvider.find('specialites', id, {
+            cacheResponse: false
+        }).then(function (specialite) {
+
+            viewRenderer.render('sitemap/sitemap-specialty.xml', {
+                praticiens: specialite.Praticiens
             }, res);
         });
 

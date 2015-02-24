@@ -15,6 +15,8 @@ module.exports = function (app, config) {
     app.set('views', config.root + '/app/views');
     app.set('view engine', 'html');
 
+    // swig templates: http://paularmstrong.github.io/swig/
+    
     // app.use(favicon(config.root + '/public/img/favicon.ico'));
     app.use(logger('dev'));
     app.use(bodyParser.json());

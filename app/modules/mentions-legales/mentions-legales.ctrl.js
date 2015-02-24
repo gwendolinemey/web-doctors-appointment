@@ -11,7 +11,7 @@
     };
 
     function render(req, res) {
-        viewRenderer.render('mentions-legales', {}, res);
+        viewRenderer.render('mentions-legales/mentions-legales.html', {}, res);
     }
 
 })();

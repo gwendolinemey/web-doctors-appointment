@@ -9,7 +9,7 @@
 
     DSProvider.registerAdapter('http', new DSHttpAdapter({
         // url: 'http://0.0.0.0:88',
-        log: console.log
+        // log: console.log
     }), {
         default: true
     });
@@ -20,6 +20,10 @@
     DSProvider.defineResource('praticiens', {
         idAttribute: 'reference'
     });
+
+    DSProvider.defineResource('specialites'), {
+        idAttribute: 'idSpecialite'
+    };
 
     module.exports = {
         DSProvider: DSProvider

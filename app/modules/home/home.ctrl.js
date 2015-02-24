@@ -11,7 +11,7 @@
     };
 
     function render(req, res) {
-        viewRenderer.render('home', {}, res);
+        viewRenderer.render('home/home.html', {}, res);
     }
 
 })();
