@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 var swig = require('swig');
-require('./js-data');
+require('./js-data.conf');
 
 module.exports = function (app, config) {
     app.engine('html', swig.renderFile)

@@ -868,6 +868,10 @@ body {
   color: #999;
   font-size: 0.9em;
 }
+.map {
+  height: 400px;
+  width: 100%;
+}
 .page-content {
   margin-top: 120px;
 }

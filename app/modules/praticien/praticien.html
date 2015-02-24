@@ -1,6 +1,6 @@
 {% extends '../../views/layout.html' %} {% block content %}
 
-<div class="container page-content">
+<div class="container page-content" ng-controller="praticienCtrl">
     <div class="row">
         <div class="col-md-6 presentation-doc">
             <h1 class="heading">{{ praticien.prenom }} {{ praticien.nom }}</h1>
@@ -17,7 +17,7 @@
         <div class="col-md-6 info-doc">
             {% for cabinet in praticien.Cabinets %}
             <div{% if loop.first %} class="first" {% endif %}>
-                <p>{{ cabinet.adresse }}</p>
+                <p>{{ cabinet.adresse }} - {{ cabinet.code_postal }} {{ cabinet.ville }}</p></p>
                 <p><span class="listpaiyment">Moyens de paiement :<span></p>
                 <ul class="paymentway">
                     <li>espèces acceptées</li>
@@ -26,6 +26,9 @@
             </div>
             {% endfor %}
         </div>
+    </div>
+    <div class="row">
+       <div doctor-map praticien="praticien"></div>
     </div>
 </div>
 
