@@ -8,9 +8,11 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 var swig = require('swig');
-require('./js-data.conf');
 
 module.exports = function (app, config) {
+    
+    require('./js-data.conf').init(config);
+    
     app.engine('html', swig.renderFile)
     app.set('views', config.root + '/app/views');
     app.set('view engine', 'html');
@@ -31,7 +33,7 @@ module.exports = function (app, config) {
     var controllers = glob.sync(config.root + '/app/modules/**/*.js');
     controllers.forEach(function (controller) {
         console.log('Load "%s"', controller);
-        require(controller)(app);
+        require(controller)(app, config);
     });
 
     // require('./routes')(app);
