@@ -16,7 +16,7 @@
             });
             console.log('Backend API: %s', config.api);
             
-            DSProvider.defaults.basePath = 'http://0.0.0.0:88/api';
+            DSProvider.defaults.basePath = config.api || 'http://0.0.0.0/api';
             DSProvider.defaults.idAttribute = '_id';
 
             // models configuration

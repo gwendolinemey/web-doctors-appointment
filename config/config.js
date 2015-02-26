@@ -9,7 +9,7 @@ var config = {
       name: 'rapidocteur-client-less'
     },
     port: 8082,
-    api: 'http://0.0.0.0:80/api'
+    api: 'http://0.0.0.0:88/api'
   },
 
   test: {
