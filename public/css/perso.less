@@ -1,0 +1,89 @@
+body {
+    font-family: sans-serif;
+}
+
+#header-main {
+    background-image: url(../img/header-bg.png);
+}
+
+#header-doctor {
+    /* background-image: url(../img/map.png);*/
+    .map {
+        width: 100%;
+        height: 500px;
+    }
+}
+
+#doctors-specialities {
+    font-size: 14pt;
+    font-weight: normal;
+    display: inline;
+}
+
+#act-choice,
+#doctors-disponibilites {
+    background-color: #f0f5f7;
+}
+
+.doctors-choicespan {
+    text-align: center;
+    padding-top: 2%;
+}
+
+.doctors-navbar {
+    padding: 10px 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+/*** test soflow **/
+/* -------------------- Select Box Styles: stackoverflow.com Method */
+/* -------------------- Source: http://stackoverflow.com/a/5809186 */
+
+select#doctors-soflow {
+    -webkit-appearance: button;
+    -webkit-border-radius: 2px;
+    -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    -webkit-padding-end: 20px;
+    -webkit-padding-start: 2px;
+    -webkit-user-select: none;
+    background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+    background-position: 97% center;
+    background-repeat: no-repeat;
+    border: 1px solid #AAA;
+    color: #555;
+    font-size: inherit;
+    margin: 20px;
+    overflow: hidden;
+    padding: 5px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 300px;
+}
+
+.search-doctor-area {
+    color: #333;
+    position: relative;
+    .search-doctor-progress {
+        color: #999;
+        font-size: 1.2em;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+    .search-doctor-result {
+        padding: 5px;
+        cursor: pointer;
+        &:hover {
+            background: #eee;
+        }
+        .main {
+            color: #5f7698;
+        }
+        .name strong {
+            color: #02526f;
+        }
+        .cabinets {
+            color: #999;
+            font-size: 0.9em;
+        }
+    }
+}

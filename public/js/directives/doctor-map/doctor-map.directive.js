@@ -98,7 +98,7 @@
 
                             map.setView(new ol.View({
                                 center: centerPoint,
-                                zoom: 10
+                                zoom: 15
                             }));
 
                         }
