@@ -6,7 +6,7 @@
     var express = require('express');
     var router = express.Router();
 
-    module.exports = function (app) {
+    module.exports = function (app, config) {
         app.use('/mentions-legales', router.get('/', render));
     };
 
