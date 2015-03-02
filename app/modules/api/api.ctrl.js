@@ -10,15 +10,18 @@
 
     module.exports = function (app, config) {
         
-        app.use(apiBaseContext, router.all('*', function (req, res) {
+        if (config.proxyApi){
+            app.use(apiBaseContext, router.all('*', function (req, res) {
 
-            var apiContext = req.originalUrl.substring(apiBaseContext.length);
+                var apiContext = req.originalUrl.substring(apiBaseContext.length);
 
-            var newurl = config.proxyApi + apiContext;
+                var newurl = config.proxyApi + apiContext;
 
-            request(newurl).pipe(res);
+                request(newurl).pipe(res);
 
-        }));
+            }));
+            
+        }
     };
 
 })();

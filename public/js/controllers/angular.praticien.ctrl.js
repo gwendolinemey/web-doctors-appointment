@@ -14,7 +14,8 @@
         }
 
         DS.find('praticiens', reference).then(function (praticien) {
-            console.log('Praticen fount: ', praticien);
+            console.log('Praticen: ', praticien);
+            console.log('Absences: ', praticien.Absences[0]);
             $scope.praticien = praticien;
         });
     }

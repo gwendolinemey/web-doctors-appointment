@@ -1,0 +1,66 @@
+<div class="container" id="page-med" style="border:1px solid purple;">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="row">
+                <div id="act-choice" class="col-lg-12" style="border:1px solid pink;">
+                    <p class="doctors-choicespan">Quel est le motif de votre venue ?</p>
+                    <select id="doctors-soflow" class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
+
+                    <div id="absences" ng-repeat="abs in praticien.Absences">
+                        <p><strong>Remplacé par {{ abs.nomRemplacant }} du {{ abs.dateDebut | date:'dd/MM/yyyy' }} au {{ abs.dateFin | date:'dd/MM/yyyy' }}</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-12" style="border:1px solid orange;">
+                    <div class="presentation-doc">
+                        <span>En savoir plus :</span>
+                        <!-- @Nicolas : texte description, est-ce prévu en bd ? -->
+                        <p>Mensarum enim voragines et varias voluptatum inlecebras, ne longius progrediar, praetermitto illuc transiturus quod quidam per ampla spatia urbis subversasque silices sine periculi metu properantes equos velut publicos signatis quod dicitur calceis agitant, familiarium agmina tamquam praedatorios globos post terga trahentes ne Sannione quidem, ut ait comicus, domi relicto. quos imitatae matronae complures opertis capitibus et basternis per latera civitatis cuncta discurrunt..
+                            <br />
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-offset-1 col-lg-7">
+            <div id="doctors-disponibilites" class="row" style="border:1px solid blue;">
+                <p class="lead">Choisissez le motif et l'horaire du rendez-vous</p>
+                <div>
+                    <table id="agenda-med">
+                        <tr>
+                            <th class="arrow"> <a class="carousel_prev carousel_left" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> prev </a>
+                            </th>
+                            <th class="day" ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
+                            <th class="arrow">
+                                <a class="carousel_next carousel_right" href="" rel="carousel-1" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled">next</a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="appointments" ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">
+                                <div ng-repeat="c in day.appointments | limitTo:doctor.showLimit" ng-class="{ disabled: c.length == 0}">
+                                    <a href="" class="availableAppoint" ng-click="submitRV(doctor, day.date, c)">{{ c.prettyTime }}</a>
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr ng-show="doctor.showMoreVisible">
+                            <td></td>
+                            <td colspan="7" class="showMoreLess"><a href="" ng-click="showMore(doctor)">Voir tous les horaires disponibles</a>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr ng-show="doctor.showLessVisible">
+                            <td></td>
+                            <td colspan="7" class="showMoreLess"><a href="" ng-click="showLess(doctor)">Réduire</a>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- disponibilités -->
+        </div>
+    </div>
+    <!-- row pagemed -->
+</div>

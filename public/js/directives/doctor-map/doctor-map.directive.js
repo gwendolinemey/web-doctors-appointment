@@ -33,73 +33,78 @@
 
                             var coordinates = praticien.Cabinets.reduce(function (coordinates, cabinet) {
 
-                                var latitude = parseFloat(cabinet.latitude);
-                                var longitude = parseFloat(cabinet.longitude);
+                                if (cabinet.latitude && cabinet.longitude) {
+                                    var latitude = parseFloat(cabinet.latitude);
+                                    var longitude = parseFloat(cabinet.longitude);
 
-                                var point = ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857');
+                                    var point = ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857');
 
-                                coordinates.push(point);
+                                    coordinates.push(point);
+                                }
 
                                 return coordinates;
                             }, []);
 
 
-                            var iconFeatures = coordinates.reduce(function (iconFeatures, point) {
-                                var iconFeature = new ol.Feature({
-                                    geometry: new ol.geom.Point(point)
+                            if (coordinates && coordinates.length > 0) {
+                                var iconFeatures = coordinates.reduce(function (iconFeatures, point) {
+                                    var iconFeature = new ol.Feature({
+                                        geometry: new ol.geom.Point(point)
+                                    });
+
+                                    iconFeature.setStyle(iconStyle);
+
+                                    iconFeatures.push(iconFeature);
+                                    return iconFeatures;
+                                }, []);
+
+
+                                var iconsLayer = new ol.layer.Vector({
+                                    source: new ol.source.Vector({
+                                        features: iconFeatures
+                                    })
                                 });
 
-                                iconFeature.setStyle(iconStyle);
+                                var mainLayer = new ol.layer.Tile({
+                                    source: new ol.source.MapQuest({
+                                        layer: 'osm'
+                                    })
+                                });
 
-                                iconFeatures.push(iconFeature);
-                                return iconFeatures;
-                            }, []);
-
-
-                            var iconsLayer = new ol.layer.Vector({
-                                source: new ol.source.Vector({
-                                    features: iconFeatures
-                                })
-                            });
-
-                            var mainLayer = new ol.layer.Tile({
-                                source: new ol.source.MapQuest({
-                                    layer: 'osm'
-                                })
-                            });
-
-                            var map = new ol.Map({
-                                target: 'map',
-                                layers: [mainLayer, iconsLayer],
-                            });
+                                var map = new ol.Map({
+                                    target: 'map',
+                                    layers: [mainLayer, iconsLayer],
+                                });
 
 
-                            var pointsExtremities = coordinates.reduce(function (pointsExtremities, point) {
-                                console.log(point);
-                                if (!pointsExtremities.xMin || pointsExtremities.xMin > point[0]) {
-                                    pointsExtremities.xMin = point[0];
-                                }
-                                if (!pointsExtremities.xMax || pointsExtremities.xMax < point[0]) {
-                                    pointsExtremities.xMax = point[0];
-                                }
-                                if (!pointsExtremities.yMin || pointsExtremities.yMin > point[1]) {
-                                    pointsExtremities.yMin = point[1];
-                                }
-                                if (!pointsExtremities.yMax || pointsExtremities.yMax < point[1]) {
-                                    pointsExtremities.yMax = point[1];
-                                }
-                                return pointsExtremities;
-                            }, {});
+                                var pointsExtremities = coordinates.reduce(function (pointsExtremities, point) {
+                                    console.log(point);
+                                    if (!pointsExtremities.xMin || pointsExtremities.xMin > point[0]) {
+                                        pointsExtremities.xMin = point[0];
+                                    }
+                                    if (!pointsExtremities.xMax || pointsExtremities.xMax < point[0]) {
+                                        pointsExtremities.xMax = point[0];
+                                    }
+                                    if (!pointsExtremities.yMin || pointsExtremities.yMin > point[1]) {
+                                        pointsExtremities.yMin = point[1];
+                                    }
+                                    if (!pointsExtremities.yMax || pointsExtremities.yMax < point[1]) {
+                                        pointsExtremities.yMax = point[1];
+                                    }
+                                    return pointsExtremities;
+                                }, {});
 
-                            var xCenter = (pointsExtremities.xMax + pointsExtremities.xMin) / 2;
-                            var yCenter = (pointsExtremities.yMax+ pointsExtremities.yMin) / 2;
+                                var xCenter = (pointsExtremities.xMax + pointsExtremities.xMin) / 2;
+                                var yCenter = (pointsExtremities.yMax + pointsExtremities.yMin) / 2;
 
-                            var centerPoint = [xCenter, yCenter];
+                                var centerPoint = [xCenter, yCenter];
 
-                            map.setView(new ol.View({
-                                center: centerPoint,
-                                zoom: 15
-                            }));
+                                map.setView(new ol.View({
+                                    center: centerPoint,
+                                    zoom: 15
+                                }));
+
+                            }
 
                         }
 
