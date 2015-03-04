@@ -15,12 +15,20 @@
                 default: true
             });
             console.log('Backend API: %s', config.api);
-            
+
             DSProvider.defaults.basePath = config.api || 'http://0.0.0.0/api';
             DSProvider.defaults.idAttribute = '_id';
 
             // models configuration
             DSProvider.defineResource('praticiens', {
+                idAttribute: 'reference'
+            });
+
+            DSProvider.defineResource('postal-codes', {
+                idAttribute: 'code_postal'
+            });
+
+            DSProvider.defineResource('cabinets', {
                 idAttribute: 'reference'
             });
 

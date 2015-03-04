@@ -16,12 +16,12 @@
 
         var reference = req.params.reference;
         
-        DSProvider.find('praticiens', reference, {
+        DSProvider.find('cabinets', reference, {
             cacheResponse: false
-        }).then(function (praticien) {
+        }).then(function (cabinet) {
 
             viewRenderer.render('praticien/praticien.html', {
-                praticien: praticien
+                cabinet: cabinet
             }, res);
         });
 

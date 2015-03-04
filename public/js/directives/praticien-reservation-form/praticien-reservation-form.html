@@ -30,7 +30,7 @@
                         <tr>
                             <th class="arrow"> <a class="carousel_prev carousel_left" ng-click="seePrevious(doctor)" ng-disabled="doctor.previousDisabled"> prev </a>
                             </th>
-                            <th class="day" ng-repeat="day in doctor.availabilities| limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
+                            <th class="day" ng-repeat="day in doctor.availabilities | limitTo:quantityWeek" ng-class="{ disabled: day.appointments.length == 0}">{{ day.date }}</th>
                             <th class="arrow">
                                 <a class="carousel_next carousel_right" href="" rel="carousel-1" ng-click="seeNext(doctor)" ng-disabled="doctor.nextDisabled">next</a>
                             </th>

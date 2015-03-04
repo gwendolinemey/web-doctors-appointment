@@ -1,7 +1,7 @@
 {% extends '../../views/layout.html' %} {% block content %}
 
 <div class="page-content" ng-controller="praticienCtrl">
-       <nav class="navbar navbar-default navbar-fixed-top doctors-navbar">
+    <nav class="navbar navbar-default navbar-fixed-top doctors-navbar">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
@@ -52,25 +52,21 @@
     <div class="container" id="info-med">
         <div class="row">
             <div id="doctors-name" class="col-lg-5">
-                <h1>{{ praticien.prenom }} {{ praticien.nom }}</h1>
+                <h1>{{ cabinet.titre_profil }}</h1>
                 <h2 id="doctors-specialities">
-                {% for specialite in praticien.Specialites %}
-                    <span{% if loop.first %} class="first" {% endif %}>
-                        {{ specialite.labelSpecialite }}
-                    </span>
-                {% endfor %}</h2>
+                        {{ cabinet.specialite_profil }}
+                </h2>
             </div>
             <div id="doctors-location" class="col-lg-3">
-                
-               {% for cabinet in praticien.Cabinets %}
-                    <div class="row">
-                        <div class="col-lg-3"><img src="/img/icons/pointer.png" /></div>
-                        <div class="col-lg-9">
-                            {{ cabinet.adresse }}
-                            <br/>{{ cabinet.code_postal }} {{ cabinet.ville }}
-                        </div>
+
+                <div class="row">
+                    <div class="col-lg-3"><img src="/img/icons/pointer.png" />
                     </div>
-                {% endfor %}
+                    <div class="col-lg-9">
+                        {{ cabinet.adresse }}
+                        <br/>{{ cabinet.code_postal }} {{ cabinet.ville }}
+                    </div>
+                </div>
 
             </div>
             <div id="doctors-payment" class="col-lg-3">
