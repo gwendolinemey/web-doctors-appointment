@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
-  {% for praticien in praticiens %}
-    <loc>http://www.rapidocteur.fr/praticien/{{ praticien.reference }}</loc>
+  {% for cabinet in cabinets %}
+    <loc>http://www.rapidocteur.fr/praticien/{{ cabinet.reference }}</loc>
   {% endfor %}
 </urlset>

@@ -16,12 +16,12 @@
 
         var reference = req.params.reference;
         
-        DSProvider.findAll('specialites', {
+        DSProvider.findAll('postal-codes', {
             cacheResponse: false
-        }).then(function (specialites) {
+        }).then(function (postalCodes) {
 
             viewRenderer.render('sitemap/sitemap-index.xml', {
-                specialites: specialites
+                postalCodes: postalCodes
             }, res);
         });
 

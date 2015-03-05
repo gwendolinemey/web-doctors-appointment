@@ -3,9 +3,9 @@
     <sitemap>
         <loc>http://www.rapidocteur.fr/sitemap.xml</loc>
     </sitemap>
-    {% for specialite in specialites %}
+    {% for postalCode in postalCodes %}
     <sitemap>
-        <loc>http://www.rapidocteur.fr/sitemap/specialty_{{ specialite.idSpecialite }}.xml</loc>
+        <loc>http://www.rapidocteur.fr/sitemap/departement_{{ postalCode.code_postal }}.xml</loc>
     </sitemap>
    {% endfor %}
 </sitemapindex>
