@@ -4,10 +4,17 @@
 
     angular.module('app').run(function ($http, DS) {
 
-        return DS.defineResource({
+        DS.defineResource({
             name: 'praticiens',
             idAttribute: 'reference'
         });
+
+        DS.defineResource({
+            name: 'cabinets',
+            idAttribute: 'reference'
+        });
+
+        return {};
 
     });
 

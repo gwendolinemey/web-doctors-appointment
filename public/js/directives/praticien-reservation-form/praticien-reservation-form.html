@@ -1,12 +1,14 @@
 <div class="container" id="page-med" style="border:1px solid purple;">
-    <div class="row">
+    <div confirmation-rendez-vous appointment="appointment"></div>
+
+    <div id="disponibilites" class="row" ng-repeat="doctor in doctors" ng-show="!appointment">
         <div class="col-lg-4">
             <div class="row">
                 <div id="act-choice" class="col-lg-12" style="border:1px solid pink;">
                     <p class="doctors-choicespan">Quel est le motif de votre venue ?</p>
                     <select id="doctors-soflow" class="motif-consult" ng-change="updateAvailableAppointments(doctor)" ng-model="doctor.selectedAct" ng-options="act.labelActe for act in doctor.acts"></select>
 
-                    <div id="absences" ng-repeat="abs in praticien.Absences">
+                    <div id="absences" ng-repeat="abs in doctor.absences">
                         <p><strong>Remplacé par {{ abs.nomRemplacant }} du {{ abs.dateDebut | date:'dd/MM/yyyy' }} au {{ abs.dateFin | date:'dd/MM/yyyy' }}</strong>
                         </p>
                     </div>

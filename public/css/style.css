@@ -596,3 +596,27 @@ select#doctors-soflow {
   color: #999;
   font-size: 0.9em;
 }
+/** Personnalisation page médecin **/
+#agenda-med {
+  margin: auto;
+}
+#agenda-med td.appointments {
+  border: 1px solid #fff;
+  padding: 15px;
+  text-align: center;
+}
+#agenda-med th.day {
+  border: 1px solid #fff;
+  padding: 5px;
+  text-align: center;
+  background-color: #39c5da;
+  color: #fff;
+}
+#agenda-med th.disabled {
+  background-color: #2c3e50;
+  border: 1px solid #fff;
+}
+#agenda-med td.disabled {
+  background-color: #2c3e50;
+  border: 1px solid #fff;
+}
