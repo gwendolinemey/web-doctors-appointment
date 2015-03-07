@@ -4,18 +4,18 @@
 
     angular.module('app').controller('cabinetCtrl', cabinetCtrl);
 
-    function cabinetCtrl($scope) {
+    function cabinetCtrl($scope, DS) {
 
-        $scope.cabinetReference = "test";
-        
         var reference = window.location.pathname.substring('/cabinet/'.length);
 
         var index = reference.indexOf('/');
         if (index !== -1) {
-            $scope.cabinetReference = reference.substr(0, index);
-        }else{
-            $scope.cabinetReference = reference;
-        }
+            reference = reference.substr(0, index);
+        } 
+
+        DS.find('cabinets', reference).then(function (cabinet) {
+            $scope.cabinet = cabinet;
+        });
     }
 
 })();

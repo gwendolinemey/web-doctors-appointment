@@ -9,7 +9,7 @@
             templateUrl: '/js/directives/praticien-reservation-form/praticien-reservation-form.html',
             restrict: 'EA',
             scope: {
-                cabinetReference: '='
+                cabinet: '='
             },
             link: {
                 pre: function preLink($scope, $element, $attrs) {
@@ -18,7 +18,7 @@
                     var showLimitAppointments = 5;
                     var cabinet = {
                         idCabinet: 1,
-                        adresse: 'blablabla'
+                        adresse: ''
                     };
 
                     // scope attributes
@@ -37,9 +37,14 @@
                     function init() {
                         // TODO use reference form path
 
-                        $scope.$watch('cabinetReference', function (cabinetReference, old) {
-                            if (cabinetReference) {
+                        $scope.$watch('cabinet', function (scopeCabinet, old) {
+
+                            if (scopeCabinet && scopeCabinet.idCabinet) {
+
+                                cabinet.idCabinet = scopeCabinet.idCabinet;
+
                                 console.log('Loading cabinet "%s" informations.', $scope.cabinetReference);
+                                
                                 GetService.getDoctorsByOffice(cabinet.idCabinet).success(function (data) {
                                     $scope.doctors = data.output;
 
