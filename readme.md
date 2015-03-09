@@ -21,7 +21,7 @@ Install gulp globally
 
 ## In local environment - for developers
 
-    gupl
+    gulp
     
     [...]
     Rapidocteur client - express server listening on port 8082
