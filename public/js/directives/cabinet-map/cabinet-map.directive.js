@@ -57,6 +57,9 @@
                             var map = new ol.Map({
                                 target: 'map',
                                 layers: [mainLayer, iconsLayer],
+                                interactions: ol.interaction.defaults({
+                                    mouseWheelZoom: false
+                                })
                             });
 
 

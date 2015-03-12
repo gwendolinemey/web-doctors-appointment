@@ -7,7 +7,7 @@
         <div ng-if="!doctor.onlineReservationEnabled">
             <p>Ce praticien n'est pas encore réservable en ligne. Contactez-nous afin que nous mettions en place la réservation en ligne de votre praticien dès que possible.</p>
         </div>
-        <div lass="row" ng-if="doctor.onlineReservationEnabled">
+        <div class="row" ng-if="doctor.onlineReservationEnabled">
             <div class="col-lg-4">
                 <div class="row">
                     <div id="act-choice" class="col-lg-12" style="border:1px solid pink;">
@@ -16,15 +16,6 @@
 
                         <div id="absences" ng-repeat="abs in doctor.absences">
                             <p><strong>Remplacé par {{ abs.nomRemplacant }} du {{ abs.dateDebut | date:'dd/MM/yyyy' }} au {{ abs.dateFin | date:'dd/MM/yyyy' }}</strong>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-lg-12" style="border:1px solid orange;">
-                        <div class="presentation-doc">
-                            <span>En savoir plus :</span>
-                            <!-- @Nicolas : texte description, est-ce prévu en bd ? -->
-                            <p>Mensarum enim voragines et varias voluptatum inlecebras, ne longius progrediar, praetermitto illuc transiturus quod quidam per ampla spatia urbis subversasque silices sine periculi metu properantes equos velut publicos signatis quod dicitur calceis agitant, familiarium agmina tamquam praedatorios globos post terga trahentes ne Sannione quidem, ut ait comicus, domi relicto. quos imitatae matronae complures opertis capitibus et basternis per latera civitatis cuncta discurrunt..
-                                <br />
                             </p>
                         </div>
                     </div>
