@@ -124,4 +124,9 @@ Run the node app and access to the applications here:
     }
 
 
+## Notes
+
+Web Appointments : 
+http://www.rapidocteur.fr:9000/web/appointments/count
+
     
