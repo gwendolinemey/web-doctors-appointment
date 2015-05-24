@@ -1,120 +1,107 @@
 {% extends '../../views/layout.html' %} {% block content %}
 
-<div ng-controller="homeCtrl">
-    <!-- Header -->
-    <header id="header-main">
-        <div class="intro-text">
-            <div class="intro-lead-in">Recherchez un spécialiste à Toulouse et ses environs</div>
-            <div class="intro-heading">Rapidocteur, votre rendez-vous en 3 clics et 24h/24 !</div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-md-3">
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <div search-doctor praticien="praticien"></div>
-                                <p class="help-block text-danger"></p>
+<div ng-controller="homeCtrl" id="page-wrapper">
+    <header id="MainHeader" class="chapter height100">
+        <div class="fullscreen-flexslider-ken-burns description-middle">
+            <ul class="slides" data-scale="1.2" data-transform-duration="30s" data-animation="kb" data-translate="0px">
+                <li>
+                    <img src="images/header-bg.png" alt="preview">
+
+                    <div class="overlay"></div>
+                    <div class="caption">
+                        <span class="middle">
+                            <span class="title">Recherchez un spécialiste à <span class="color-font">Toulouse</span> et ses environs</span>
+                            <span class="tags">Rapidocteur, votre rendez-vous en 3 clics et 24h/24 !</span> 
+                            <div class="container">
+                                <a href="" class="btn btn-color btn-scroll">Prendre rendez-vous</a>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-l">Ok</button>
-                        </div>
-                        <div class="col-md-3">
-                        </div>
+                        </span>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="counter">
-            <div class="intro-heading">Déjà plus de 2 050 rendez-vous réservés !</div>
+                </li>
+            </ul>        
         </div>
     </header>
+    <div class="color-row">
+    <div class="container text-center padding-small">
+        <h4>Go on, <span class="light">contact us!</span></h4>
 
-    <!-- Carousel -->
-    <section id="carousel">
-        <div class="inner">
-            <div class="example horizontal">
-                <div class="carousel slide" data-ride="carousel">
-                    <a class="carousel_prev carousel_left" href="#myCarousel" role="button" data-slide="prev">prev</a>
-                    <div class="carousel-inner" role="listbox">
-                        <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                            <!-- Wrapper for slides -->
-                            <div class="carousel-inner" role="listbox">
-                              <div class="item active">
-                                <a href="#"><img src="img/carousel/doctor-beach-1.jpg" alt="Doctor Beach" width="340" height="125"></a>
-                              </div>
-                              <div class="item">
-                                <a href="#"><img src="img/carousel/doctor-beach-2.jpg" alt="Doctor Beach" width="340" height="125"></a>
-                              </div>
-                              <div class="item">
-                                <a href="#"><img src="img/carousel/doctor-beach-3.jpg" alt="Doctor Beach" width="340" height="125"></a>
-                              </div>
-                              <div class="item">
-                                <a href="#"><img src="img/carousel/doctor-beach-1.jpg" alt="Doctor Beach" width="340" height="125"></a>
-                              </div>
-                              <div class="item">
-                                <a href="#"><img src="img/carousel/doctor-beach-2.jpg" alt="Doctor Beach" width="340" height="125"></a>
-                              </div>
-                              <div class="item">
-                                <a href="#"><img src="img/carousel/doctor-beach-3.jpg" alt="Doctor Beach" width="340" height="125"></a>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                    <a class="carousel_next carousel_right" href="#myCarousel" role="button" data-slide="next">next</a>
+        <a href="01-contact.html" class="btn btn-white btn-lg btn-top-margin">Read More</a>
+    </div>
+    </div>
+
+    <div class="container">
+
+    </div>
+
+    <div class="container padding-small text-center">
+    <h3><span class="color-font">RAPIDOCTEUR</span> en chiffres</h3>
+
+    <div class="row padding-top-small">        
+        <div class="col-md-4 col-sm-4">
+            <div class="graph-percent pie-chart"
+                 data-percent="25" data-barcolor="#8dc153"
+                 data-scalecolor="false" data-linecap="butt" data-linewidth="20" data-size="180"
+                 data-animate="1000">
+                <div class="border-chart-outer">
+                    <div class="border-chart"></div>
                 </div>
+                <span class="text"><strong>4 927</strong></span>
+            </div>
+            <h5>Rendez-vous réservés</h5>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="graph-percent pie-chart"
+                 data-percent="50" data-barcolor="#8dc153"
+                 data-scalecolor="false" data-linecap="butt" data-linewidth="20" data-size="180"
+                 data-animate="1000">
+                <div class="border-chart-outer">
+                    <div class="border-chart"></div>
+                </div>
+                <span class="text"><strong>1 657</strong></span>
+            </div>
+            <h5>Patients</h5>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="graph-percent pie-chart"
+                 data-percent="100" data-barcolor="#8dc153"
+                 data-scalecolor="false" data-linecap="butt" data-linewidth="20" data-size="180"
+                 data-animate="1000">
+                <div class="border-chart-outer">
+                    <div class="border-chart"></div>
+                </div>
+                <span class="text"><strong>100%</strong></span>
+            </div>
+            <h5>Made in Toulouse</h5>
+        </div>
+    </div>
+    </div>
+
+    <div class="dark-gray-row2">
+    <div class="container text-center padding-small">
+        <h4>Ils <span class="color-font">parlent</span> de nous</h4>
+    </div>
+    <div class="container">
+        <div class="flexCarousel">
+            <div class="flexslider">
+                <ul class="slides">
+                    <li>
+                        <a href="http://blog.rapidocteur.fr/france-3-rapidocteur-revolutionne-le-rendez-vous-medical/"><img src="images/logos/radio-rtl-rapidocteur-rendez-vous-en-ligne-medicaux-820x400.jpg" alt="RTL"></a>
+                    </li>
+                    <li>
+                        <a href="http://blog.rapidocteur.fr/rtl-rendez-vous-medical-en-ligne/"><img src="images/logos/france-3-rapidocteur-revolutionne-rdv-medical-en-ligne.png" alt="France 3"></a>
+                    </li>
+                    <li>
+                        <a href="http://blog.rapidocteur.fr/simplifier-la-prise-de-rendez-vous/"><img src="images/logos/objectif-news-rapidocteur-simplifier-rendez-vous-en-ligne-medicaux-820x400.jpg" alt="Objectif News"></a>
+                    </li>                    
+                </ul>
             </div>
         </div>
-    </section>
-    
-    <!-- Contact section -->
+        <!-- / flexCarousel -->
+    </div>
+    </div>
 
-    <section id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Contactez-nous</h2>
-                    <h3 class="section-subheading text-muted">Une question ? Un petit mot à nous laisser ? N'hésitez pas à nous écrire.</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <form name="sentMessage" id="contactForm" novalidate>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Votre nom *" id="name" required data-validation-required-message="Entrez votre nom.">
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" class="form-control" placeholder="Votre email *" id="email" required data-validation-required-message="Entrez votre adresse e-mail.">
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                                <div class="form-group">
-                                    <input type="tel" class="form-control" placeholder="Votre numéro de téléphone *" id="phone" data-validation-required-message="Entrez un numéro de téléphone.">
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <textarea class="form-control" placeholder="Votre message *" id="message" required data-validation-required-message="Entrez un message."></textarea>
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-lg-12 text-center">
-                                <div id="success"></div>
-                                <button type="submit" class="btn btn-xl">Envoyer</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="container">
 
+    </div>          
 </div>
 {% endblock %}

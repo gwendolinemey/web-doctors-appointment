@@ -1,110 +1,214 @@
-<!doctype html>
-<html lang="fr">
-
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="description" content=" à renseigner ">
+    <meta name="author" content="RAPIDOCTEUR">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width">
-    <title>Rapidocteur - Prenez votre RDV médical en 3 clics</title>
+    <script src="./js/modernizr.js"></script>
+    <script src="./js/device.min.js"></script>
 
-    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+    <title>RAPIDOCTEUR, prise de rendez-vous médicaux en ligne - Toulouse</title>
 
-    <link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="./css/blue.css">
 
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="./css/animate.css">
+
+
+    <!--[if lt IE 9]>
+    <script src="./bootstrap/js/html5shiv.js"></script>
+    <script src="./bootstrap/js/respond.min.js"></script>
+    <![endif]-->
 
 </head>
-
-<body id="page-top" class="index" ng-app="app">
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand page-scroll" href="/">
-                    <img src="img/logos/logo.png" class="img-responsive" alt="RAPIDOCTEUR prise de rendez-vous médicaux en ligne">
-                </a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="hidden">
-                        <a href="#page-top"></a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="/partenaires">Partenaires</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="/patients">Patients</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="http://blog.rapidocteur.fr">Blog</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="https://twitter.com/RapiDocteur" target="_blank"><i class="fa fa-twitter"></i></a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="https://www.facebook.com/RapiDocteur" target="_blank"><i class="fa fa-facebook-square"></i></a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="https://plus.google.com/b/114510223929114221539/+RapidocteurFr/posts" target="_blank"><i class="fa fa-google-plus"></i></a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
+<body class="initAnimate">
+        <!-- Begin Navigation -->
+    <nav id="navigation" class="navbar navbar-transparent navbar-fixed-top remove-left-red navbar-has-transition" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"><strong>RAPIDOCTEUR</strong></a>
         </div>
-        <!-- /.container-fluid -->
+        <div class="triangle visible-md visible-lg"></div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active">
+                    <a href="index.html">Home</a>                
+                </li>
+                <li class="">
+                    <a href="/partenaires">Partenaires</a>
+                    
+                </li>
+                <li class="">
+                    <a href="/patients">Patients</a>                
+                </li>
+                <li class="">
+                    <a href="http://blog.rapidocteur.fr">Blog</a>               
+                </li>
+                <li class="">
+                    <a href="https://twitter.com/rapidocteur">
+                        <div class="circle-btn" data-toggle="tooltip" data-placement="bottom" title="Suivez-nous">
+                            <p><i class="fa fa-twitter"></i></p>
+                        </div>
+                    </a>               
+                </li>
+                <li class="">
+                    <a href="https://www.facebook.com/RapiDocteur">
+                        <div class="circle-btn" data-toggle="tooltip" data-placement="bottom" title="Aimez-nous">
+                            <p><i class="fa fa-facebook"></i></p>
+                        </div>
+                    </a>                
+                </li>
+                <li class="">
+                    <a href="https://plus.google.com/u/0/b/114510223929114221539/+RapidocteurFr">
+                        <div class="circle-btn" data-toggle="tooltip" data-placement="bottom" title="Encerclez-nous">
+                            <p><i class="fa fa-google-plus"></i></p>
+                        </div>
+                    </a>                 
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </nav>
-    <div style="border:1px solid red;">    
+    <!-- End Navigation -->
+    <div>    
         {% block content %}{% endblock %}
     </div>
-    <footer>
-        <div class="container">
+    <footer class="type2 dark-gray-row">
+        <div class="container padding-small">
             <div class="row">
                 <div class="col-md-4">
-                    <span class="copyright">&copy; RapiDocteur 2015, made with &#10084; in Toulouse</span>
+                    <p class="h4 light"><strong>RAPIDOCTEUR</strong></p>
+                    <div class="world-map">
+                        <p>
+                            We provide customer support 24 hours a day, 7 days a week. We are giving our best to satisfy our precious customers.
+                        </p>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <span>425 Rue Jean Rostand<br />31670 Labège<br /></span>                            
+                                <span><i class="fa fa-envelope-o"></i> hello[at]rapidocteur.fr<br></span>
+                            </div>
+                            <div class="col-sm-5">                            
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <span>Retrouvez RAPIDOCTEUR sur</span>
-                    <ul class="list-inline social-buttons">
-                        <li><a href="https://twitter.com/rapidocteur"><i class="fa fa-twitter"></i></a>
+                <div class="col-md-4">
+                <h6>Liens</h6>
+                    <ul>
+                        <li class="cat-item">
+                            <a href="#">Conditions générales d'utilisation</a>
                         </li>
-                        <li><a href="https://www.facebook.com/RapiDocteur"><i class="fa fa-facebook"></i></a>
+                        <li iclass="cat-item">
+                            <a href="#">Mentions légales</a>
                         </li>
-                        <li><a href="https://plus.google.com/b/114510223929114221539/+RapidocteurFr/"><i class="fa fa-google-plus"></i></a>
+                        <li class="cat-item">
+                            <a href="#">Contactez-nous</a>
                         </li>
-                    </ul>
+                    </ul>               
                 </div>
-                <div class="col-md-5">
-                    <ul class="list-inline quicklinks">
-                        <li><a href="/mentions-legales">Mentions légales</a></li>
-                        <li><a href="#">Conditions d'utilisation</a></li>
-                        <li><a href="#">Contactez-nous</a></li>
-                    </ul>
+                <div class="col-md-4">                
+                </div>
+            </div>
+        </div>
+        <div class="color-row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 pull-right">
+                        <div class="social small pull-right">
+                            <ul>
+                                <li>
+                                    <a href="#">
+                                        <div class="circle-btn" data-toggle="tooltip" data-placement="top" title="Facebook">
+                                            <p><i class="fa fa-facebook"></i></p>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="circle-btn" data-toggle="tooltip" data-placement="top" title="Twitter">
+                                            <p><i class="fa fa-twitter"></i></p>
+                                        </div>
+                                    </a>
+                                </li>                            
+                                <li>
+                                    <a href="#">
+                                        <div class="circle-btn" data-toggle="tooltip" data-placement="top" title="Google+">
+                                            <p><i class="fa fa-google-plus" alt="Google+"></i></p>
+                                        </div>
+                                    </a>
+                                </li>                            
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4"> <p class="copy">&copy; RapiDocteur 2015 - made with &#10084; in Toulouse</p></div>
                 </div>
             </div>
         </div>
     </footer>
-    <script src="http://localhost:35729/livereload.js"></script>
 
+    <div class="container">
+
+    </div>
+
+    <a href="#MainHeader" id="toTop" class="btn-scroll"><i class="fa fa-chevron-up"></i> Back to top</a>
+<!-- End Main Container --> 
+
+
+<script src="./bootstrap/js/bootstrap.min.js"></script>
+
+
+
+<script src="./js/jquery.parallax.js"></script>
+
+<script src="./js/jquery.easy-pie-chart.js"></script>
+
+<script src="./js/jquery.isotope.min.js"></script>
+<script src="./js/jquery.ba-bbq.min.js"></script>
+
+<script src="./js/gmap3.min.js"></script>
+
+<script src="./js/d3.v3.min.js"></script>
+<script src="./js/topojson.v1.min.js"></script>
+
+<script src="./js/jquery.sticky.js"></script>
+
+<script src="./js/jquery.colorbox-min.js"></script>
+<script src="./flexslider/jquery.flexslider.js"></script>
+
+<script src="./js/jquery.fitvids.js"></script>
+
+<script src="./form/js/contact-form.js"></script>
+<script src="./twitter/js/jquery.tweet.js"></script>
+<script src="./js/jquery.appear.js"></script>
+
+<script src="./js/main.js"></script>
+
+<script src="./js/less.min.js"></script>
+
+
+
+    <script src="/components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+    
     <script src="/components/angular/angular.js" type="text/javascript"></script>
     <script src="/components/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
     <script src="/components/ol3/dist/ol.js" type="text/javascript"></script>
     <script src="/components/js-data/dist/js-data.min.js" type="text/javascript"></script>
-    <script src="/components/js-data-angular/dist/js-data-angular.min.js" type="text/javascript"></script>
+    <script src="/components/js-data-angular/dist/js-data-angular.min.js" type="text/javascript"></script>    
     <script src="/js/angular-app.js" type="text/javascript"></script>
     <script src="/js/angular.js-data.conf.js" type="text/javascript"></script>
+    <!-- interne -->
     <script src="/js/services/get.services.js" type="text/javascript"></script>
     <script src="/js/services/post.services.js" type="text/javascript"></script>
     <script src="/js/controllers/angular.home.ctrl.js" type="text/javascript"></script>
